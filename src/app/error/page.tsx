@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Error Page | Free Next.js Template for Startup and SaaS",
-  description: "This is Error Page for Startup Nextjs Template",
-  // other metadata
+  title: "Page Not Found | Flores Siberianas",
+  description: "The page you are looking for could not be found.",
+  robots: { index: false, follow: true },
 };
 
 const ErrorPage = () => {

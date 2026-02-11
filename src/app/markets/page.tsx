@@ -1,8 +1,25 @@
 import { Metadata } from "next";
 
+const title = "Markets | Flores Siberianas";
+const description =
+  "Connecting Colombia to the World - Exports to over 30 countries with focus on Europe, Asia, and Russia.";
+
 export const metadata: Metadata = {
-  title: "Markets | Flores Siberianas",
-  description: "Connecting Colombia to the World - Exports to over 30 countries with focus on Europe, Asia, and Russia.",
+  title,
+  description,
+  alternates: { canonical: "/markets" },
+  openGraph: {
+    title,
+    description,
+    url: "/markets",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+  keywords: ["global markets", "flower export", "hydrangeas", "Colombia"],
 };
 
 const MarketsPage = () => {

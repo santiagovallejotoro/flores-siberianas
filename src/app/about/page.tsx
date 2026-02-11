@@ -7,9 +7,26 @@ import ScrollUp from "@/components/Common/ScrollUp";
 
 import { Metadata } from "next";
 
+const title = "About | Flores Siberianas";
+const description =
+  "Learn about Flores Siberianas - From Carmen de Viboral to the world's finest markets. Over 12 years of expertise in high-quality Colombian hydrangeas.";
+
 export const metadata: Metadata = {
-  title: "About | Flores Siberianas",
-  description: "Learn about Flores Siberianas - From Carmen de Viboral to the world's finest markets. Over 12 years of expertise in high-quality Colombian hydrangeas.",
+  title,
+  description,
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title,
+    description,
+    url: "/about",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+  keywords: ["Flores Siberianas", "Colombian hydrangeas", "Carmen de Viboral", "flower export"],
 };
 
 const AboutPage = () => {

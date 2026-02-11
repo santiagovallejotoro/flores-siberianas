@@ -75,14 +75,14 @@ const Header = () => {
               >
                 <Image
                   src={LOGO_LIGHT}
-                  alt="logo"
+                  alt="Flores Siberianas"
                   width={200}
                   height={44}
                   className="w-full dark:hidden"
                 />
                 <Image
                   src={LOGO_DARK}
-                  alt="logo"
+                  alt="Flores Siberianas"
                   width={200}
                   height={44}
                   className="hidden w-full dark:block"

@@ -1,12 +1,40 @@
-"use client";
-
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import ScrollToTop from "@/components/ScrollToTop";
+import AppShell from "@/app/AppShell";
+import JsonLd from "@/app/JsonLd";
 import { Inter } from "next/font/google";
+import type { Metadata } from "next";
 import "../styles/index.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const defaultTitle = "Flores Siberianas";
+const defaultDescription =
+  "High-quality Colombian hydrangeas from Carmen de Viboral. 12+ years of excellence, 30+ countries, 365 days a year. Technology-driven quality you can trust.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: defaultTitle,
+    template: "%s | Flores Siberianas",
+  },
+  description: defaultDescription,
+  openGraph: {
+    title: defaultTitle,
+    description: defaultDescription,
+    type: "website",
+    locale: "en",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: defaultDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
@@ -15,25 +43,10 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
-
       <body className={`bg-background dark:bg-foreground ${inter.className}`}>
-        <Providers>
-          <div className="isolate">
-            <Header />
-            {children}
-            <Footer />
-          </div>
-          <ScrollToTop />
-        </Providers>
+        <JsonLd />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
 }
-
-import { Providers } from "./providers";
-

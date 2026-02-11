@@ -4,10 +4,25 @@ import Breadcrumb from "@/components/Common/Breadcrumb";
 
 import { Metadata } from "next";
 
+const title = "Blog | Flores Siberianas";
+const description =
+  "News and insights from Flores Siberianas—Colombian hydrangeas, flower export, and the floral industry.";
+
 export const metadata: Metadata = {
-  title: "Blog Page | Free Next.js Template for Startup and SaaS",
-  description: "This is Blog Page for Startup Nextjs Template",
-  // other metadata
+  title,
+  description,
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title,
+    description,
+    url: "/blog",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 const Blog = () => {

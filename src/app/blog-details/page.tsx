@@ -4,10 +4,25 @@ import Image from "next/image";
 
 import { Metadata } from "next";
 
+const title = "Blog Article | Flores Siberianas";
+const description =
+  "Read the latest from Flores Siberianas on Colombian hydrangeas, flower export, and industry insights.";
+
 export const metadata: Metadata = {
-  title: "Blog Details Page | Free Next.js Template for Startup and SaaS",
-  description: "This is Blog Details Page for Startup Nextjs Template",
-  // other metadata
+  title,
+  description,
+  alternates: { canonical: "/blog-details" },
+  openGraph: {
+    title,
+    description,
+    url: "/blog-details",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 const BlogDetailsPage = () => {

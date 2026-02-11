@@ -5,10 +5,26 @@ import ContactHero from "@/components/Contact/ContactHero";
 
 import { Metadata } from "next";
 
+const title = "Contact | Flores Siberianas";
+const description =
+  "Get in touch with Flores Siberianas. Optimize your floral supply—our team helps you find the perfect solution for your market.";
+
 export const metadata: Metadata = {
-  title: "Contact | Flores Siberianas",
-  description:
-    "Get in touch with Flores Siberianas. Optimize your floral supply—our team helps you find the perfect solution for your market.",
+  title,
+  description,
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title,
+    description,
+    url: "/contact",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+  keywords: ["contact", "Flores Siberianas", "hydrangeas", "flower supply", "export"],
 };
 
 const ContactPage = () => {

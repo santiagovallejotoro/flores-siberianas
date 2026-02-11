@@ -8,9 +8,32 @@ import ScrollUp from "@/components/Common/ScrollUp";
 
 import { Metadata } from "next";
 
+const title = "Products | Flores Siberianas – Hydrangeas Grown in Colombia";
+const description =
+  "Hydrangeas grown in Colombia: grades, packaging, tinted and natural colors. Strong stems, uniform heads, extended vase life. Mini, Select, and Premium grades.";
+
 export const metadata: Metadata = {
-  title: "Products | Flores Siberianas – Hydrangeas Grown in Colombia",
-  description: "Hydrangeas grown in Colombia: grades, packaging, tinted and natural colors. Strong stems, uniform heads, extended vase life. Mini, Select, and Premium grades.",
+  title,
+  description,
+  alternates: { canonical: "/products" },
+  openGraph: {
+    title,
+    description,
+    url: "/products",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+  keywords: [
+    "hydrangeas",
+    "Colombian hydrangeas",
+    "flower grades",
+    "Mini Select Premium",
+    "flower packaging",
+  ],
 };
 
 const ProductsPage = () => {
