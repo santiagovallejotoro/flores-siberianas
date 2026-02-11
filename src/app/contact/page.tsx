@@ -1,23 +1,23 @@
-import Breadcrumb from "@/components/Common/Breadcrumb";
+import ScrollUp from "@/components/Common/ScrollUp";
 import Contact from "@/components/Contact";
+import ContactFAQ from "@/components/Contact/ContactFAQ";
+import ContactHero from "@/components/Contact/ContactHero";
 
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Page | Free Next.js Template for Startup and SaaS",
-  description: "This is Contact Page for Startup Nextjs Template",
-  // other metadata
+  title: "Contact | Flores Siberianas",
+  description:
+    "Get in touch with Flores Siberianas. Optimize your floral supply—our team helps you find the perfect solution for your market.",
 };
 
 const ContactPage = () => {
   return (
     <>
-      <Breadcrumb
-        pageName="Contact Page"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In varius eros eget sapien consectetur ultrices. Ut quis dapibus libero."
-      />
-
+      <ScrollUp />
+      <ContactHero />
       <Contact />
+      <ContactFAQ />
     </>
   );
 };

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap')
 layer(base);
 
 @import 'tailwindcss';
@@ -14,34 +14,74 @@ layer(base);
   --breakpoint-xl: 1200px;
   --breakpoint-2xl: 1400px;
 
+  /* Core Brand Colors - Siberian Teal & Purple */
   --color-current: currentColor;
   --color-transparent: transparent;
   --color-white: #ffffff;
-  --color-black: #121723;
-  --color-dark: #1d2430;
-  --color-primary: #4a6cf7;
+  --color-black: hsl(280, 30%, 18%);
+  --color-dark: hsl(280, 30%, 18%);
+  
+  /* Primary Scale - Siberian Teal (HSL 170, 65%, 42%) */
+  --color-primary-50: hsl(170, 65%, 97%);
+  --color-primary-100: hsl(170, 65%, 92%);
+  --color-primary-200: hsl(170, 65%, 82%);
+  --color-primary-300: hsl(170, 65%, 72%);
+  --color-primary-400: hsl(170, 65%, 52%);
+  --color-primary-500: hsl(170, 65%, 42%);
+  --color-primary-600: hsl(170, 65%, 32%);
+  --color-primary-700: hsl(170, 65%, 25%);
+  --color-primary-800: hsl(170, 65%, 18%);
+  --color-primary-900: hsl(170, 65%, 12%);
+  --color-primary-950: hsl(170, 65%, 10%);
+  --color-primary: var(--color-primary-500);
+  
+  /* Secondary Scale - Siberian Purple (HSL 300, 45%, 38%) */
+  --color-secondary-50: hsl(300, 45%, 97%);
+  --color-secondary-100: hsl(300, 45%, 92%);
+  --color-secondary-200: hsl(300, 45%, 82%);
+  --color-secondary-300: hsl(300, 45%, 72%);
+  --color-secondary-400: hsl(300, 45%, 52%);
+  --color-secondary-500: hsl(300, 45%, 38%);
+  --color-secondary-600: hsl(300, 45%, 28%);
+  --color-secondary-700: hsl(300, 45%, 22%);
+  --color-secondary-800: hsl(300, 45%, 16%);
+  --color-secondary-900: hsl(300, 45%, 10%);
+  --color-secondary-950: hsl(300, 45%, 8%);
+  --color-secondary: var(--color-secondary-500);
+  
+  /* Accent */
+  --color-accent: hsl(300, 50%, 45%);
+  
+  /* Semantic Colors */
+  --color-background: hsl(170, 20%, 98%);
+  --color-foreground: hsl(280, 30%, 18%);
+  --color-muted: hsl(170, 15%, 92%);
+  --color-muted-foreground: hsl(280, 15%, 45%);
+  --color-border: hsl(170, 20%, 88%);
+  --color-destructive: hsl(0, 84%, 60%);
+  
+  /* Legacy compatibility */
   --color-yellow: #fbb040;
-  --color-bg-color-dark: #171c28;
+  --color-bg-color-dark: hsl(280, 30%, 18%);
+  --color-body-color: var(--color-muted-foreground);
+  --color-body-color-dark: hsl(170, 15%, 72%);
+  --color-stroke: var(--color-border);
+  --color-stroke-dark: hsl(170, 10%, 25%);
+  --color-strokedark: hsl(170, 10%, 25%);
 
-  --color-body-color: #788293;
-  --color-body-color-dark: #959cb1;
-
-  --color-stroke-stroke: #e3e8ef;
-  --color-stroke-dark: #353943;
-
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --color-gray-950: #030712;
-  --color-gray-dark: #1e232e;
-  --color-gray-light: #f0f2f9;
+  --color-gray-50: hsl(170, 20%, 98%);
+  --color-gray-100: hsl(170, 20%, 95%);
+  --color-gray-200: hsl(170, 15%, 92%);
+  --color-gray-300: hsl(170, 15%, 85%);
+  --color-gray-400: hsl(170, 10%, 65%);
+  --color-gray-500: hsl(170, 10%, 50%);
+  --color-gray-600: hsl(170, 15%, 40%);
+  --color-gray-700: hsl(170, 20%, 30%);
+  --color-gray-800: hsl(170, 25%, 20%);
+  --color-gray-900: hsl(280, 30%, 15%);
+  --color-gray-950: hsl(280, 30%, 10%);
+  --color-gray-dark: hsl(280, 30%, 18%);
+  --color-gray-light: hsl(170, 20%, 98%);
 
   --shadow-sign-up: 0px 5px 10px rgba(4, 10, 34, 0.2);
   --shadow-one: 0px 2px 3px rgba(7, 7, 77, 0.05);
@@ -123,8 +163,67 @@ layer(base);
 }
 
 @layer base {
+  /* Custom scrollbar: narrow, matches page (light track + teal thumb) */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary-500) var(--color-gray-200);
+  }
+
+  .dark html,
+  html.dark {
+    scrollbar-color: var(--color-primary-400) var(--color-gray-700);
+  }
+
+  html::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: var(--color-gray-200);
+  }
+
+  .dark html::-webkit-scrollbar-track,
+  html.dark::-webkit-scrollbar-track {
+    background: var(--color-gray-700);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background: var(--color-primary-500);
+    border-radius: 4px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-600);
+  }
+
+  .dark html::-webkit-scrollbar-thumb,
+  html.dark::-webkit-scrollbar-thumb {
+    background: var(--color-primary-400);
+  }
+
+  .dark html::-webkit-scrollbar-thumb:hover,
+  html.dark::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-300);
+  }
+
   body {
     font-family: "Inter", sans-serif;
+    @apply antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display", serif;
+  }
+
+  .font-display {
+    font-family: "Playfair Display", serif;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 

@@ -1,20 +1,15 @@
 import AboutSectionOne from "@/components/About/AboutSectionOne";
-import AboutSectionTwo from "@/components/About/AboutSectionTwo";
-import Blog from "@/components/Blog";
-import Brands from "@/components/Brands";
 import ScrollUp from "@/components/Common/ScrollUp";
-import Contact from "@/components/Contact";
 import Features from "@/components/Features";
 import Hero from "@/components/Hero";
-import Pricing from "@/components/Pricing";
-import Testimonials from "@/components/Testimonials";
-import Video from "@/components/Video";
+import ProductsSection from "@/components/Products";
+import UpcomingTools from "@/components/UpcomingTools";
+import ContactSection from "@/components/ContactSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Next.js Template for Startup and SaaS",
-  description: "This is Home for Startup Nextjs Template",
-  // other metadata
+  title: "Flores Siberianas | Expertise from the Land. Quality for the World.",
+  description: "High-quality Colombian hydrangeas from Carmen de Viboral. 12+ years of excellence, 30+ countries, 365 days a year. Technology-driven quality you can trust.",
 };
 
 export default function Home() {
@@ -22,15 +17,11 @@ export default function Home() {
     <>
       <ScrollUp />
       <Hero />
-      <Features />
-      <Video />
-      <Brands />
       <AboutSectionOne />
-      <AboutSectionTwo />
-      <Testimonials />
-      <Pricing />
-      <Blog />
-      <Contact />
+      <ProductsSection />
+      <Features />
+      <UpcomingTools />
+      <ContactSection />
     </>
   );
 }

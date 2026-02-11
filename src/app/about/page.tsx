@@ -1,24 +1,26 @@
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import AboutSectionTwo from "@/components/About/AboutSectionTwo";
-import Breadcrumb from "@/components/Common/Breadcrumb";
+import OurStory from "@/components/About/OurStory";
+import OurTeam from "@/components/About/OurTeam";
+import OurValues from "@/components/About/OurValues";
+import ScrollUp from "@/components/Common/ScrollUp";
 
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Page | Free Next.js Template for Startup and SaaS",
-  description: "This is About Page for Startup Nextjs Template",
-  // other metadata
+  title: "About | Flores Siberianas",
+  description: "Learn about Flores Siberianas - From Carmen de Viboral to the world's finest markets. Over 12 years of expertise in high-quality Colombian hydrangeas.",
 };
 
 const AboutPage = () => {
   return (
     <>
-      <Breadcrumb
-        pageName="About Page"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In varius eros eget sapien consectetur ultrices. Ut quis dapibus libero."
-      />
-      <AboutSectionOne />
+      <ScrollUp />
+      <OurStory />
+      <AboutSectionOne showLearnMore={false} />
+      <OurTeam />
       <AboutSectionTwo />
+      <OurValues />
     </>
   );
 };
