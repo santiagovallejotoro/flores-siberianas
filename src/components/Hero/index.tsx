@@ -11,10 +11,16 @@ const Hero = () => {
         id="home"
         className="relative z-10 overflow-hidden bg-transparent pb-12 pt-[120px] dark:bg-gray-dark md:pb-16 md:pt-[150px] xl:pb-20 xl:pt-[180px] 2xl:pb-24 2xl:pt-[200px]"
       >
-        {/* Hero background image - light mode only (actual colors: white florals on black) */}
+        {/* Hero background image - light mode only (white florals on black) */}
         <div
           className="absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat dark:opacity-0 dark:pointer-events-none"
           style={{ backgroundImage: "url('/hero-bg.png')" }}
+          aria-hidden
+        />
+        {/* Hero background image - dark mode only (light purple florals on black) */}
+        <div
+          className="absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat opacity-0 pointer-events-none dark:opacity-100 dark:pointer-events-auto"
+          style={{ backgroundImage: "url('/here-bg-1.png')" }}
           aria-hidden
         />
         <div className="container">
