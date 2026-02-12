@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import GradeCard from "./GradeCard";
+import { gradeImages } from "./gradeImages";
 
 const ProductsSection = () => {
   const { t } = useLanguage();
@@ -49,49 +51,7 @@ const ProductsSection = () => {
 
         <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {grades.map((grade) => (
-            <div
-              key={grade.key}
-              className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
-            >
-              {/* Image placeholder - replace with real image later */}
-              <div className="relative aspect-square w-full bg-gray-100 dark:bg-white/10">
-                {grade.badge && (
-                  <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow-sm dark:bg-primary-600">
-                    {grade.badge}
-                  </span>
-                )}
-              </div>
-              <div className="p-5">
-                <h3 className="mb-2 text-xl font-bold text-black dark:text-white">
-                  {grade.name}
-                </h3>
-                <p className="mb-4 text-sm text-body-color dark:text-body-color-dark">
-                  Best for: {grade.bestFor}
-                </p>
-                <div className="mb-4 border-t border-border dark:border-white/10" />
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-500/15 dark:text-primary-300">
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="4" />
-                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2" />
-                      </svg>
-                    </span>
-                    <span className="text-sm text-body-color dark:text-body-color-dark">Head:</span>
-                    <span className="font-semibold text-primary">{grade.headSize}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary-100 text-secondary-600 dark:bg-secondary-500/15 dark:text-secondary-300">
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 2v20M6 8v8M18 8v8" />
-                      </svg>
-                    </span>
-                    <span className="text-sm text-body-color dark:text-body-color-dark">Stem:</span>
-                    <span className="font-semibold text-secondary">{grade.stemLength}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <GradeCard key={grade.key} grade={grade} images={gradeImages[grade.key] ?? []} />
           ))}
         </div>
 

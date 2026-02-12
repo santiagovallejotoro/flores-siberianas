@@ -217,21 +217,19 @@ const Contact = () => {
               </div>
 
               {/* Instant Chat */}
-              <div className="overflow-hidden rounded-xl shadow-sm">
-                <div className="bg-gradient-to-r from-primary-500 to-secondary-500 px-6 py-4">
-                  <h3 className="text-lg font-bold text-white">
-                    {c.instantChat.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-white/90">
-                    {c.instantChat.description}
-                  </p>
-                </div>
-                <div className="flex gap-3 border border-t-0 border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-dark">
+              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-dark">
+                <h3 className="mb-2 text-lg font-bold text-black dark:text-white">
+                  {c.instantChat.title}
+                </h3>
+                <p className="mb-4 text-sm text-body-color dark:text-body-color-dark">
+                  {c.instantChat.description}
+                </p>
+                <div className="flex gap-3">
                   <a
                     href={`https://wa.me/${WHATSAPP_NUMBER}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 rounded-lg bg-[#25D366] px-4 py-3 text-center text-sm font-semibold text-white transition hover:opacity-90"
+                    className="flex-1 rounded-lg border border-primary bg-primary px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90"
                   >
                     {c.instantChat.whatsapp}
                   </a>
@@ -239,7 +237,7 @@ const Contact = () => {
                     href={TELEGRAM_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 rounded-lg bg-[#0088cc] px-4 py-3 text-center text-sm font-semibold text-white transition hover:opacity-90"
+                    className="flex-1 rounded-lg border border-stroke bg-white px-4 py-3 text-center text-sm font-semibold text-body-color transition hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     {c.instantChat.telegram}
                   </a>

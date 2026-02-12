@@ -2,8 +2,6 @@ import ProductsHero from "@/components/Products/ProductsHero";
 import ProductsFeatures from "@/components/Products/ProductsFeatures";
 import ProductsGradesSection from "@/components/Products/ProductsGradesSection";
 import ProductsPackaging from "@/components/Products/ProductsPackaging";
-import ProductsTinted from "@/components/Products/ProductsTinted";
-import ProductsColors from "@/components/Products/ProductsColors";
 import ScrollUp from "@/components/Common/ScrollUp";
 
 import { Metadata } from "next";
@@ -44,8 +42,6 @@ const ProductsPage = () => {
       <ProductsFeatures />
       <ProductsGradesSection />
       <ProductsPackaging />
-      <ProductsTinted />
-      <ProductsColors />
     </>
   );
 };

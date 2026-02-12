@@ -26,7 +26,7 @@ const ContactSection = () => {
               </svg>
             </Link>
             <a
-              href="https://wa.me/573001234567"
+              href="https://wa.me/573127810890"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border-2 border-white px-8 py-4 text-base font-semibold text-white transition hover:bg-white hover:text-primary-600"

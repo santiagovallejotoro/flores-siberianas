@@ -106,7 +106,7 @@ export const translations = {
           head: '10–12 cm',
           stem: '60 cm',
           bestFor: 'Bouquets and table arrangements',
-          badge: null,
+          badge: 'Natural & Tinted',
           colorsHint: 'Mini Green, Minimojito'
         },
         select: {
@@ -114,7 +114,7 @@ export const translations = {
           head: '15–18 cm',
           stem: '60 cm',
           bestFor: 'Retail and everyday arrangements',
-          badge: null,
+          badge: 'Natural & Tinted',
           colorsHint: 'White, Purple, Emerald, Variegated, Lime Green, Shocking Blue'
         },
         premium: {
@@ -164,7 +164,7 @@ export const translations = {
         intro: 'Multiple packaging solutions tailored to your market needs.',
         cards: [
           { title: 'Quarter Box', stems: '40 stems Select, 60 stems Mini', description: 'Most popular export format' },
-          { title: 'Quarter Box', stems: '20 stems Select, 15 stems Premium', description: 'Smaller orders & mixed shipments' },
+          { title: 'Eight Box', stems: '20 stems Select, 15 stems Premium', description: 'Smaller orders & mixed shipments' },
           { title: 'Custom Pack', stems: 'Variable', description: 'Tailored to your requirements' }
         ]
       },
@@ -496,7 +496,7 @@ export const translations = {
           head: '10–12 см',
           stem: '60 см',
           bestFor: 'Букеты и настольные композиции',
-          badge: null,
+          badge: 'Натуральные и тонированные',
           colorsHint: 'Mini Green, Minimojito'
         },
         select: {
@@ -504,7 +504,7 @@ export const translations = {
           head: '15–18 см',
           stem: '60 см',
           bestFor: 'Розничная торговля и повседневные композиции',
-          badge: null,
+          badge: 'Натуральные и тонированные',
           colorsHint: 'White, Purple, Emerald, Variegated, Lime Green, Shocking Blue'
         },
         premium: {
@@ -554,7 +554,7 @@ export const translations = {
         intro: 'Различные варианты упаковки под потребности вашего рынка.',
         cards: [
           { title: 'Quarter Box', stems: '40 стеблей Select, 60 стеблей Mini', description: 'Самый популярный экспортный формат' },
-          { title: 'Quarter Box', stems: '20 стеблей Select, 15 стеблей Premium', description: 'Небольшие заказы и смешанные поставки' },
+          { title: 'Eight Box', stems: '20 стеблей Select, 15 стеблей Premium', description: 'Небольшие заказы и смешанные поставки' },
           { title: 'Custom Pack', stems: 'Переменное кол-во', description: 'Под ваши требования' }
         ]
       },
@@ -868,7 +868,7 @@ export const translations = {
           head: '10–12 cm',
           stem: '60 cm',
           bestFor: 'Ramos y arreglos de mesa',
-          badge: null,
+          badge: 'Natural y teñido',
           colorsHint: 'Mini Green, Minimojito'
         },
         select: {
@@ -876,7 +876,7 @@ export const translations = {
           head: '15–18 cm',
           stem: '60 cm',
           bestFor: 'Retail y arreglos cotidianos',
-          badge: null,
+          badge: 'Natural y teñido',
           colorsHint: 'White, Purple, Emerald, Variegated, Lime Green, Shocking Blue'
         },
         premium: {
@@ -926,7 +926,7 @@ export const translations = {
         intro: 'Soluciones de empaque múltiples adaptadas a las necesidades de su mercado.',
         cards: [
           { title: 'Quarter Box', stems: '40 tallos Select, 60 tallos Mini', description: 'Formato de exportación más popular' },
-          { title: 'Quarter Box', stems: '20 tallos Select, 15 tallos Premium', description: 'Pedidos pequeños y envíos mixtos' },
+          { title: 'Eight Box', stems: '20 tallos Select, 15 tallos Premium', description: 'Pedidos pequeños y envíos mixtos' },
           { title: 'Custom Pack', stems: 'Variable', description: 'A la medida de sus necesidades' }
         ]
       },
@@ -1240,7 +1240,7 @@ export const translations = {
           head: '10–12厘米',
           stem: '60厘米',
           bestFor: '花束与桌花',
-          badge: null,
+          badge: '自然与染色',
           colorsHint: 'Mini Green, Minimojito'
         },
         select: {
@@ -1248,7 +1248,7 @@ export const translations = {
           head: '15–18厘米',
           stem: '60厘米',
           bestFor: '零售与日常插花',
-          badge: null,
+          badge: '自然与染色',
           colorsHint: 'White, Purple, Emerald, Variegated, Lime Green, Shocking Blue'
         },
         premium: {
@@ -1298,7 +1298,7 @@ export const translations = {
         intro: '多种包装方案，满足不同市场需求。',
         cards: [
           { title: 'Quarter Box', stems: '40枝 Select，60枝 Mini', description: '最受欢迎的出口规格' },
-          { title: 'Quarter Box', stems: '20枝 Select，15枝 Premium', description: '小订单与混装' },
+          { title: 'Eight Box', stems: '20枝 Select，15枝 Premium', description: '小订单与混装' },
           { title: 'Custom Pack', stems: '可变', description: '按需定制' }
         ]
       },
