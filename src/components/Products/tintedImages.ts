@@ -8,5 +8,4 @@ export const tintedImages: string[] = [
   "6.png",
   "7.png",
   "8.png",
-  "9.png",
 ];
