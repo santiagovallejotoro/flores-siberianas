@@ -2,18 +2,21 @@ const grades = [
   {
     name: "Mini",
     headSize: "9–11 cm",
-    varieties: ["Minigreen", "Minimojito", "Select White", "Select Blue"],
+    varieties: ["Minigreen", "Minimojito"],
   },
   {
     name: "Select",
     headSize: "15–16 cm",
     varieties: [
-      "Elite Sage green",
-      "Elite Dark green",
-      "Elite Purple",
+      "White",
+      "Blue",
+      "Purple",
+      "Lemmon",
       "Shocking Blue",
-      "Diamond Emerald",
-      "Elite Lavander",
+      "Emerald",
+      "Lavander",
+      "Sage green",
+      "Dark green",
     ],
   },
   {
@@ -46,7 +49,7 @@ const ProveedoresVarieties = () => {
             Variedades que compramos
           </h2>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
-            Compramos estas variedades en los diferentes tamaños. El tallo debe medir 60 cm.
+            Compramos estas variedades en los diferentes tamaños.
           </p>
         </div>
 

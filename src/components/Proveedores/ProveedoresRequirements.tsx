@@ -10,7 +10,7 @@ const municipalities = [
 const requirements = [
   {
     title: "Buena calidad y consistencia",
-    description: "Tallos derechos, cabezas del tamaño que se pide y con buen follaje. No leñosos. Sin maltrato.",
+    description: "Tallos derechos (60 cm), cabezas del tamaño que se pide y con buen follaje. No leñosos. Sin maltrato.",
   },
   {
     title: "Sanidad",

@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const faqs = [
   {
     q: "¿Tienen que recoger la flor en la comercializadora o ustedes van a la finca?",
@@ -18,6 +22,12 @@ const faqs = [
 ];
 
 const ProveedoresFAQ = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const toggle = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <section className="overflow-hidden py-8 md:py-12 lg:py-16">
       <div className="container">
@@ -27,18 +37,56 @@ const ProveedoresFAQ = () => {
           </h2>
         </div>
 
-        <div className="mx-auto max-w-3xl space-y-4">
-          {faqs.map((item, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-border bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5"
-            >
-              <h3 className="mb-3 text-lg font-bold text-black dark:text-white">{item.q}</h3>
-              <p className="text-base leading-relaxed text-body-color dark:text-body-color-dark">
-                {item.a}
-              </p>
-            </div>
-          ))}
+        <div className="mx-auto max-w-3xl space-y-3">
+          {faqs.map((item, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div
+                key={index}
+                className="rounded-xl border border-border bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
+              >
+                <button
+                  type="button"
+                  id={`faq-trigger-${index}`}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-panel-${index}`}
+                  onClick={() => toggle(index)}
+                  className="flex w-full items-center justify-between gap-4 p-6 text-left"
+                >
+                  <span className="text-lg font-bold text-black dark:text-white">
+                    {item.q}
+                  </span>
+                  <svg
+                    className={`h-5 w-5 shrink-0 text-body-color transition-transform duration-200 dark:text-body-color-dark ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id={`faq-panel-${index}`}
+                  role="region"
+                  aria-labelledby={`faq-trigger-${index}`}
+                  className={`overflow-hidden transition-all duration-200 ${
+                    isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="px-6 pb-6 text-base leading-relaxed text-body-color dark:text-body-color-dark">
+                    {item.a}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

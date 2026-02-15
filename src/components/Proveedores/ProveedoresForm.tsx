@@ -110,7 +110,7 @@ const ProveedoresForm = () => {
                     type="text"
                     id="varieties"
                     name="varieties"
-                    placeholder="Ej. Minigreen, Select White"
+                    placeholder="Ej. Minigreen, Minimojito, Select White"
                     className={inputClass}
                   />
                 </div>

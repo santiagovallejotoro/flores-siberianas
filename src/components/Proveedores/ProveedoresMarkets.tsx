@@ -16,7 +16,7 @@ const ProveedoresMarkets = () => {
             Su flor viaja al mundo
           </h2>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
-            Cuando vende con nosotros, su trabajo llega a estos países:
+            Cuando vende con nosotros, su trabajo llega a estos países y más.
           </p>
         </div>
 

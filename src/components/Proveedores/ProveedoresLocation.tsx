@@ -13,7 +13,7 @@ const ProveedoresLocation = () => {
             Dónde nos encuentra
           </h2>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
-            Nuestra comercializadora está cerca de usted, con cadena de frío para cuidar su flor.
+            Nuestra comercializadora está cerca de usted, ahorre tiempo y dinero en transporte.
           </p>
         </div>
 
