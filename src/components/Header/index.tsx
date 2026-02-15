@@ -47,8 +47,10 @@ const Header = () => {
     }
   };
 
-  const usePathName = usePathname();
-  
+  const pathname = usePathname();
+  const isProveedoresPage = pathname === "/proveedores";
+  const isProveedorPortalPage = pathname === "/proveedor-portal";
+
   // Translation helper for menu items
   const getMenuTitle = (key: string) => {
     const navKeys = t.nav as Record<string, string>;
@@ -127,7 +129,7 @@ const Header = () => {
                         <Link
                           href={menuItem.path}
                           className={`flex py-2 text-[15px] lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 lg:text-[17px] ${
-                            usePathName === menuItem.path
+                            pathname === menuItem.path
                               ? "text-primary dark:text-primary-300"
                               : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-primary-300"
                           }`}
@@ -136,31 +138,87 @@ const Header = () => {
                         </Link>
                       </li>
                     ))}
-                    <li className="lg:hidden">
-                      <Link
-                        href="/client-portal"
-                        className="bg-primary hover:bg-primary-600 mt-2 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
-                      >
-                        {t.common.clientPortal}
-                      </Link>
-                    </li>
+                    {isProveedoresPage ? (
+                      <>
+                        <li className="mt-2 lg:hidden">
+                          <Link
+                            href="/proveedores#registro-proveedor"
+                            className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
+                          >
+                            Vender
+                          </Link>
+                        </li>
+                        <li className="mt-2 lg:hidden">
+                          <Link
+                            href="/proveedor-portal"
+                            className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
+                          >
+                            Proveedor
+                          </Link>
+                        </li>
+                      </>
+                    ) : isProveedorPortalPage ? (
+                      <li className="mt-2 lg:hidden">
+                        <Link
+                          href="/proveedores#registro-proveedor"
+                          className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
+                        >
+                          Vender
+                        </Link>
+                      </li>
+                    ) : (
+                      <li className="lg:hidden">
+                        <Link
+                          href="/client-portal"
+                          className="bg-primary hover:bg-primary-600 mt-2 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
+                        >
+                          {t.common.clientPortal}
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </nav>
               </div>
               <div className="flex items-center justify-end gap-3 pr-16 lg:pr-0">
-                <Link
-                  href="/contact"
-                  className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
-                >
-                  {t.common.getQuote}
-                </Link>
+                {isProveedoresPage ? (
+                  <>
+                    <Link
+                      href="/proveedores#registro-proveedor"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
+                    >
+                      Vender
+                    </Link>
+                    <Link
+                      href="/proveedor-portal"
+                      className="bg-primary hover:bg-primary-600 hidden rounded-xl px-5 py-2.5 text-base font-semibold text-white transition duration-300 md:flex md:items-center"
+                    >
+                      Proveedor
+                    </Link>
+                  </>
+                ) : isProveedorPortalPage ? (
+                  <Link
+                    href="/proveedores#registro-proveedor"
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
+                  >
+                    Vender
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/contact"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
+                    >
+                      {t.common.getQuote}
+                    </Link>
+                    <Link
+                      href="/client-portal"
+                      className="bg-primary hover:bg-primary-600 hidden rounded-xl px-5 py-2.5 text-base font-semibold text-white transition duration-300 md:flex md:items-center"
+                    >
+                      {t.common.clientPortal}
+                    </Link>
+                  </>
+                )}
                 <LanguageSelector />
-                <Link
-                  href="/client-portal"
-                  className="bg-primary hover:bg-primary-600 hidden rounded-xl px-5 py-2.5 text-base font-semibold text-white transition duration-300 md:flex md:items-center"
-                >
-                  {t.common.clientPortal}
-                </Link>
                 <ThemeToggler />
               </div>
             </div>
