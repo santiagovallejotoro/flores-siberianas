@@ -51,7 +51,7 @@ const ProductsSection = () => {
 
         <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {grades.map((grade) => (
-            <GradeCard key={grade.key} grade={grade} images={gradeImages[grade.key] ?? []} />
+            <GradeCard key={grade.key} grade={grade} images={gradeImages[grade.key] ?? []} bestForLabel={t.products.bestForLabel} />
           ))}
         </div>
 

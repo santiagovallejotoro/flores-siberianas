@@ -31,7 +31,7 @@ const benefits = [
     ),
     title: "Herramientas para mejorar",
     paragraph:
-      "Le prestamos herramientas de cálculo de costos para que sepa si su cultivo deja ganancia, y herramientas de programación y planeación de cultivo.",
+      "Le entregamos herramientas de cálculo de costos para que analice el retorno de su inversión, y herramientas de programación y planeación de cultivo. Para que pueda vender todo su producto.",
   },
   {
     icon: (
@@ -64,7 +64,7 @@ const ProveedoresBenefits = () => {
       <div className="container">
         <div className="mx-auto mb-10 max-w-2xl text-center">
           <h2 className="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-[40px]">
-            ¿Por qué vender con nosotros?
+            ¿Por qué vender sus hortensias con Flores Siberianas?
           </h2>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
             Ubicación central y de fácil acceso, herramientas para mejorar su cultivo, apoyo en sus procesos productivos y prioridad en nuevas órdenes. Información en tiempo real de sus ventas y pagos. Así trabajamos con nuestros proveedores.

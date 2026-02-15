@@ -1,5 +1,4 @@
 import AboutSectionOne from "@/components/About/AboutSectionOne";
-import AboutSectionTwo from "@/components/About/AboutSectionTwo";
 import OurStory from "@/components/About/OurStory";
 import OurTeam from "@/components/About/OurTeam";
 import OurValues from "@/components/About/OurValues";
@@ -36,7 +35,6 @@ const AboutPage = () => {
       <OurStory />
       <AboutSectionOne showLearnMore={false} />
       <OurTeam />
-      <AboutSectionTwo />
       <OurValues />
     </>
   );

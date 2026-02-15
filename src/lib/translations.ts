@@ -11,9 +11,9 @@ export const translations = {
     // Hero
     hero: {
       badge: 'High-Quality Colombian Hydrangeas',
-      title: 'Expertise from the Land. Quality for the World.',
-      subtitle: 'From the productive lands of oriente antioqueño, Colombia, we combine decades of field expertise with strategic analytics. Backed by a robust supply chain, we export high-quality hydrangeas to the world\'s most demanding markets year-round.',
-      cta1: 'Explore Flowers',
+      title: 'Love for tradition and cultivation of our beautiful land. Quality for the World.',
+      subtitle: 'From the productive lands of oriente antioqueño, Colombia, we combine decades of field experience with information and strategic analytics. Backed by a robust supply chain, we export high-quality hydrangeas to the world\'s most demanding markets year-round.',
+      cta1: 'View Varieties',
       cta2: 'Request Quote',
       stats: {
         years: '12+ Years',
@@ -24,8 +24,8 @@ export const translations = {
     // About
     about: {
       eyebrow: 'Who We Are',
-      title: 'The Heart of Colombian Hydrangeas',
-      description: 'Flores Siberianas combines agricultural expertise with technology to deliver high-quality hydrangeas worldwide. Strategic alliances with top-tier growers guarantee volume, variety, and consistent quality 365 days a year.',
+      title: 'Our value proposition for the Colombian hydrangea market',
+      description: 'Flores Siberianas combines years of agricultural experience with technology to deliver high-quality hydrangeas worldwide. We have built strategic alliances with top-tier growers that guarantee volume, variety, and consistent quality 365 days a year.',
       highlights: {
         location: {
           title: 'Strategic Location',
@@ -33,7 +33,7 @@ export const translations = {
         },
         climate: {
           title: 'Ideal Climate',
-          text: 'Year-round spring weather with volcanic soil and optimal conditions'
+          text: 'Year-round production in nutrient-rich volcanic soil and optimal conditions for hydrangea cultivation.'
         },
         sustainable: {
           title: 'Sustainable Practices',
@@ -44,7 +44,7 @@ export const translations = {
       story: {
         eyebrow: 'Our Story',
         title: 'Rooted in Tradition, Driven by Innovation',
-        founded: 'Founded over 12 years ago, Flores Siberianas was created to serve the global market with high-performance hydrangeas grown under ideal Colombian conditions.',
+        founded: 'Founded over 12 years ago, Flores Siberianas was created to serve the global market with high-quality hydrangeas carefully cultivated under ideal climate and soil conditions.',
         location: 'Located in Carmen de Viboral, Antioquia, Flores Siberianas operates in the world\'s most productive region for hydrangeas. Our farms benefit from ideal altitude, volcanic soil, and Colombia\'s year-round spring climate.',
         combine: 'We combine agricultural expertise, strategic alliances, and information technology to deliver consistency, reliability, and scalability for professional buyers worldwide.',
         commitment: 'Our commitment to excellence has made us a trusted partner for the world\'s most demanding floral markets.',
@@ -98,8 +98,9 @@ export const translations = {
     // Products
     products: {
       eyebrow: 'Our Products',
-      title: 'Main Hydrangea Grades',
+      title: 'Our Main Products',
       intro: 'Three carefully selected grades to meet diverse market needs. We offer a complete line of hydrangeas in Mini, Select, and Premium grades—available in natural and tinted varieties and a wide range of colors.',
+      bestForLabel: 'Best for:',
       grades: {
         mini: {
           name: 'Mini Grade',
@@ -191,7 +192,7 @@ export const translations = {
     technology: {
       eyebrow: 'Technology',
       title: 'Information is as Critical as Soil',
-      intro: 'Our digital ecosystem provides real-time visibility and control across the entire floral supply chain.',
+      intro: 'We have information systems and tools that give us real-time control across the entire floral supply chain and data to make fast strategic decisions in line with market demands.',
       features: {
         inventory: {
           title: 'Real-Time Inventory',
@@ -224,9 +225,9 @@ export const translations = {
       titleHighlight: 'Tools',
       subtitle: 'Designed to increase transparency, efficiency, and collaboration across our global network.',
       tools: [
-        { badge: 'Coming Soon', title: 'Customer Portals', description: 'Order tracking, shipment status, and historical data.' },
-        { badge: 'In Development', title: 'Supplier Dashboards', description: 'Forecasts, production planning, and performance metrics.' },
-        { badge: 'Planned', title: 'Market Intelligence', description: 'Real-time market insights and planning tools.' }
+        { badge: 'Coming Soon', title: 'Customer Portal', description: 'Order tracking, shipment status, and historical data; real-time availability and real-time connection with suppliers.' },
+        { badge: 'In Development', title: 'Supplier Dashboards', description: 'Purchase history and quality inspections. Forecasts, production planning, and performance metrics. Cultivation administration and cost tools.' },
+        { badge: 'Planned', title: 'Market Intelligence', description: 'Real-time market information and planning tools for clients and suppliers.' }
       ]
     },
     // Contact CTA
@@ -322,7 +323,7 @@ export const translations = {
         list: [
           {
             region: 'Russia & CIS',
-            description: 'Large-head, high-durability varieties preferred by the Russian market. Our Siberiana grade maintains turgidity during extended transit.',
+            description: 'Large-head, high-durability varieties preferred by the Russian market.',
             features: ['Large-head varieties (23 cm+)', 'Extended durability', 'Siberiana Spec grade', 'Direct flights to Moscow'],
             transit: '48-72 h',
             vaseLife: '12-15 days'
@@ -371,6 +372,20 @@ export const translations = {
         buttonLabel: 'Contact Sales Team'
       }
     },
+    // Client portal page
+    clientPortalPage: {
+      title: 'Client Portal',
+      subtitle: 'Sign in to access your portal and advanced features.',
+      emailLabel: 'Email',
+      passwordLabel: 'Password',
+      emailPlaceholder: 'you@company.com',
+      passwordPlaceholder: 'Enter your password',
+      rememberMe: 'Remember me',
+      forgotPassword: 'Forgot password?',
+      signIn: 'Sign in',
+      needAccess: 'Need access?',
+      contactUs: 'Contact us'
+    },
     // Footer
     footer: {
       tagline: 'High-quality Colombian hydrangeas. From the mountains of Antioquia to the world\'s finest markets.',
@@ -401,9 +416,9 @@ export const translations = {
     // Hero
     hero: {
       badge: 'Колумбийские гортензии высшего качества',
-      title: 'Опыт с земли. Качество для мира.',
-      subtitle: 'С продуктивных земель восточной Антиокии, Колумбия, мы сочетаем десятилетия полевого опыта со стратегической аналитикой. При надёжной цепочке поставок мы круглый год экспортируем гортензии высшего качества на самые требовательные рынки мира.',
-      cta1: 'Наши цветы',
+      title: 'Любовь к традициям и возделыванию наших прекрасных земель. Качество для мира.',
+      subtitle: 'С продуктивных земель восточной Антиокии, Колумбия, мы сочетаем десятилетия полевого опыта с информацией и стратегической аналитикой. При надёжной цепочке поставок мы круглый год экспортируем гортензии высшего качества на самые требовательные рынки мира.',
+      cta1: 'Смотреть сорта',
       cta2: 'Запросить цену',
       stats: {
         years: '12+ лет',
@@ -414,8 +429,8 @@ export const translations = {
     // About
     about: {
       eyebrow: 'Кто мы',
-      title: 'Сердце колумбийских гортензий',
-      description: 'Flores Siberianas сочетает агротехнический опыт с технологиями для поставки гортензий высшего качества по всему миру. Стратегические альянсы с ведущими производителями гарантируют объем, разнообразие и стабильное качество 365 дней в году.',
+      title: 'Наше ценностное предложение для рынка колумбийских гортензий',
+      description: 'Flores Siberianas сочетает многолетний агротехнический опыт с технологиями для поставки гортензий высшего качества по всему миру. Мы создали стратегические альянсы с ведущими производителями, которые гарантируют объём, разнообразие и стабильное качество 365 дней в году.',
       highlights: {
         location: {
           title: 'Стратегическое местоположение',
@@ -423,7 +438,7 @@ export const translations = {
         },
         climate: {
           title: 'Идеальный климат',
-          text: 'Круглогодичная весна с вулканической почвой и оптимальными условиями'
+          text: 'Возможность производить круглый год на богатой питательными веществами вулканической почве в оптимальных условиях для выращивания гортензий.'
         },
         sustainable: {
           title: 'Устойчивые практики',
@@ -434,7 +449,7 @@ export const translations = {
       story: {
         eyebrow: 'Наша история',
         title: 'Корни в традициях, движение через инновации',
-        founded: 'Основанная более 12 лет назад, Flores Siberianas была создана для обслуживания мирового рынка высокоэффективными гортензиями, выращенными в идеальных колумбийских условиях.',
+        founded: 'Основанная более 12 лет назад, Flores Siberianas была создана для обслуживания мирового рынка высококачественными гортензиями, тщательно выращенными в идеальных климатических и почвенных условиях.',
         location: 'Располагаясь в Кармен де Виборал, Антиокия, Flores Siberianas работает в самом продуктивном регионе мира для гортензий. Наши фермы получают выгоду от идеальной высоты, вулканической почвы и круглогодичного весеннего климата Колумбии.',
         combine: 'Мы сочетаем агротехнический опыт, стратегические альянсы и информационные технологии для обеспечения последовательности, надёжности и масштабируемости для профессиональных покупателей по всему миру.',
         commitment: 'Наша приверженность совершенству сделала нас надёжным партнёром для самых требовательных цветочных рынков мира.',
@@ -488,8 +503,9 @@ export const translations = {
     // Products
     products: {
       eyebrow: 'Наша продукция',
-      title: 'Основные сорта гортензий',
-      intro: 'Три тщательно отобранных сорта для различных рыночных потребностей. Мы предлагаем полную линейку гортензий: Mini, Select и Premium — в натуральных и тонированных вариантах и широкой палитре цветов.',
+      title: 'Наши основные продукты',
+      intro: 'Три тщательно отобранных сорта для различных рыночных потребностей. Мы предлагаем полную линейку гортензий: Mini, Select и Premium — в натуральных и тонированных вариантах в широкой палитре цветов.',
+      bestForLabel: 'Идеально для:',
       grades: {
         mini: {
           name: 'Мини сорт',
@@ -581,7 +597,7 @@ export const translations = {
     technology: {
       eyebrow: 'Технологии',
       title: 'Информация так же важна, как почва',
-      intro: 'Наша цифровая экосистема обеспечивает видимость и контроль в реальном времени по всей цветочной цепочке поставок.',
+      intro: 'У нас есть информационные системы и инструменты для контроля в реальном времени по всей цветочной цепочке поставок и данных для быстрых стратегических решений с учётом требований рынка.',
       features: {
         inventory: {
           title: 'Инвентаризация в реальном времени',
@@ -614,9 +630,9 @@ export const translations = {
       titleHighlight: 'инструменты',
       subtitle: 'Повышение прозрачности, эффективности и совместной работы в нашей глобальной сети.',
       tools: [
-        { badge: 'Скоро', title: 'Клиентские порталы', description: 'Отслеживание заказов, статус поставок и история данных.' },
-        { badge: 'В разработке', title: 'Панели поставщиков', description: 'Прогнозы, планирование производства и показатели эффективности.' },
-        { badge: 'Планируется', title: 'Рыночная аналитика', description: 'Аналитика рынка в реальном времени и инструменты планирования.' }
+        { badge: 'Скоро', title: 'Портал клиентов', description: 'Отслеживание заказов, статус поставок и история данных; наличие в реальном времени и связь с поставщиками в реальном времени.' },
+        { badge: 'В разработке', title: 'Панели поставщиков', description: 'История закупок и проверки качества. Прогнозы, планирование производства и показатели эффективности. Инструменты администрирования и учёта затрат на выращивание.' },
+        { badge: 'Планируется', title: 'Рыночная аналитика', description: 'Информация о рынках в реальном времени и инструменты планирования для клиентов и поставщиков.' }
       ]
     },
     // Contact CTA
@@ -710,7 +726,7 @@ export const translations = {
         sectionTitleHighlight: 'каждого рынка',
         sectionSubtitle: 'У каждого рынка свои требования. Наши продукты и логистика адаптированы под региональные стандарты.',
         list: [
-          { region: 'Россия и СНГ', description: 'Крупноголовые сорта с высокой стойкостью для российского рынка. Наш сорт Siberiana сохраняет тургор при длительной перевозке.', features: ['Крупные головки (23 см+)', 'Увеличенная стойкость', 'Сорт Siberiana Spec', 'Прямые рейсы в Москву'], transit: '48-72 ч', vaseLife: '12-15 дней' },
+          { region: 'Россия и СНГ', description: 'Крупноголовые сорта с высокой стойкостью для российского рынка.', features: ['Крупные головки (23 см+)', 'Увеличенная стойкость', 'Сорт Siberiana Spec', 'Прямые рейсы в Москву'], transit: '48-72 ч', vaseLife: '12-15 дней' },
           { region: 'Европа', description: 'Точность и стабильность по фитосанитарии, эстетике и однородности, с особым вниманием к стабильности окраски.', features: ['Соответствие фитосанитарным нормам ЕС', 'Гарантированная стабильность цвета', 'Однородные размеры головок', 'Несколько рейсов в неделю'], transit: '24-48 ч', vaseLife: '12-15 дней' },
           { region: 'Азиатско-Тихоокеанский регион', description: 'Специальная подготовка обеспечивает идеальное состояние после длительных перелётов. Фокус на симметрии лепестков и презентации.', features: ['Подготовка к длительным перелётам', 'Симметрия лепестков', 'Премиальная презентация', 'Непрерывная холодовая цепь'], transit: '48-96 ч', vaseLife: '12-15 дней' }
         ]
@@ -743,6 +759,20 @@ export const translations = {
         buttonLabel: 'Связаться с отделом продаж'
       }
     },
+    // Client portal page
+    clientPortalPage: {
+      title: 'Клиентский портал',
+      subtitle: 'Войдите для доступа к порталу и расширенным функциям.',
+      emailLabel: 'Email',
+      passwordLabel: 'Пароль',
+      emailPlaceholder: 'you@company.com',
+      passwordPlaceholder: 'Введите пароль',
+      rememberMe: 'Запомнить меня',
+      forgotPassword: 'Забыли пароль?',
+      signIn: 'Войти',
+      needAccess: 'Нужен доступ?',
+      contactUs: 'Связаться с нами'
+    },
     // Footer
     footer: {
       tagline: 'Колумбийские гортензии высшего качества. Из гор Антиокии на лучшие мировые рынки.',
@@ -773,9 +803,9 @@ export const translations = {
     // Hero
     hero: {
       badge: 'Hortensias Colombianas de Alta Calidad',
-      title: 'Experiencia de la tierra. Calidad para el mundo.',
-      subtitle: 'Desde las tierras productivas del oriente antioqueño, Colombia, combinamos décadas de experiencia en el campo con análisis estratégico. Respaldados por una cadena de suministro sólida, exportamos hortensias de alta calidad a los mercados más exigentes del mundo durante todo el año.',
-      cta1: 'Explorar flores',
+      title: 'Amor por la tradición y cultivo de nuestras hermosas tierras. Calidad para el mundo.',
+      subtitle: 'Desde las tierras productivas del oriente antioqueño, Colombia, en Flores Siberianas combinamos décadas de experiencia en el campo con información y análisis estratégico. Respaldados por una cadena de suministro sólida, exportamos hortensias de alta calidad a los mercados más exigentes del mundo durante todo el año.',
+      cta1: 'Ver Variedades',
       cta2: 'Solicitar cotización',
       stats: {
         years: '12+ años',
@@ -786,8 +816,8 @@ export const translations = {
     // About
     about: {
       eyebrow: 'Quiénes somos',
-      title: 'El corazón de las hortensias colombianas',
-      description: 'Flores Siberianas combina experiencia agrícola con tecnología para entregar hortensias de alta calidad en todo el mundo. Alianzas estratégicas con cultivadores de primer nivel garantizan volumen, variedad y calidad constante los 365 días del año.',
+      title: 'Nuestra propuesta de valor para el mercado de las hortensias colombianas',
+      description: 'Flores Siberianas combina años de experiencia agrícola con tecnología para entregar hortensias de alta calidad en todo el mundo. Hemos construido alianzas estratégicas con cultivadores de primer nivel que garantizan volumen, variedad y calidad constante los 365 días del año.',
       highlights: {
         location: {
           title: 'Ubicación estratégica',
@@ -795,7 +825,7 @@ export const translations = {
         },
         climate: {
           title: 'Clima ideal',
-          text: 'Primavera todo el año con suelo volcánico y condiciones óptimas'
+          text: 'Oportunidad de producir todo el año en un suelo volcánico lleno de nutrientes y condiciones óptimas para el cultivo de hortensia.'
         },
         sustainable: {
           title: 'Prácticas sostenibles',
@@ -806,7 +836,7 @@ export const translations = {
       story: {
         eyebrow: 'Nuestra Historia',
         title: 'Arraigados en la tradición, impulsados por la innovación',
-        founded: 'Fundada hace más de 12 años, Flores Siberianas fue creada para servir al mercado global con hortensias de alto rendimiento cultivadas bajo condiciones colombianas ideales.',
+        founded: 'Fundada hace más de 12 años, Flores Siberianas fue creada para servir al mercado global con hortensias de alta calidad cuidadosamente cultivadas bajo condiciones de clima y suelo ideales.',
         location: 'Ubicada en Carmen de Viboral, Antioquia, Flores Siberianas opera en la región más productiva del mundo para hortensias. Nuestras fincas se benefician de altitud ideal, suelo volcánico y el clima primaveral de Colombia durante todo el año.',
         combine: 'Combinamos experiencia agrícola, alianzas estratégicas y tecnología de información para entregar consistencia, confiabilidad y escalabilidad para compradores profesionales en todo el mundo.',
         commitment: 'Nuestro compromiso con la excelencia nos ha convertido en un socio confiable para los mercados florales más exigentes del mundo.',
@@ -860,8 +890,9 @@ export const translations = {
     // Products
     products: {
       eyebrow: 'Nuestros productos',
-      title: 'Grados principales de hortensias',
-      intro: 'Tres grados cuidadosamente seleccionados para diversas necesidades del mercado. Ofrecemos una línea completa de hortensias en grados Mini, Select y Premium—disponibles en variedades naturales y teñidas y una amplia gama de colores.',
+      title: 'Nuestros principales productos',
+      intro: 'Tres grados cuidadosamente seleccionados para diversas necesidades del mercado. Ofrecemos una línea completa de hortensias en grados Mini, Select y Premium—disponibles en variedades naturales y teñidas en una amplia gama de colores.',
+      bestForLabel: 'Ideal para:',
       grades: {
         mini: {
           name: 'Grado Mini',
@@ -953,7 +984,7 @@ export const translations = {
     technology: {
       eyebrow: 'Tecnología',
       title: 'La información es tan crítica como el suelo',
-      intro: 'Nuestro ecosistema digital proporciona visibilidad y control en tiempo real en toda la cadena de suministro floral.',
+      intro: 'Contamos con sistema de información y herramientas que nos permiten tener control en tiempo real en toda la cadena de suministro floral y datos para tomar decisiones estratégicas rápidas de cara a las exigencias del mercado.',
       features: {
         inventory: {
           title: 'Inventario en tiempo real',
@@ -986,9 +1017,9 @@ export const translations = {
       titleHighlight: 'próximas',
       subtitle: 'Diseñadas para aumentar la transparencia, eficiencia y colaboración en nuestra red global.',
       tools: [
-        { badge: 'Próximamente', title: 'Portales de clientes', description: 'Seguimiento de pedidos, estado de envíos e historial de datos.' },
-        { badge: 'En desarrollo', title: 'Paneles de proveedores', description: 'Pronósticos, planificación de producción y métricas de rendimiento.' },
-        { badge: 'Planificado', title: 'Inteligencia de mercados', description: 'Información de mercados en tiempo real y herramientas de planificación.' }
+        { badge: 'Próximamente', title: 'Portal de clientes', description: 'Seguimiento de pedidos, estado de envíos e historial de datos, disponibilidades en tiempo real, conexión en tiempo real con proveedores.' },
+        { badge: 'En desarrollo', title: 'Paneles de proveedores', description: 'Historial de compra e inspecciones de calidad. Pronósticos, planificación de producción y métricas de rendimiento. Herramienta de administración y costos de cultivo.' },
+        { badge: 'Planificado', title: 'Inteligencia de mercados', description: 'Información de mercados en tiempo real y herramientas de planificación para clientes y proveedores.' }
       ]
     },
     // Contact CTA
@@ -1082,7 +1113,7 @@ export const translations = {
         sectionTitleHighlight: 'por mercado',
         sectionSubtitle: 'Cada mercado tiene requisitos únicos. Nuestros productos y logística se adaptan a las especificaciones regionales.',
         list: [
-          { region: 'Rusia y CEI', description: 'Variedades de cabeza grande y alta durabilidad preferidas por el mercado ruso. Nuestro grado Siberiana mantiene la turgencia durante el tránsito prolongado.', features: ['Variedades de cabeza grande (23 cm+)', 'Durabilidad extendida', 'Grado Siberiana Spec', 'Vuelos directos a Moscú'], transit: '48-72 h', vaseLife: '12-15 días' },
+          { region: 'Rusia y CEI', description: 'Variedades de cabeza grande y alta durabilidad preferidas por el mercado ruso.', features: ['Variedades de cabeza grande (23 cm+)', 'Durabilidad extendida', 'Grado Siberiana Spec', 'Vuelos directos a Moscú'], transit: '48-72 h', vaseLife: '12-15 días' },
           { region: 'Europa', description: 'Precisión y consistencia para estándares fitosanitarios, estéticos y de uniformidad estrictos, con especial atención a la estabilidad del color.', features: ['Cumplimiento fitosanitario UE', 'Estabilidad de color garantizada', 'Tamaños de cabeza uniformes', 'Múltiples salidas semanales'], transit: '24-48 h', vaseLife: '12-15 días' },
           { region: 'Asia Pacífico', description: 'El acondicionamiento especializado garantiza que las flores lleguen en perfectas condiciones tras vuelos de larga distancia. Enfoque en simetría de pétalos y presentación.', features: ['Acondicionamiento para larga distancia', 'Enfoque en simetría de pétalos', 'Presentación premium', 'Integridad de cadena de frío'], transit: '48-96 h', vaseLife: '12-15 días' }
         ]
@@ -1115,6 +1146,20 @@ export const translations = {
         buttonLabel: 'Contactar equipo de ventas'
       }
     },
+    // Client portal page
+    clientPortalPage: {
+      title: 'Portal del cliente',
+      subtitle: 'Inicia sesión para acceder a tu portal y funciones avanzadas.',
+      emailLabel: 'Correo electrónico',
+      passwordLabel: 'Contraseña',
+      emailPlaceholder: 'tú@empresa.com',
+      passwordPlaceholder: 'Ingresa tu contraseña',
+      rememberMe: 'Recordarme',
+      forgotPassword: '¿Olvidaste tu contraseña?',
+      signIn: 'Iniciar sesión',
+      needAccess: '¿Necesitas acceso?',
+      contactUs: 'Contáctanos'
+    },
     // Footer
     footer: {
       tagline: 'Hortensias colombianas de alta calidad. De las montañas de Antioquia a los mejores mercados del mundo.',
@@ -1145,9 +1190,9 @@ export const translations = {
     // Hero
     hero: {
       badge: '哥伦比亚优质绣球花',
-      title: '深耕土地，品质传世界。',
-      subtitle: '来自哥伦比亚东安蒂奥基亚的丰饶土地，我们融合数十年的田间经验与战略分析。凭借稳健的供应链，我们全年向全球最挑剔的市场出口高品质绣球花。',
-      cta1: '探索花卉',
+      title: '传承传统、耕耘沃土。品质传世界。',
+      subtitle: '来自哥伦比亚东安蒂奥基亚的丰饶土地，我们融合数十年的田间经验与信息及战略分析。凭借稳健的供应链，我们全年向全球最挑剔的市场出口高品质绣球花。',
+      cta1: '查看品种',
       cta2: '请求报价',
       stats: {
         years: '12+年',
@@ -1158,8 +1203,8 @@ export const translations = {
     // About
     about: {
       eyebrow: '我们是谁',
-      title: '哥伦比亚绣球花的中心',
-      description: 'Flores Siberianas结合农业专业知识与技术，向全球提供优质绣球花。与顶级种植者的战略联盟保证全年365天的数量、品种和一致的质量。',
+      title: '我们为哥伦比亚绣球花市场提供的价值主张',
+      description: 'Flores Siberianas多年农业经验结合技术，向全球提供优质绣球花。我们与顶级种植者建立了战略联盟，确保全年365天的数量、品种与稳定质量。',
       highlights: {
         location: {
           title: '战略位置',
@@ -1167,7 +1212,7 @@ export const translations = {
         },
         climate: {
           title: '理想气候',
-          text: '全年春季天气，火山土壤和最佳条件'
+          text: '在富含养分的火山土和绣球花种植的最佳条件下实现全年生产。'
         },
         sustainable: {
           title: '可持续实践',
@@ -1178,7 +1223,7 @@ export const translations = {
       story: {
         eyebrow: '我们的故事',
         title: '根植传统，创新驱动',
-        founded: '成立于12年前，Flores Siberianas致力于为全球市场提供在理想哥伦比亚条件下种植的高性能绣球花。',
+        founded: '成立于12年前，Flores Siberianas致力于为全球市场提供在理想气候与土壤条件下精心培育的优质绣球花。',
         location: '位于哥伦比亚安蒂奥基亚省Carmen de Viboral，Flores Siberianas在世界上最富产的绣球花地区运营。我们的农场得益于理想的海拔、火山土壤和哥伦比亚全年的春季气候。',
         combine: '我们结合农业专业知识、战略联盟和信息技术，为全球专业买家提供一致性、可靠性和可扩展性。',
         commitment: '我们对卓越的承诺使我们成为世界上最挑剔的花卉市场值得信赖的合作伙伴。',
@@ -1232,8 +1277,9 @@ export const translations = {
     // Products
     products: {
       eyebrow: '我们的产品',
-      title: '主要绣球花等级',
+      title: '我们的主要产品',
       intro: '三个精心挑选的等级，满足多样市场需求。我们提供完整的绣球花产品线：Mini、Select和Premium等级——可选自然与染色品种及多种颜色。',
+      bestForLabel: '适用于：',
       grades: {
         mini: {
           name: '迷你等级',
@@ -1325,7 +1371,7 @@ export const translations = {
     technology: {
       eyebrow: '技术',
       title: '信息与土壤同样重要',
-      intro: '我们的数字生态系统在整个花卉供应链中提供实时可见性和控制。',
+      intro: '我们拥有信息系统与工具，实现全花卉供应链的实时管控与数据支持，以快速做出战略决策，应对市场需求。',
       features: {
         inventory: {
           title: '实时库存',
@@ -1358,9 +1404,9 @@ export const translations = {
       titleHighlight: '工具',
       subtitle: '旨在提高我们全球网络的透明度、效率与协作。',
       tools: [
-        { badge: '即将推出', title: '客户门户', description: '订单跟踪、发货状态与历史数据。' },
-        { badge: '开发中', title: '供应商仪表板', description: '预测、生产计划与绩效指标。' },
-        { badge: '计划中', title: '市场情报', description: '实时市场洞察与规划工具。' }
+        { badge: '即将推出', title: '客户门户', description: '订单跟踪、发货状态与历史数据；实时供应情况与供应商实时对接。' },
+        { badge: '开发中', title: '供应商仪表板', description: '采购记录与质量检验。预测、生产计划与绩效指标。种植管理与成本工具。' },
+        { badge: '计划中', title: '市场情报', description: '实时市场信息及面向客户与供应商的规划工具。' }
       ]
     },
     // Contact CTA
@@ -1454,7 +1500,7 @@ export const translations = {
         sectionTitleHighlight: '解决方案',
         sectionSubtitle: '每个市场都有独特要求。我们的产品和物流针对地区规格量身定制。',
         list: [
-          { region: '俄罗斯及独联体', description: '俄罗斯市场偏好大花头、高耐久品种。我们的 Siberiana 等级在长途运输中保持饱满。', features: ['大花头品种 (23 cm+)', '延长耐久性', 'Siberiana Spec 等级', '直飞莫斯科'], transit: '48-72 小时', vaseLife: '12-15 天' },
+          { region: '俄罗斯及独联体', description: '俄罗斯市场偏好大花头、高耐久品种。', features: ['大花头品种 (23 cm+)', '延长耐久性', 'Siberiana Spec 等级', '直飞莫斯科'], transit: '48-72 小时', vaseLife: '12-15 天' },
           { region: '欧洲', description: '满足严格的植物检疫、美观和一致性标准，特别注重颜色稳定性。', features: ['符合欧盟植物检疫', '颜色稳定性保证', '统一花头尺寸', '每周多次发运'], transit: '24-48 小时', vaseLife: '12-15 天' },
           { region: '亚太', description: '专业处理确保长途飞行后花朵完美到达。注重花瓣对称与呈现。', features: ['长途处理', '花瓣对称', '高端呈现', '冷链完整'], transit: '48-96 小时', vaseLife: '12-15 天' }
         ]
@@ -1486,6 +1532,20 @@ export const translations = {
         subtitle: '联系我们的国际销售团队，讨论您的市场需求并安排首次发货。',
         buttonLabel: '联系销售团队'
       }
+    },
+    // Client portal page
+    clientPortalPage: {
+      title: '客户门户',
+      subtitle: '登录以访问您的门户和高级功能。',
+      emailLabel: '邮箱',
+      passwordLabel: '密码',
+      emailPlaceholder: 'you@company.com',
+      passwordPlaceholder: '输入密码',
+      rememberMe: '记住我',
+      forgotPassword: '忘记密码？',
+      signIn: '登录',
+      needAccess: '需要访问权限？',
+      contactUs: '联系我们'
     },
     // Footer
     footer: {

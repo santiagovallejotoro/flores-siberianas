@@ -16,9 +16,10 @@ type Grade = {
 type GradeCardProps = {
   grade: Grade;
   images: string[];
+  bestForLabel?: string;
 };
 
-const GradeCard = ({ grade, images }: GradeCardProps) => {
+const GradeCard = ({ grade, images, bestForLabel = "Best for: " }: GradeCardProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const total = images.length;
   const currentImage = total > 0 ? images[currentIndex] : null;
@@ -112,7 +113,7 @@ const GradeCard = ({ grade, images }: GradeCardProps) => {
 
       <div className="p-5">
         <h3 className="mb-2 text-xl font-bold text-black dark:text-white">{grade.name}</h3>
-        <p className="mb-4 text-sm text-body-color dark:text-body-color-dark">Best for: {grade.bestFor}</p>
+        <p className="mb-4 text-sm text-body-color dark:text-body-color-dark">{bestForLabel} {grade.bestFor}</p>
         <div className="mb-4 border-t border-border dark:border-white/10" />
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">

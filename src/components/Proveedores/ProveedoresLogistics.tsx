@@ -2,7 +2,7 @@ const logisticsItems = [
   {
     title: "Entrega de la flor",
     description:
-      "Lunes a Viernes, 7:00 AM - 10:00 AM. Traiga su flor a nuestra comercializadora. Tenemos cadena de frío para cuidar su producto.",
+      "Nuestros horarios de recepción son de Lunes a Viernes, 7:00 AM - 10:00 AM. Previo acuerdo y planificación de la hora y cantidades de entrega.",
     icon: (
       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="1" y="3" width="15" height="13" />

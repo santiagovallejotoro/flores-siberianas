@@ -4,7 +4,7 @@ const ProveedoresHero = () => {
       <div className="container">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-[40px]">
-            Venda su Hortensia con Nosotros
+            Comercialize su Hortensia con Nosotros
           </h1>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
             Buscamos productores del Oriente Antioqueño que quieran vender su flor a buen precio durante todo el año.

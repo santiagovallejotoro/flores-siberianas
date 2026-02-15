@@ -50,9 +50,9 @@ export default function ProveedoresPage() {
       <ProveedoresBenefits />
       <ProveedoresLogistics />
       <ProveedoresRequirements />
+      <ProveedoresVarieties />
       <ProveedoresQualityGallery />
       <ProveedoresLocation />
-      <ProveedoresVarieties />
       <ProveedoresMarkets />
       <ProveedoresInputAlliances />
       <ProveedoresFAQ />

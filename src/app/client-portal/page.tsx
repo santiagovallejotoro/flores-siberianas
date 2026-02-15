@@ -1,15 +1,14 @@
+"use client";
 import Link from "next/link";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Client Portal | Flores Siberianas",
-  description: "Sign in to the Flores Siberianas client portal to manage your orders and account.",
-};
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const inputClass =
   "border-stroke text-body-color focus:border-primary dark:focus:border-primary w-full rounded-lg border bg-[#f8f8f8] px-6 py-3 text-base outline-none transition-all duration-300 dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:shadow-none";
 
 export default function ClientPortalPage() {
+  const { t } = useLanguage();
+  const p = t.clientPortalPage;
+
   return (
     <section className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[180px] lg:pb-28">
       <div className="container">
@@ -17,10 +16,10 @@ export default function ClientPortalPage() {
           <div className="w-full px-4">
             <div className="shadow-three dark:bg-dark mx-auto max-w-[440px] rounded-xl bg-white px-6 py-10 sm:p-12">
               <h1 className="mb-2 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-                Client Portal
+                {p.title}
               </h1>
               <p className="text-body-color mb-8 text-center text-base">
-                Sign in to access your portal and advanced features.
+                {p.subtitle}
               </p>
               <form className="space-y-6">
                 <div>
@@ -28,13 +27,13 @@ export default function ClientPortalPage() {
                     htmlFor="client-email"
                     className="text-dark mb-2 block text-sm font-medium dark:text-white"
                   >
-                    Email
+                    {p.emailLabel}
                   </label>
                   <input
                     id="client-email"
                     type="email"
                     name="email"
-                    placeholder="you@company.com"
+                    placeholder={p.emailPlaceholder}
                     className={inputClass}
                     required
                   />
@@ -44,13 +43,13 @@ export default function ClientPortalPage() {
                     htmlFor="client-password"
                     className="text-dark mb-2 block text-sm font-medium dark:text-white"
                   >
-                    Password
+                    {p.passwordLabel}
                   </label>
                   <input
                     id="client-password"
                     type="password"
                     name="password"
-                    placeholder="Enter your password"
+                    placeholder={p.passwordPlaceholder}
                     className={inputClass}
                     required
                   />
@@ -58,23 +57,23 @@ export default function ClientPortalPage() {
                 <div className="flex items-center justify-between text-sm">
                   <label className="text-body-color flex cursor-pointer items-center gap-2">
                     <input type="checkbox" name="remember" className="rounded border-gray-300 text-primary focus:ring-primary" />
-                    Remember me
+                    {p.rememberMe}
                   </label>
                   <a href="#" className="text-primary hover:underline">
-                    Forgot password?
+                    {p.forgotPassword}
                   </a>
                 </div>
                 <button
                   type="submit"
                   className="bg-primary hover:bg-primary/90 w-full rounded-lg px-6 py-3.5 text-base font-semibold text-white shadow transition duration-300"
                 >
-                  Sign in
+                  {p.signIn}
                 </button>
               </form>
               <p className="text-body-color mt-6 text-center text-sm">
-                Need access?{" "}
+                {p.needAccess}{" "}
                 <Link href="/contact" className="text-primary font-medium hover:underline">
-                  Contact us
+                  {p.contactUs}
                 </Link>
               </p>
             </div>

@@ -4,7 +4,11 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "¿Tienen que recoger la flor en la comercializadora o ustedes van a la finca?",
+    q: "¿Para qué sirve el portal de proveedores?",
+    a: "Proveedor: Herramienta tecnológica para ayudarle a planear y administrar su cultivo. Historial de compra, inspecciones de calidad, pagos. Pronósticos, planificación de producción por programación y métricas de rendimiento de su cultivo. Herramienta de administración y control de gastos y costos de cultivo. Portal de uso EXCLUSIVO para nuestros principales proveedores y aliados estratégicos",
+  },
+  {
+    q: "¿Recepción de la flor y horarios?",
     a: "Usted trae la flor a nuestra comercializadora de Lunes a Viernes, 7:00 AM - 10:00 AM. Así cuidamos la cadena de frío y revisamos la calidad en el momento.",
   },
   {

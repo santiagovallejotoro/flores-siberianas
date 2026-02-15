@@ -2,7 +2,8 @@ const LAT = "6.11673";
 const LNG = "-75.36155";
 const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}&travelmode=driving`;
 const WAZE_URL = `https://waze.com/ul?ll=${LAT},${LNG}&navigate=yes`;
-const MAP_EMBED = `https://www.google.com/maps?q=${LAT},${LNG}&output=embed&maptype=satellite`;
+const MAP_EMBED =
+  "https://www.google.com/maps/embed?pb=!1m13!1m8!1m3!1d14773.290611915623!2d-75.36658885897036!3d6.11812555496162!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwMDcnMDAuMiJOIDc1wrAyMSc0MS42Ilc!5e1!3m2!1ses-419!2sus!4v1771186039841!5m2!1ses-419!2sus";
 
 const ProveedoresLocation = () => {
   return (
