@@ -52,6 +52,8 @@ const extraBenefits = [
   "Descuentos en insumos (fertilizantes y mallas)",
   "Herramientas de costeo gratis",
   "Herramienta de programación y planificación de cultivo gratis",
+  "Prioridad en nuevas órdenes",
+  "Información en tiempo real sobre sus ventas y pagos",
   "La oportunidad de trabajar con una empresa en expansión que quiere crecer junto a sus aliados.",
   "Su flor llega a mercados internacionales",
 ];
@@ -65,7 +67,7 @@ const ProveedoresBenefits = () => {
             ¿Por qué vender con nosotros?
           </h2>
           <p className="text-base text-body-color dark:text-body-color-dark md:text-lg">
-            Sabemos que los costos han subido. Por eso le ofrecemos beneficios concretos:
+            Ubicación central y de fácil acceso, herramientas para mejorar su cultivo, apoyo en sus procesos productivos y prioridad en nuevas órdenes. Información en tiempo real de sus ventas y pagos. Así trabajamos con nuestros proveedores.
           </p>
         </div>
 

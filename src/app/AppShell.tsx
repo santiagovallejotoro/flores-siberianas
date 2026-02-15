@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ScrollToTop from "@/components/ScrollToTop";
+import { usePathname } from "next/navigation";
 import { Providers } from "./providers";
 
 export default function AppShell({
@@ -10,6 +11,7 @@ export default function AppShell({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   return (
     <Providers>
       <div className="isolate">
@@ -17,7 +19,7 @@ export default function AppShell({
         <main>{children}</main>
         <Footer />
       </div>
-      <ScrollToTop />
+      <ScrollToTop position={pathname === "/proveedores" ? "left" : "right"} />
     </Providers>
   );
 }

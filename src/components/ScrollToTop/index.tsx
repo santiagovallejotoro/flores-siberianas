@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-export default function ScrollToTop() {
+export default function ScrollToTop({
+  position = "right",
+}: {
+  position?: "left" | "right";
+}) {
   const [isVisible, setIsVisible] = useState(false);
 
   // Top: 0 takes us all the way back to the top of the page
@@ -28,7 +32,9 @@ export default function ScrollToTop() {
   }, []);
 
   return (
-    <div className="fixed right-8 bottom-8 z-99">
+    <div
+      className={`fixed bottom-8 z-99 ${position === "left" ? "left-8" : "right-8"}`}
+    >
       {isVisible && (
         <div
           onClick={scrollToTop}

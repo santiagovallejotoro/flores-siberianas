@@ -10,6 +10,7 @@ import ProveedoresMarkets from "@/components/Proveedores/ProveedoresMarkets";
 import ProveedoresInputAlliances from "@/components/Proveedores/ProveedoresInputAlliances";
 import ProveedoresFAQ from "@/components/Proveedores/ProveedoresFAQ";
 import ProveedoresForm from "@/components/Proveedores/ProveedoresForm";
+import ProveedoresFAB from "@/components/Proveedores/ProveedoresFAB";
 import { Metadata } from "next";
 
 const title = "Proveedores | Flores Siberianas";
@@ -56,6 +57,7 @@ export default function ProveedoresPage() {
       <ProveedoresInputAlliances />
       <ProveedoresFAQ />
       <ProveedoresForm />
+      <ProveedoresFAB />
     </>
   );
 }
