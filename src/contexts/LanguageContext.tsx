@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { Language, defaultLanguage } from '@/lib/i18n';
 import { translations } from '@/lib/translations';
 
@@ -13,6 +14,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(defaultLanguage);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Load language from localStorage on mount
@@ -27,10 +29,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = translations[language];
+  // On /proveedores page only: force Spanish for header/footer/selector without persisting
+  const effectiveLanguage = pathname === '/proveedores' ? 'es' : language;
+  const t = translations[effectiveLanguage];
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language: effectiveLanguage, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
