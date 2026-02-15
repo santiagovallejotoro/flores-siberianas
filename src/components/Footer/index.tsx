@@ -28,6 +28,11 @@ const Footer = () => {
                 <div className="space-y-2 text-sm text-white/70">
                   <p>{t.footer.address}</p>
                   <p>
+                    <a href="tel:+573127810890" className="text-primary-300 hover:text-primary-200">
+                      {t.footer.phone}
+                    </a>
+                  </p>
+                  <p>
                     <a href={`mailto:${t.footer.email}`} className="text-primary-300 hover:text-primary-200">
                       {t.footer.email}
                     </a>
@@ -104,7 +109,7 @@ const Footer = () => {
                 </h2>
                 <div className="flex gap-4">
                   <a
-                    href="https://wa.me/573127810890"
+                    href={`https://wa.me/573127810890?text=${encodeURIComponent(t.footer.whatsappPrefilled)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/70 duration-300 hover:text-primary-300"

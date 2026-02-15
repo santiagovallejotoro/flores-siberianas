@@ -390,8 +390,10 @@ export const translations = {
     footer: {
       tagline: 'High-quality Colombian hydrangeas. From the mountains of Antioquia to the world\'s finest markets.',
       address: 'Carmen de Viboral, Antioquia, Colombia',
+      phone: '+57 312 781 0890',
       email: 'flores.siberiana@gmail.com',
       hours: 'Mon–Fri 8:00–18:00 (COT)',
+      whatsappPrefilled: 'Hello, I would like more information about Flores Siberianas.',
       products: 'Products',
       company: 'Company',
       support: 'Support',
@@ -777,8 +779,10 @@ export const translations = {
     footer: {
       tagline: 'Колумбийские гортензии высшего качества. Из гор Антиокии на лучшие мировые рынки.',
       address: 'Кармен де Виборал, Антиокия, Колумбия',
+      phone: '+57 312 781 0890',
       email: 'flores.siberiana@gmail.com',
       hours: 'Пн–Пт 8:00–18:00 (COT)',
+      whatsappPrefilled: 'Здравствуйте, хотел(а) бы получить информацию о Flores Siberianas.',
       products: 'Продукция',
       company: 'Компания',
       support: 'Поддержка',
@@ -1164,8 +1168,10 @@ export const translations = {
     footer: {
       tagline: 'Hortensias colombianas de alta calidad. De las montañas de Antioquia a los mejores mercados del mundo.',
       address: 'Carmen de Viboral, Antioquia, Colombia',
+      phone: '+57 312 781 0890',
       email: 'flores.siberiana@gmail.com',
       hours: 'Lun–Vie 8:00–18:00 (COT)',
+      whatsappPrefilled: 'Hola, me gustaría recibir más información sobre Flores Siberianas.',
       products: 'Productos',
       company: 'Empresa',
       support: 'Soporte',
@@ -1551,8 +1557,10 @@ export const translations = {
     footer: {
       tagline: '哥伦比亚高品质绣球花。从安蒂奥基亚山脉到世界顶级市场。',
       address: 'Carmen de Viboral, Antioquia, 哥伦比亚',
+      phone: '+57 312 781 0890',
       email: 'flores.siberiana@gmail.com',
       hours: '周一至周五 8:00–18:00 (COT)',
+      whatsappPrefilled: '您好，我想了解关于 Flores Siberianas 的更多信息。',
       products: '产品',
       company: '公司',
       support: '支持',
