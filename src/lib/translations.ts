@@ -386,6 +386,54 @@ export const translations = {
       needAccess: 'Need access?',
       contactUs: 'Contact us'
     },
+    // Client portal dashboard cards
+    clientPortalDashboard: {
+      comingSoon: 'Coming soon',
+      orders: {
+        title: 'Orders',
+        description: 'View and manage your purchase orders.',
+      },
+      disponibilidades: {
+        title: 'Disponibilidades',
+        description: 'View real-time availability, place new orders, and manage subastas or make real-time offers in a marketplace-style experience.',
+      },
+      shipments: {
+        title: 'Shipments',
+        description: 'Track active shipments and delivery status.',
+      },
+      estadosDeCuenta: {
+        title: 'Estados de cuenta',
+        description: 'View and download your account statements and balance.',
+      },
+    },
+    // Auth pages
+    auth: {
+      forgotPassword: {
+        title: 'Reset your password',
+        subtitle: "Enter your email and we'll send you a reset link.",
+        emailLabel: 'Email address',
+        submit: 'Send reset link',
+        backToLogin: 'Back to sign in',
+        successTitle: 'Check your email',
+        successMessage: 'We sent a password reset link to your email. Please check your inbox.',
+      },
+      resetPassword: {
+        title: 'Create new password',
+        subtitle: 'Enter and confirm your new password below.',
+        newPasswordLabel: 'New password',
+        confirmPasswordLabel: 'Confirm password',
+        submit: 'Update password',
+        successTitle: 'Password updated',
+        successMessage: 'Your password has been reset. Redirecting to your portal…',
+      },
+      verifyEmail: {
+        title: 'Check your email',
+        message: "We sent you a verification link. Click it to activate your account. Check your spam folder if you don't see it.",
+        resendPrompt: "Didn't receive it? Enter your email to resend:",
+        resendButton: 'Resend verification email',
+        backToLogin: 'Back to sign in',
+      },
+    },
     // Footer
     footer: {
       tagline: 'High-quality Colombian hydrangeas. From the mountains of Antioquia to the world\'s finest markets.',
@@ -774,6 +822,54 @@ export const translations = {
       signIn: 'Войти',
       needAccess: 'Нужен доступ?',
       contactUs: 'Связаться с нами'
+    },
+    // Client portal dashboard cards
+    clientPortalDashboard: {
+      comingSoon: 'Скоро',
+      orders: {
+        title: 'Заказы',
+        description: 'Просмотр и управление заказами.',
+      },
+      disponibilidades: {
+        title: 'Доступность',
+        description: 'Доступность в реальном времени, оформление заказов, участие в субастах или подача предложений в формате маркетплейса.',
+      },
+      shipments: {
+        title: 'Отгрузки',
+        description: 'Отслеживание активных отгрузок и доставки.',
+      },
+      estadosDeCuenta: {
+        title: 'Выписки по счёту',
+        description: 'Просмотр и загрузка выписок и баланса счёта.',
+      },
+    },
+    // Auth pages
+    auth: {
+      forgotPassword: {
+        title: 'Сброс пароля',
+        subtitle: 'Введите email — мы отправим ссылку для сброса.',
+        emailLabel: 'Email адрес',
+        submit: 'Отправить ссылку',
+        backToLogin: 'Вернуться ко входу',
+        successTitle: 'Проверьте почту',
+        successMessage: 'Мы отправили ссылку для сброса пароля на ваш email.',
+      },
+      resetPassword: {
+        title: 'Новый пароль',
+        subtitle: 'Введите и подтвердите новый пароль.',
+        newPasswordLabel: 'Новый пароль',
+        confirmPasswordLabel: 'Подтвердите пароль',
+        submit: 'Обновить пароль',
+        successTitle: 'Пароль обновлён',
+        successMessage: 'Пароль успешно изменён. Перенаправляем в портал…',
+      },
+      verifyEmail: {
+        title: 'Проверьте почту',
+        message: 'Мы отправили ссылку для подтверждения. Если письма нет — проверьте папку «Спам».',
+        resendPrompt: 'Не получили письмо? Введите email для повторной отправки:',
+        resendButton: 'Отправить повторно',
+        backToLogin: 'Вернуться ко входу',
+      },
     },
     // Footer
     footer: {
@@ -1164,6 +1260,54 @@ export const translations = {
       needAccess: '¿Necesitas acceso?',
       contactUs: 'Contáctanos'
     },
+    // Client portal dashboard cards
+    clientPortalDashboard: {
+      comingSoon: 'Próximamente',
+      orders: {
+        title: 'Pedidos',
+        description: 'Ver y gestionar tus pedidos de compra.',
+      },
+      disponibilidades: {
+        title: 'Disponibilidades',
+        description: 'Ver disponibilidades en tiempo real, colocar nuevas órdenes y gestionar subastas u ofertas en tiempo real en un entorno tipo marketplace.',
+      },
+      shipments: {
+        title: 'Envíos',
+        description: 'Seguimiento de envíos activos y estado de entrega.',
+      },
+      estadosDeCuenta: {
+        title: 'Estados de cuenta',
+        description: 'Ver y descargar tus estados de cuenta y saldo.',
+      },
+    },
+    // Auth pages
+    auth: {
+      forgotPassword: {
+        title: 'Restablecer contraseña',
+        subtitle: 'Ingresa tu correo y te enviaremos un enlace de restablecimiento.',
+        emailLabel: 'Correo electrónico',
+        submit: 'Enviar enlace',
+        backToLogin: 'Volver al inicio de sesión',
+        successTitle: 'Revisa tu correo',
+        successMessage: 'Enviamos un enlace de restablecimiento a tu correo.',
+      },
+      resetPassword: {
+        title: 'Nueva contraseña',
+        subtitle: 'Ingresa y confirma tu nueva contraseña.',
+        newPasswordLabel: 'Nueva contraseña',
+        confirmPasswordLabel: 'Confirmar contraseña',
+        submit: 'Actualizar contraseña',
+        successTitle: 'Contraseña actualizada',
+        successMessage: 'Tu contraseña fue restablecida. Redirigiendo al portal…',
+      },
+      verifyEmail: {
+        title: 'Revisa tu correo',
+        message: 'Te enviamos un enlace de verificación. Si no lo ves, revisa tu carpeta de spam.',
+        resendPrompt: '¿No lo recibiste? Ingresa tu correo para reenviarlo:',
+        resendButton: 'Reenviar correo de verificación',
+        backToLogin: 'Volver al inicio de sesión',
+      },
+    },
     // Footer
     footer: {
       tagline: 'Hortensias colombianas de alta calidad. De las montañas de Antioquia a los mejores mercados del mundo.',
@@ -1552,6 +1696,54 @@ export const translations = {
       signIn: '登录',
       needAccess: '需要访问权限？',
       contactUs: '联系我们'
+    },
+    // Client portal dashboard cards
+    clientPortalDashboard: {
+      comingSoon: '即将推出',
+      orders: {
+        title: '订单',
+        description: '查看和管理您的采购订单。',
+      },
+      disponibilidades: {
+        title: '供应情况',
+        description: '实时查看供应情况、下达新订单，在类似市场的环境中参与拍卖或实时报价。',
+      },
+      shipments: {
+        title: '货运',
+        description: '跟踪在途货运及配送状态。',
+      },
+      estadosDeCuenta: {
+        title: '账户明细',
+        description: '查看和下载您的账户对账单与余额。',
+      },
+    },
+    // Auth pages
+    auth: {
+      forgotPassword: {
+        title: '重置密码',
+        subtitle: '输入您的邮箱，我们将发送重置链接。',
+        emailLabel: '邮箱地址',
+        submit: '发送重置链接',
+        backToLogin: '返回登录',
+        successTitle: '请查收邮件',
+        successMessage: '我们已向您的邮箱发送了密码重置链接。',
+      },
+      resetPassword: {
+        title: '创建新密码',
+        subtitle: '输入并确认您的新密码。',
+        newPasswordLabel: '新密码',
+        confirmPasswordLabel: '确认密码',
+        submit: '更新密码',
+        successTitle: '密码已更新',
+        successMessage: '您的密码已成功重置，正在跳转到门户…',
+      },
+      verifyEmail: {
+        title: '请查收邮件',
+        message: '我们已发送验证链接，请点击激活账户。若未收到，请检查垃圾邮件文件夹。',
+        resendPrompt: '未收到邮件？请输入邮箱重新发送：',
+        resendButton: '重新发送验证邮件',
+        backToLogin: '返回登录',
+      },
     },
     // Footer
     footer: {

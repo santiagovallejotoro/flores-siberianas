@@ -42,7 +42,7 @@ const OurStory = () => {
                 className="mx-auto max-w-full drop-shadow-three dark:hidden dark:drop-shadow-none lg:mr-0"
               />
               <Image
-                src="/images/about/about-image-dark.svg"
+                src="/images/about/about-image-dark.jpg"
                 alt="Our Story"
                 fill
                 className="mx-auto hidden max-w-full drop-shadow-three dark:block dark:drop-shadow-none lg:mr-0"

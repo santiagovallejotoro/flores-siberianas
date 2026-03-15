@@ -12,14 +12,17 @@ export default function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const isAuthPage = pathname.startsWith("/auth");
   return (
     <Providers>
       <div className="isolate">
-        <Header />
+        {!isAuthPage && <Header />}
         <main>{children}</main>
-        <Footer />
+        {!isAuthPage && <Footer />}
       </div>
-      <ScrollToTop position={pathname === "/proveedores" ? "left" : "right"} />
+      {!isAuthPage && (
+        <ScrollToTop position={pathname === "/proveedores" ? "left" : "right"} />
+      )}
     </Providers>
   );
 }

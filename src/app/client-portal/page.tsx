@@ -1,81 +1,61 @@
-"use client";
-import Link from "next/link";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { createSSRSassClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import LogoutButton from "@/components/ClientPortal/LogoutButton";
+import ClientPortalDashboardCards from "@/components/ClientPortal/ClientPortalDashboardCards";
 
-const inputClass =
-  "border-stroke text-body-color focus:border-primary dark:focus:border-primary w-full rounded-lg border bg-[#f8f8f8] px-6 py-3 text-base outline-none transition-all duration-300 dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:shadow-none";
+export default async function ClientPortalPage() {
+  const supabase = await createSSRSassClient();
+  const {
+    data: { user },
+  } = await supabase.getSupabaseClient().auth.getUser();
 
-export default function ClientPortalPage() {
-  const { t } = useLanguage();
-  const p = t.clientPortalPage;
+  if (!user) {
+    redirect("/auth/clientes/login");
+  }
 
   return (
     <section className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[180px] lg:pb-28">
       <div className="container">
-        <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4">
-            <div className="shadow-three dark:bg-dark mx-auto max-w-[440px] rounded-xl bg-white px-6 py-10 sm:p-12">
-              <h1 className="mb-2 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-                {p.title}
+        <div className="mx-auto max-w-3xl">
+          {/* Header */}
+          <div className="mb-10 flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-black dark:text-white sm:text-4xl">
+                Client Portal
               </h1>
-              <p className="text-body-color mb-8 text-center text-base">
-                {p.subtitle}
+              <p className="mt-2 text-body-color dark:text-body-color-dark">
+                Welcome back,{" "}
+                <span className="font-medium text-primary">
+                  {user.email}
+                </span>
               </p>
-              <form className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="client-email"
-                    className="text-dark mb-2 block text-sm font-medium dark:text-white"
-                  >
-                    {p.emailLabel}
-                  </label>
-                  <input
-                    id="client-email"
-                    type="email"
-                    name="email"
-                    placeholder={p.emailPlaceholder}
-                    className={inputClass}
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="client-password"
-                    className="text-dark mb-2 block text-sm font-medium dark:text-white"
-                  >
-                    {p.passwordLabel}
-                  </label>
-                  <input
-                    id="client-password"
-                    type="password"
-                    name="password"
-                    placeholder={p.passwordPlaceholder}
-                    className={inputClass}
-                    required
-                  />
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <label className="text-body-color flex cursor-pointer items-center gap-2">
-                    <input type="checkbox" name="remember" className="rounded border-gray-300 text-primary focus:ring-primary" />
-                    {p.rememberMe}
-                  </label>
-                  <a href="#" className="text-primary hover:underline">
-                    {p.forgotPassword}
-                  </a>
-                </div>
-                <button
-                  type="submit"
-                  className="bg-primary hover:bg-primary/90 w-full rounded-lg px-6 py-3.5 text-base font-semibold text-white shadow transition duration-300"
-                >
-                  {p.signIn}
-                </button>
-              </form>
-              <p className="text-body-color mt-6 text-center text-sm">
-                {p.needAccess}{" "}
-                <Link href="/contact" className="text-primary font-medium hover:underline">
-                  {p.contactUs}
-                </Link>
-              </p>
+            </div>
+            <LogoutButton />
+          </div>
+
+          {/* Portal content grid */}
+          <ClientPortalDashboardCards />
+
+          {/* Account info */}
+          <div className="mt-10 rounded-xl border border-stroke bg-white p-6 dark:border-strokedark dark:bg-dark">
+            <h2 className="mb-4 text-lg font-semibold text-black dark:text-white">
+              Account
+            </h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between border-b border-stroke pb-3 dark:border-strokedark">
+                <span className="text-body-color dark:text-body-color-dark">Email</span>
+                <span className="font-medium text-black dark:text-white">{user.email}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-body-color dark:text-body-color-dark">Member since</span>
+                <span className="font-medium text-black dark:text-white">
+                  {new Date(user.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
             </div>
           </div>
         </div>
