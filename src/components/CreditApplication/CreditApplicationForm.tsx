@@ -873,7 +873,27 @@ function Step4({
 
 // ── Success Screen ─────────────────────────────────────────────────────────
 
-function SuccessScreen({ applicationId }: { applicationId: string }) {
+function SuccessScreen({
+  applicationId,
+  formData,
+  fileNames,
+}: {
+  applicationId: string;
+  formData: FormData;
+  fileNames: { company_reg: string; tax_id: string; bank_cert: string };
+}) {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      const { generateCreditApplicationPDF } = await import("./generatePDF");
+      generateCreditApplicationPDF(formData, applicationId, fileNames);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center py-16 text-center">
       <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary-50 dark:bg-primary/10">
@@ -905,16 +925,46 @@ function SuccessScreen({ applicationId }: { applicationId: string }) {
           {applicationId}
         </p>
       </div>
-      <a
-        href="/"
-        className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-600 hover:-translate-y-0.5 hover:shadow-lg"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-        Back to site
-      </a>
+
+      <div className="flex flex-col items-center gap-3 sm:flex-row">
+        {/* Download PDF */}
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={downloading}
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-600 hover:-translate-y-0.5 hover:shadow-lg disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {downloading ? (
+            <>
+              <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              Generating…
+            </>
+          ) : (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download PDF Copy
+            </>
+          )}
+        </button>
+
+        {/* Back to site */}
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-400 hover:bg-gray-50 hover:-translate-y-0.5 dark:border-gray-600 dark:bg-dark dark:text-gray-300"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Back to site
+        </a>
+      </div>
     </div>
   );
 }
@@ -1037,7 +1087,18 @@ export default function CreditApplicationForm() {
     }
   };
 
-  if (successId) return <SuccessScreen applicationId={successId} />;
+  if (successId)
+    return (
+      <SuccessScreen
+        applicationId={successId}
+        formData={formData}
+        fileNames={{
+          company_reg: files.company_reg?.name ?? "",
+          tax_id: files.tax_id?.name ?? "",
+          bank_cert: files.bank_cert?.name ?? "",
+        }}
+      />
+    );
 
   return (
     <div>
