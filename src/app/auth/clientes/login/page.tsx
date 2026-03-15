@@ -134,7 +134,7 @@ export default function CustomerLoginPage() {
           <div className="flex-grow border-t border-gray-200" />
         </div>
         <Link
-          href="/contact"
+          href="/apply/credit"
           className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary-100 hover:-translate-y-0.5 hover:shadow-md dark:bg-primary-500/10 dark:text-primary-300 dark:border-primary-500/30 dark:hover:bg-primary-500/20"
         >
           <svg
