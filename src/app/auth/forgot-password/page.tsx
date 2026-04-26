@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createSPASassClient } from "@/lib/supabase/client";
 
@@ -18,7 +19,9 @@ function mapError(message: string): string {
   return message;
 }
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordContent() {
+  const searchParams = useSearchParams();
+  const back = searchParams.get("back") ?? "/auth/clientes/login";
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -75,7 +78,7 @@ export default function ForgotPasswordPage() {
           check your inbox and follow the instructions.
         </p>
         <Link
-          href="/auth/clientes/login"
+          href={back}
           className="text-sm font-medium text-primary hover:underline"
         >
           Back to sign in
@@ -130,10 +133,26 @@ export default function ForgotPasswordPage() {
       </form>
 
       <div className="mt-6 text-center text-sm">
-        <Link href="/auth/clientes/login" className="font-medium text-primary hover:underline">
+        <Link href={back} className="font-medium text-primary hover:underline">
           Back to sign in
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-[280px] rounded-2xl border border-gray-200/60 bg-white px-6 py-8 shadow-lg sm:px-10"
+          aria-busy="true"
+          aria-label="Loading"
+        />
+      }
+    >
+      <ForgotPasswordContent />
+    </Suspense>
   );
 }

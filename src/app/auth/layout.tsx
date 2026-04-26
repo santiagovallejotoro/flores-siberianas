@@ -14,7 +14,7 @@ export default function AuthLayout({
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-dark">
       {/* Left column — form */}
-      <div className="relative flex w-full flex-col justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-8 bg-white dark:bg-dark shadow-xl lg:shadow-none">
+      <div className="relative flex min-w-0 w-full flex-col justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-8 bg-white dark:bg-dark shadow-xl lg:shadow-none">
         <Link
           href="/"
           className="absolute left-8 top-8 flex items-center gap-2 text-sm text-body-color hover:text-primary transition-colors duration-200"
@@ -36,7 +36,8 @@ export default function AuthLayout({
           Back to site
         </Link>
 
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        {/* Full width on small screens; cap width only when there is room (mobile-first). */}
+        <div className="mx-auto w-full min-w-0 max-w-full md:max-w-xl lg:max-w-2xl">
           <div className="mb-8 flex justify-center">
             <Link href="/">
               <Image
@@ -57,9 +58,6 @@ export default function AuthLayout({
               />
             </Link>
           </div>
-        </div>
-
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
           {children}
         </div>
       </div>

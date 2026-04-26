@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createSPASassClient } from "@/lib/supabase/client";
 
@@ -17,7 +18,9 @@ function mapError(message: string): string {
   return message;
 }
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
+  const searchParams = useSearchParams();
+  const back = searchParams.get("back") ?? "/auth/clientes/login";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -108,12 +111,28 @@ export default function VerifyEmailPage() {
 
       <div className="mt-8 border-t border-gray-100 pt-6">
         <Link
-          href="/auth/clientes/login"
+          href={back}
           className="text-sm font-medium text-primary hover:underline"
         >
           Back to sign in
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-[320px] rounded-2xl border border-gray-200/60 bg-white px-6 py-10 shadow-lg sm:px-10"
+          aria-busy="true"
+          aria-label="Loading"
+        />
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

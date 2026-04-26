@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\app\" -Directory -Force | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\" -Recurse -Force -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"supabase|migration|schema\" -and $_.FullName -notmatch \"node_modules\" } | Select-Object FullName | Format-Table -AutoSize)"
+    ]
+  }
+}

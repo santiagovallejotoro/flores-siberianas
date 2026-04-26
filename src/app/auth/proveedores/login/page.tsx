@@ -10,18 +10,18 @@ const inputClass =
 
 function mapError(message: string): string {
   if (message.includes("Invalid login credentials"))
-    return "Invalid email or password. Please try again.";
+    return "Correo o contraseña incorrectos. Inténtalo de nuevo.";
   if (message.includes("Email not confirmed"))
-    return "Please verify your email address before signing in.";
+    return "Por favor verifica tu correo electrónico antes de iniciar sesión.";
   if (message.includes("Too many requests") || message.includes("rate limit"))
-    return "Too many attempts. Please try again later.";
-  if (message.includes("Invalid email")) return "Please enter a valid email address.";
+    return "Demasiados intentos. Por favor espera un momento.";
+  if (message.includes("Invalid email")) return "Por favor ingresa un correo válido.";
   if (message.includes("For security purposes"))
-    return "Please wait a moment before trying again.";
+    return "Por seguridad, espera un momento antes de intentar de nuevo.";
   return message;
 }
 
-export default function CustomerLoginPage() {
+export default function ProveedorLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,13 +37,13 @@ export default function CustomerLoginPage() {
       const client = createSPASassClient();
       const { error: signInError } = await client.loginEmail(email, password);
       if (signInError) throw signInError;
-      router.push("/client-portal");
+      router.push("/proveedor-portal");
       router.refresh();
     } catch (err) {
       if (err instanceof Error) {
         setError(mapError(err.message));
       } else {
-        setError("An unexpected error occurred.");
+        setError("Ocurrió un error inesperado.");
       }
     } finally {
       setLoading(false);
@@ -53,10 +53,10 @@ export default function CustomerLoginPage() {
   return (
     <div className="rounded-2xl border border-gray-200/60 bg-gradient-to-br from-gray-50 to-white px-6 py-8 shadow-xl sm:px-10">
       <h1 className="mb-1 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-        Customer Portal
+        Portal Proveedor
       </h1>
       <p className="mb-8 text-center text-sm text-body-color">
-        Sign in to access your account
+        Inicia sesión para acceder a tu portal
       </p>
 
       {error && (
@@ -71,7 +71,7 @@ export default function CustomerLoginPage() {
             htmlFor="email"
             className="mb-1.5 block text-sm font-medium text-gray-700"
           >
-            Email address
+            Correo electrónico
           </label>
           <input
             id="email"
@@ -81,7 +81,7 @@ export default function CustomerLoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
+            placeholder="tu@empresa.com"
             className={inputClass}
           />
         </div>
@@ -91,7 +91,7 @@ export default function CustomerLoginPage() {
             htmlFor="password"
             className="mb-1.5 block text-sm font-medium text-gray-700"
           >
-            Password
+            Contraseña
           </label>
           <input
             id="password"
@@ -101,17 +101,17 @@ export default function CustomerLoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
+            placeholder="Ingresa tu contraseña"
             className={inputClass}
           />
         </div>
 
         <div className="flex items-center justify-end">
           <Link
-            href="/auth/forgot-password"
+            href="/auth/forgot-password?back=/auth/proveedores/login"
             className="text-sm font-medium text-primary hover:underline"
           >
-            Forgot password?
+            ¿Olvidaste tu contraseña?
           </Link>
         </div>
 
@@ -120,69 +120,33 @@ export default function CustomerLoginPage() {
           disabled={loading}
           className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-primary-600 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-md"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? "Iniciando sesión…" : "Iniciar sesión"}
         </button>
       </form>
 
-      {/* New customer section */}
       <div className="mt-6">
         <div className="relative flex items-center">
           <div className="flex-grow border-t border-gray-200" />
           <span className="mx-3 flex-shrink text-xs text-body-color">
-            New customer?
+            ¿Nuevo proveedor?
           </span>
           <div className="flex-grow border-t border-gray-200" />
         </div>
-        <div className="mt-3 flex flex-col gap-2">
-          <Link
-            href="/auth/clientes/register"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary-100 hover:-translate-y-0.5 hover:shadow-md dark:bg-primary-500/10 dark:text-primary-300 dark:border-primary-500/30 dark:hover:bg-primary-500/20"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <line x1="19" y1="8" x2="19" y2="14" />
-              <line x1="22" y1="11" x2="16" y2="11" />
-            </svg>
-            Create account
-          </Link>
-          <Link
-            href="/apply/credit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary-100 hover:-translate-y-0.5 hover:shadow-md dark:bg-primary-500/10 dark:text-primary-300 dark:border-primary-500/30 dark:hover:bg-primary-500/20"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect width="20" height="14" x="2" y="5" rx="2" />
-              <line x1="2" x2="22" y1="10" y2="10" />
-            </svg>
-            Credit Application Form
-          </Link>
-        </div>
+        <Link
+          href="/auth/proveedores/register"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary-100 hover:-translate-y-0.5 hover:shadow-md dark:bg-primary-500/10 dark:text-primary-300 dark:border-primary-500/30 dark:hover:bg-primary-500/20"
+        >
+          Crear cuenta de proveedor
+        </Link>
       </div>
 
       <p className="mt-5 text-center text-sm text-body-color">
-        Need access?{" "}
-        <Link href="/contact" className="font-medium text-primary hover:underline">
-          Contact us
+        ¿Quieres ser proveedor?{" "}
+        <Link
+          href="/proveedores#registro-proveedor"
+          className="font-medium text-primary hover:underline"
+        >
+          Contáctanos
         </Link>
       </p>
     </div>

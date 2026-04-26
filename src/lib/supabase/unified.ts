@@ -34,11 +34,11 @@ export class SassClient {
     return this.client.auth.resend({ email, type: "signup" });
   }
 
-  async logout() {
+  async logout(redirectTo = "/auth/clientes/login") {
     const { error } = await this.client.auth.signOut({ scope: "local" });
     if (error) throw error;
     if (this.clientType === ClientType.SPA) {
-      window.location.href = "/auth/clientes/login";
+      window.location.href = redirectTo;
     }
   }
 

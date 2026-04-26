@@ -36,6 +36,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (!user && request.nextUrl.pathname.startsWith("/proveedor-portal")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/proveedores/login";
+    return NextResponse.redirect(url);
+  }
+
   // IMPORTANT: Must return supabaseResponse to keep cookies in sync.
   return supabaseResponse;
 }
