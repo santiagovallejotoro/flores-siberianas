@@ -7,7 +7,7 @@
 
 This is not documentation. It is a **system map** — a living graph of how [[OVERVIEW|Flores Siberianas]] works: its code, its decisions, its logic, and its future.
 
-See [[ARCHITECTURE]] for codebase structure and [[OVERVIEW]] for brand and stack identity.
+See [[ARCHITECTURE]] for codebase structure, [[DATABASE]] for Postgres tables and relationships, and [[OVERVIEW]] for brand and stack identity.
 
 ---
 
@@ -15,7 +15,7 @@ See [[ARCHITECTURE]] for codebase structure and [[OVERVIEW]] for brand and stack
 
 | Folder | Purpose |
 |--------|---------|
-| `/` (root) | Core identity files: [[OVERVIEW]], [[ARCHITECTURE]], this file |
+| `/` (root) | Core identity files: [[OVERVIEW]], [[ARCHITECTURE]], [[DATABASE]], this file |
 | `features/` | One page per feature module (auth, client portal, etc.) |
 | `logs/` | Session summaries named `session-YYYY-MM-DD.md` |
 | `roadmap/` | Future ideas and planned work |
@@ -55,7 +55,7 @@ Each fact lives in **one place only**. Other pages link to it — they never rep
 
 **Path rules (so new notes don’t land in the vault root):**
 - **Feature and module pages** (auth, products, a component, etc.): use `[[features/slug|optional display text]]` — the file is `wiki_siberianas/features/slug.md`
-- **Core** (vault root only): `[[SCHEMA]]`, `[[OVERVIEW]]`, `[[ARCHITECTURE]]` — not under `features/`
+- **Core** (vault root only): `[[SCHEMA]]`, `[[OVERVIEW]]`, `[[ARCHITECTURE]]`, `[[DATABASE]]` — not under `features/`
 - **Session logs:** `[[logs/session-YYYY-MM-DD]]`
 - **Roadmap index:** `[[roadmap/index]]` (file `roadmap/index.md`)
 
@@ -64,7 +64,7 @@ Each fact lives in **one place only**. Other pages link to it — they never rep
 
 Always link:
 - Feature pages: `[[features/auth|auth]]`, `[[features/client-portal|client portal]]`, `[[features/credit-application|credit application]]`
-- Core: `[[OVERVIEW]]`, `[[ARCHITECTURE]]`, this file
+- Core: `[[OVERVIEW]]`, `[[ARCHITECTURE]]`, `[[DATABASE]]`, this file
 - Session logs: `[[logs/session-2026-04-26]]`
 
 > [!tip]
@@ -128,7 +128,7 @@ After completing any feature or significant logic change, propose an update to t
 
 ## Post-ship sync — auth & portals
 
-**Rule:** After changing auth UI, middleware, or Supabase `public` user tables, update [[features/auth|auth]] (flows, data model) and [[ARCHITECTURE]] (folder map + route table + Supabase list). **Do not** paste long specs here — this file stays the maintenance contract only.
+**Rule:** After changing auth UI, middleware, or Supabase `public` user tables, update [[features/auth|auth]] (flows), [[DATABASE]] (tables / relationships / intent), and [[ARCHITECTURE]] (folder map + route table + code touchpoints). **Do not** paste long specs here — this file stays the maintenance contract only.
 
 **Repo checkpoint (2026-04-26):** `public.profiles` (role `cliente` \| `proveedor`), `public.clientes`, `public.proveedores`; trigger on `auth.users` insert sets `profiles.role` from signup `user_metadata.role` (default `cliente`). Routes live under `src/app/auth/` including `/auth/clientes/register` and `/auth/proveedores/login` + `register`; middleware in `src/middleware.ts` matches `/client-portal/*` and `/proveedor-portal/*`. Shared pages: forgot-password and verify-email support `?back=` for return login URL; both wrap `useSearchParams` in `<Suspense>` (Next.js build). Auth shell: mobile-first width (`max-w-full` → `md:max-w-xl` → `lg:max-w-2xl`), left column `min-w-0`; register forms use `md:grid-cols-2` and `min-w-0` field cells.
 

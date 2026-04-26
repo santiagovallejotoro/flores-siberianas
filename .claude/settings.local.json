@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\app\" -Directory -Force | ForEach-Object { $_.Name })",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\" -Recurse -Force -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"supabase|migration|schema\" -and $_.FullName -notmatch \"node_modules\" } | Select-Object FullName | Format-Table -AutoSize)"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\" -Recurse -Force -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"supabase|migration|schema\" -and $_.FullName -notmatch \"node_modules\" } | Select-Object FullName | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\" -Recurse -Force -Depth 3 -ErrorAction SilentlyContinue | Where-Object { \\($_.Extension -eq \".sql\" -or $_.Name -match \"supabase|migration\"\\) -and $_.FullName -notmatch \"node_modules|\\\\.next\" } | Select-Object FullName, Length | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\app\\\\proveedor-portal\" -Recurse -Force | Where-Object { -not $_.PSIsContainer } | ForEach-Object { $_.FullName })",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 80)",
+      "PowerShell(npx tsc --noEmit --skipLibCheck 2>&1 | Select-String -Pattern \"\\(Sidebar|PortalShell|proveedor-portal/layout\\)\" | Select-Object -First 40)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\styles\\\\index.css\" | Measure-Object -Line\\).Lines)",
+      "PowerShell($out = \\(npx tsc --noEmit --skipLibCheck 2>&1 | Out-String\\); $real = \\($out -split \"`n\" | Where-Object { $_ -match \"error TS\" -and $_ -notmatch \"\\\\.next\" }\\); Write-Output \"Real errors: $\\($real.Count\\)\"; if \\($real.Count -gt 0\\) { $real })",
+      "PowerShell(Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\" | Where-Object { $_.Name -match \"[Ii]nsumo\" } | Select-Object FullName | Format-Table -AutoSize)"
     ]
   }
 }

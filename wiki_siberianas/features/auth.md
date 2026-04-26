@@ -51,16 +51,9 @@ flowchart LR
 
 ## Schema / Data
 
-| Object | Purpose |
-|--------|---------|
-| `auth.users` / `auth.sessions` | Supabase-managed identity |
-| `public.profiles` | One row per user: `id` (FK auth.users), `role` in (`cliente`,`proveedor`) |
-| `public.clientes` | Profile fields for buyers (same column shape as proveedores) |
-| `public.proveedores` | Profile fields for suppliers |
+Canonical table list, ER view, RLS intent, and trigger notes: **[[DATABASE]]**.
 
-RLS: each table allows the signed-in user to access **own** row; `clientes` / `proveedores` policies also require matching `profiles.role`.
-
-**Note:** Row inserts into `clientes` / `proveedores` after signup may still need an app or DB trigger if you want profile rows created automatically; today metadata is on the user at signup.
+Auth-specific behaviour: signup writes `user_metadata` (including `role`); `/api/auth/callback` may upsert `profiles.role` for OAuth role overrides; session and redirect logic use `profiles.role` after Google sign-in.
 
 ## Dependencies
 
@@ -90,6 +83,7 @@ RLS: each table allows the signed-in user to access **own** row; `clientes` / `p
 
 ## Links
 
+- [[DATABASE]] — `auth.*` + `public.profiles` / `clientes` / `proveedores`
 - [[ARCHITECTURE]] — routes, middleware, Supabase client files
 - [[SCHEMA]] — wiki maintenance and post-ship checklist
 - [[OVERVIEW]] — env vars and high-level route list

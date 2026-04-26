@@ -1,7 +1,7 @@
 # OVERVIEW — Flores Siberianas
 
 > [!note]
-> This is the single source of truth for the project's identity. For codebase structure, see [[ARCHITECTURE]]. For wiki rules, see [[SCHEMA]].
+> This is the single source of truth for the project's identity. For codebase structure, see [[ARCHITECTURE]]. For the Postgres data map, see [[DATABASE]]. For wiki rules, see [[SCHEMA]].
 
 ---
 
@@ -146,6 +146,7 @@ For the full grouped route table, see [[ARCHITECTURE]].
 ## Links
 
 - [[ARCHITECTURE]] — codebase skeleton and route table
+- [[DATABASE]] — Postgres tables and how they relate
 - [[SCHEMA]] — wiki maintenance rules
 - [[roadmap/index]] — future ideas
 - [[logs/session-2026-04-26]] — first session

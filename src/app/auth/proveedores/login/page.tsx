@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createSPASassClient } from "@/lib/supabase/client";
+import GoogleSignInButton from "@/components/Auth/GoogleSignInButton";
 
 const inputClass =
   "w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-base text-gray-900 shadow-sm outline-none transition-all duration-200 hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -64,6 +65,17 @@ export default function ProveedorLoginPage() {
           {error}
         </div>
       )}
+
+      <GoogleSignInButton
+        redirectPath="/proveedor-portal"
+        label="Continuar con Google"
+      />
+
+      <div className="relative my-5 flex items-center">
+        <div className="flex-grow border-t border-gray-200" />
+        <span className="mx-3 flex-shrink text-xs text-body-color">o</span>
+        <div className="flex-grow border-t border-gray-200" />
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>

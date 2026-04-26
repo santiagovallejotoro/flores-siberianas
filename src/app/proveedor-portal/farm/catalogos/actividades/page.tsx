@@ -1,0 +1,36 @@
+import { Metadata } from "next";
+import { createSSRSassClient } from "@/lib/supabase/server";
+import { listClases } from "@/lib/farm/clases";
+import { listVariedades } from "@/lib/farm/variedades";
+import { listInsumos } from "@/lib/farm/insumos";
+import ActividadesEditor from "@/components/Farm/ActividadesEditor";
+
+export const metadata: Metadata = {
+  title: "Actividades | Portal Proveedor",
+  robots: { index: false, follow: false },
+};
+
+export default async function ActividadesPage() {
+  const supabase = await createSSRSassClient();
+  const client = supabase.getSupabaseClient();
+
+  const [clases, variedades, insumos] = await Promise.all([
+    listClases(client),
+    listVariedades(client),
+    listInsumos(client),
+  ]);
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-black dark:text-white">Actividades</h1>
+        <p className="mt-1 text-sm text-body-color dark:text-body-color-dark">
+          Catálogo de actividades por clase de cultivo o variedad: siembra, riego,
+          fertilización, poda, cosecha y empaque.
+        </p>
+      </div>
+
+      <ActividadesEditor clases={clases} variedades={variedades} insumos={insumos} />
+    </div>
+  );
+}

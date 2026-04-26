@@ -206,6 +206,31 @@ layer(base);
     background: var(--color-primary-300);
   }
 
+  /* Reusable thin scrollbar for portal panels */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary-300) transparent;
+  }
+  .dark .scrollbar-thin {
+    scrollbar-color: var(--color-primary-600) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-primary-300);
+    border-radius: 9999px;
+  }
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-primary-600);
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-500);
+  }
+
   body {
     font-family: "Inter", sans-serif;
     @apply antialiased;
@@ -231,4 +256,23 @@ layer(base);
   input[type="checkbox"]:checked ~ label span svg {
     @apply inline-flex;
   }
+}
+
+/* Modal / dialog motion — used by ConfirmDialog and any future overlay UI. */
+@keyframes fs-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fs-slide-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@utility animate-fade-in {
+  animation: fs-fade-in 180ms ease-out;
+}
+
+@utility animate-slide-up {
+  animation: fs-slide-up 220ms cubic-bezier(0.32, 0.72, 0, 1);
 }

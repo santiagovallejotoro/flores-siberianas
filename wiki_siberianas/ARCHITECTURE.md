@@ -95,7 +95,8 @@ src/app/
 | `Brands/` | Home — brand logo strip |
 | `ClientPortal/` | [[features/client-portal|client portal]] |
 | `ProveedorPortal/` | [[features/proveedor-portal|proveedor portal]] |
-| `Common/` | Shared utilities: SectionTitle, buttons, etc. |
+| `Common/` | Shared utilities: SectionTitle, buttons, **`Select`** (styled `<select>` for Farm forms), etc. |
+| `Farm/` | [[features/proveedor-portal|Mi Finca]] catalog editors under `/proveedor-portal/farm/catalogos/*` |
 | `Contact/` | `/contact` |
 | `ContactSection/` | Inline contact blocks used across pages |
 | `CreditApplication/` | [[features/credit-application|credit application]] |
@@ -124,6 +125,7 @@ src/app/
 | `supabase/client.ts` | Browser Supabase client (anon key) |
 | `supabase/server.ts` | Server Supabase client — reads cookies for SSR |
 | `supabase/admin.ts` | Service-role admin client — **server only** |
+| `farm/*.ts` | Mi Finca data helpers (`clases`, `variedades`, `actividades`, `ciclos`, `insumos`, `ubicaciones`) — used by server pages + client editors |
 
 ### `src/contexts/`
 
@@ -175,6 +177,7 @@ src/app/
 |-------|-------------|--------|
 | `/client-portal` | [[features/client-portal|client portal]] | Gated — middleware + server `getUser` |
 | `/proveedor-portal` | [[features/proveedor-portal|proveedor portal]] | Gated — middleware + server `getUser` |
+| `/proveedor-portal/farm` and `/proveedor-portal/farm/catalogos/*` | [[features/proveedor-portal|proveedor portal]] § Mi Finca | Farm hub + catalogs (clases, ubicaciones, variedades, insumos, actividades, ciclos); other `farm/*` routes may be placeholders |
 | `/proveedores` | [[features/proveedores|Proveedores]] | — |
 | `/apply/credit` | [[features/credit-application|credit application]] | In development |
 
@@ -217,15 +220,7 @@ graph LR
 
 ## Supabase / Database
 
-**Public app tables (roles + profiles):**
-
-| Table | Purpose |
-|-------|---------|
-| `public.profiles` | `id` → `auth.users`, `role` ∈ `cliente` \| `proveedor` |
-| `public.clientes` | Buyer profile columns (RLS + role check) |
-| `public.proveedores` | Supplier profile columns (RLS + role check) |
-
-Trigger on `auth.users` insert creates `public.profiles`; role from signup metadata (`role`), default `cliente`.
+**Data model (tables, relationships, RLS intent):** [[DATABASE]] — canonical map; this section only lists **code touchpoints**.
 
 **Three Supabase clients — pick the right one:**
 
@@ -235,14 +230,7 @@ Trigger on `auth.users` insert creates `public.profiles`; role from signup metad
 | Server | `supabase/server.ts` | Server components, server actions (reads cookies) |
 | Admin | `supabase/admin.ts` | API routes needing elevated access — **never in client code** |
 
-**Supabase-managed auth tables:**
-
-| Table | Purpose |
-|-------|---------|
-| `auth.users` | User accounts |
-| `auth.sessions` | Active sessions and tokens |
-
-Other public tables (e.g. `credit_applications`) — document here as they grow. See [[roadmap/index]].
+Managed **`auth.*`** tables and any new **`public.*`** domains are described in [[DATABASE]] as they ship (e.g. credit applications — [[roadmap/index]]).
 
 **Middleware:** `src/middleware.ts` matcher includes `/client-portal/:path*` and `/proveedor-portal/:path*`; session refresh in `src/lib/supabase/middleware.ts`.
 
@@ -266,6 +254,7 @@ Custom Tailwind breakpoints defined in `src/styles/index.css`:
 ## Links
 
 - [[OVERVIEW]] — brand, stack, colors, i18n
+- [[DATABASE]] — Postgres tables and relationships
 - [[SCHEMA]] — wiki maintenance rules
 - [[features/auth|auth]] — sign-in, email verification, reset
 - [[features/client-portal|client portal]]

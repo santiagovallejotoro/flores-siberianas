@@ -6,18 +6,24 @@ import { createSPASassClient } from "@/lib/supabase/client";
 interface Props {
   redirectPath?: string;
   label?: string;
+  /** When set, the callback will upsert this role on the user's profile.
+   *  Use on registration pages for non-default roles (e.g. "proveedor"). */
+  roleOverride?: string;
 }
 
 export default function GoogleSignInButton({
   redirectPath = "/client-portal",
   label = "Continue with Google",
+  roleOverride,
 }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
     const client = createSPASassClient();
-    const redirectTo = `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+    const params = new URLSearchParams({ next: redirectPath });
+    if (roleOverride) params.set("role", roleOverride);
+    const redirectTo = `${window.location.origin}/api/auth/callback?${params.toString()}`;
     await client.signInWithGoogle(redirectTo);
     // Browser navigates away to Google — no need to reset loading state
   };
