@@ -6,6 +6,13 @@
 
 Sign-in, self-service registration (clientes + proveedores), email verification, and password reset using **Supabase Auth**, with **one user pool** and **role separation** in Postgres (`public.profiles` + role-specific profile tables).
 
+## Supported Sign-in Methods
+
+| Method | Portals | Notes |
+|--------|---------|-------|
+| Email / password | clientes + proveedores | `signInWithPassword` |
+| Google OAuth | clientes only | `signInWithOAuth`; new users get default role `cliente` from DB trigger |
+
 ## How It Works
 
 ```mermaid
@@ -37,7 +44,8 @@ flowchart LR
 
 1. **Register:** Browser `createSPASassClient()` → `registerEmail`; metadata includes `role: 'cliente'` or `'proveedor'` plus name/ID fields. Supabase creates `auth.users`; DB trigger inserts `public.profiles`.
 2. **Verify email:** User follows link → `/api/auth/callback` exchanges code → redirect default `/client-portal` unless `next` query says otherwise; resend UI at `/auth/verify-email?back=…`.
-3. **Login:** Same SPA client → `signInWithPassword` → redirect to `/client-portal` or `/proveedor-portal`.
+3. **Login (email):** Same SPA client → `signInWithPassword` → redirect to `/client-portal` or `/proveedor-portal`.
+3a. **Login (Google):** `signInWithOAuth({ provider: 'google', options: { redirectTo: ...origin/api/auth/callback?next=...} })` → Supabase → Google consent → `/api/auth/callback` exchanges code → redirect to `next`. New users get DB trigger default role `cliente`. Button lives in `src/components/Auth/GoogleSignInButton.tsx` and appears on the clientes login page only.
 4. **Session refresh:** `src/lib/supabase/middleware.ts` runs on portal matchers; unauthenticated users redirect to the correct login route.
 5. **Logout:** `SassClient.logout(redirectTo?)` — client portal button uses default cliente login; proveedor button passes proveedor login URL.
 
@@ -65,6 +73,15 @@ RLS: each table allows the signed-in user to access **own** row; `clientes` / `p
 - **Wrong portal:** User with `proveedor` role can still hit `/client-portal` if only session is checked — add explicit role checks when hardening.
 - **Email not confirmed:** Login error until user completes verification (Supabase setting).
 - **Prerender:** Pages using `useSearchParams` must use `<Suspense>` (forgot-password, verify-email).
+
+## Google OAuth — Setup Checklist (one-time)
+
+1. **Google Cloud Console** — Create OAuth 2.0 Web client; add Supabase's callback URI as an Authorized redirect URI:  
+   `https://<project-ref>.supabase.co/auth/v1/callback`
+2. **Supabase Dashboard** → Auth → Providers → Google: enable, paste Client ID + Secret.
+3. **Supabase Dashboard** → Auth → URL configuration → Redirect URLs: allow  
+   `https://www.floressiberianas.com/api/auth/callback` (and `http://localhost:3000/api/auth/callback` for dev).
+4. No new env vars needed in Next.js — credentials stay in Supabase.
 
 ## Key Decisions
 

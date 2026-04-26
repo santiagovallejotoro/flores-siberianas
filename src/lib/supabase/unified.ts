@@ -18,6 +18,13 @@ export class SassClient {
     return this.client.auth.signInWithPassword({ email, password });
   }
 
+  async signInWithGoogle(redirectTo: string) {
+    return this.client.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+  }
+
   async registerEmail(email: string, password: string, metadata?: object) {
     return this.client.auth.signUp({
       email,
