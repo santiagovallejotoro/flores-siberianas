@@ -48,7 +48,7 @@ flowchart LR
 
 - **Tables:** `clases_cultivo`, `ubicaciones`, `variedades`, `insumos`, `actividades`, `ciclo_produccion`, etc. — all scoped by `proveedor_id`. See [[DATABASE]].
 - **`actividades`:** `insumos_json` is `text` storing a JSON array of `{ id, nombre, cantidad_por_planta, unidad_medida_por_planta }` aligned with the legacy FarmPanel sheet model.
-- **`ciclo_produccion`:** rows per `id_variedad`; `deleteAllCiclosByVariedad` in `src/lib/farm/ciclos.ts` deletes all rows for a variety and clears the flag on `variedades`.
+- **`ciclo_produccion`:** rows per `id_variedad`; `deleteAllCiclosByVariedad` in `src/lib/farm/ciclos.ts` deletes all rows for a variety and clears the flag on `variedades`. When **generating** cycles, `nro_semana` runs **inclusive** from `semana_inicio_corte` through `ciclo_en_semanas` (first row = start week, not start+1; count = `ciclo - inicio + 1`).
 
 ## Dependencies
 

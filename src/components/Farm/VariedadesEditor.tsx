@@ -173,7 +173,7 @@ export default function VariedadesEditor({
     const canGenerate =
       (editing.ciclo_en_semanas ?? 0) > 0 &&
       (editing.semana_inicio_corte ?? 0) > 0 &&
-      (editing.semana_inicio_corte ?? 0) < (editing.ciclo_en_semanas ?? 0);
+      (editing.semana_inicio_corte ?? 0) <= (editing.ciclo_en_semanas ?? 0);
 
     if (!canGenerate) {
       showBanner({
@@ -540,22 +540,6 @@ export default function VariedadesEditor({
             </div>
           </div>
 
-          {/*
-           * ─── Ciclos de Producción panel ─────────────────────────────────────
-           * Visible only when editing an existing variedad.
-           *
-           * Two states:
-           *  - tiene_ciclos_produccion === true  →  "Ciclos de Producción Configurados"
-           *    (Siberian Purple panel, "Editar Ciclos" button)
-           *  - tiene_ciclos_produccion === false →  "Sin Ciclos de Producción"
-           *    (amber panel, "Generar Ciclos" button — disabled if ciclo / inicio
-           *    are empty)
-           *
-           * The action buttons are intentionally disabled for now: they will be
-           * wired to /proveedor-portal/farm/catalogos/ciclos once that screen
-           * (and the corresponding `generar_ciclos_produccion` Postgres RPC) is
-           * built. See PLAN_FARM_TO_PROVEEDORES.md §4.B.
-           */}
           {editing && (
             <div className="mt-2 border-t border-stroke pt-4 dark:border-strokedark">
               {editing.tiene_ciclos_produccion ? (

@@ -121,11 +121,11 @@ export type GenerarResult = {
 
 /**
  * Regenerate the production cycles for a variedad.
- * Port of `generarCiclosProduccion` (.cursor/farm/Code.gs:1471): wipes existing
- * rows for the variedad, inserts a fresh bell-curve, and flips
- * variedades.tiene_ciclos_produccion. Not transactional — RLS scopes everything
- * to the owner so partial state can only ever damage the caller's own data,
- * matching the legacy Sheet behavior.
+ * Based on `generarCiclosProduccion` (.cursor/farm/Code.gs:1471), with a
+ * deliberate fix: **the first corte uses `semana_inicio_corte` itself** (not
+ * start+1), and cortes run **inclusive** through week `ciclo_en_semanas`, so
+ * `numCortes = cicloSemanas - semanaInicio + 1` when both are 1-based week
+ * indices within the cycle.
  */
 export async function generarCiclosProduccion(
   client: SupabaseClient,
@@ -139,13 +139,13 @@ export async function generarCiclosProduccion(
       "Debe especificar Ciclo en Semanas y Semana Inicio Corte en la variedad.",
     );
   }
-  if (semanaInicio >= cicloSemanas) {
+  if (semanaInicio > cicloSemanas) {
     throw new Error(
-      "Semana Inicio Corte debe ser menor que Ciclo en Semanas.",
+      "Semana Inicio Corte no puede ser mayor que Ciclo en Semanas.",
     );
   }
 
-  const numCortes = cicloSemanas - semanaInicio;
+  const numCortes = cicloSemanas - semanaInicio + 1;
   const percentages = calcularDistribucionProduccion(numCortes);
 
   const { error: delError } = await client
@@ -156,7 +156,7 @@ export async function generarCiclosProduccion(
 
   const newRows = percentages.map((pct, i) => {
     const corteNum = i + 1;
-    const nroSemana = semanaInicio + i + 1;
+    const nroSemana = semanaInicio + i;
     return {
       id_variedad: variedad.id,
       nombre_ciclo: `Corte ${corteNum}`,

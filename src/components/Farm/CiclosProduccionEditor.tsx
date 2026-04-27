@@ -194,7 +194,7 @@ export default function CiclosProduccionEditor({
           1,
         )}% y debería ser 100%. ¿Guardar de todas formas?`,
         confirmLabel: "Guardar igual",
-        tone: "danger",
+        tone: "warning",
       });
       if (!ok) return;
     }
@@ -289,7 +289,7 @@ export default function CiclosProduccionEditor({
     !!variedad &&
     (variedad.ciclo_en_semanas ?? 0) > 0 &&
     (variedad.semana_inicio_corte ?? 0) > 0 &&
-    (variedad.semana_inicio_corte ?? 0) < (variedad.ciclo_en_semanas ?? 0);
+    (variedad.semana_inicio_corte ?? 0) <= (variedad.ciclo_en_semanas ?? 0);
 
   return (
     <div className="space-y-6">

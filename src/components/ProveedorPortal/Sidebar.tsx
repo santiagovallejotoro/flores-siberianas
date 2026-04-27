@@ -100,6 +100,14 @@ const icons = {
       <line x1="12" y1="22.08" x2="12" y2="12" />
     </Icon>
   ),
+  warehouse: (
+    <Icon>
+      <path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z" />
+      <path d="M6 18h12" />
+      <path d="M6 14h12" />
+      <rect x="9" y="14" width="6" height="8" />
+    </Icon>
+  ),
   listChecks: (
     <Icon>
       <path d="m3 17 2 2 4-4" />
@@ -113,6 +121,12 @@ const icons = {
     <Icon>
       <polyline points="23 4 23 10 17 10" />
       <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+    </Icon>
+  ),
+  settings: (
+    <Icon>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </Icon>
   ),
   briefcase: (
@@ -195,18 +209,18 @@ function buildSections(cultivosCount: number): NavSection[] {
         {
           kind: "link",
           item: {
-            label: "Reportes",
-            href: "/proveedor-portal/farm/reportes",
-            icon: icons.fileText,
+            label: "Cultivos",
+            href: "/proveedor-portal/farm/cultivos",
+            icon: icons.sprout,
+            badge: cultivosCount,
           },
         },
         {
           kind: "link",
           item: {
-            label: "Cultivos",
-            href: "/proveedor-portal/farm/cultivos",
-            icon: icons.sprout,
-            badge: cultivosCount,
+            label: "Reportes",
+            href: "/proveedor-portal/farm/reportes",
+            icon: icons.fileText,
           },
         },
         {
@@ -226,11 +240,24 @@ function buildSections(cultivosCount: number): NavSection[] {
           },
         },
         {
+          kind: "link",
+          item: {
+            label: "Inventario",
+            href: "/proveedor-portal/farm/inventario",
+            icon: icons.warehouse,
+          },
+        },
+        {
           kind: "group",
           label: "Configuración",
           icon: icons.farm,
           activePrefix: "/proveedor-portal/farm/catalogos",
           children: [
+            {
+              label: "Configuración",
+              href: "/proveedor-portal/farm/catalogos/configuracion",
+              icon: icons.settings,
+            },
             {
               label: "Clases de Cultivo",
               href: "/proveedor-portal/farm/catalogos/clases",

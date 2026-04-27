@@ -9,6 +9,7 @@ export type Insumo = {
   proveedor_nombre: string | null;
   fecha_ultima_compra: string | null;
   stock_minimo: number | null;
+  stock_actual: number;
   observaciones: string | null;
   created_at: string;
 };
@@ -55,7 +56,7 @@ export const INSUMO_UNIDADES = [
 
 const TABLE = "insumos";
 const COLS =
-  "id, nombre, categoria, unidad_medida, valor_unitario, proveedor_nombre, fecha_ultima_compra, stock_minimo, observaciones, created_at";
+  "id, nombre, categoria, unidad_medida, valor_unitario, proveedor_nombre, fecha_ultima_compra, stock_minimo, stock_actual, observaciones, created_at";
 
 function trimOrNull(v: string | null | undefined): string | null {
   if (v == null) return null;

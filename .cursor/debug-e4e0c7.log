@@ -1,2 +1,0 @@
-{"sessionId":"e4e0c7","runId":"post-fix","hypothesisId":"D","location":"UbicacionesEditor.tsx:handleAdd","message":"pre createUbicacion","data":{"hasUser":true,"userIdLen":36},"timestamp":1777240701032}
-{"sessionId":"e4e0c7","runId":"post-fix","hypothesisId":"A","location":"ubicaciones.ts:createUbicacion","message":"insert row shape","data":{"table":"ubicaciones","keys":["nombre","nombre_cultivo","vereda","municipio","area_m2","observaciones"],"hasProveedorId":false,"hasNombre":true},"timestamp":1777240701034}

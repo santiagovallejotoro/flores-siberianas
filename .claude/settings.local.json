@@ -9,7 +9,11 @@
       "PowerShell(npx tsc --noEmit --skipLibCheck 2>&1 | Select-String -Pattern \"\\(Sidebar|PortalShell|proveedor-portal/layout\\)\" | Select-Object -First 40)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\styles\\\\index.css\" | Measure-Object -Line\\).Lines)",
       "PowerShell($out = \\(npx tsc --noEmit --skipLibCheck 2>&1 | Out-String\\); $real = \\($out -split \"`n\" | Where-Object { $_ -match \"error TS\" -and $_ -notmatch \"\\\\.next\" }\\); Write-Output \"Real errors: $\\($real.Count\\)\"; if \\($real.Count -gt 0\\) { $real })",
-      "PowerShell(Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\" | Where-Object { $_.Name -match \"[Ii]nsumo\" } | Select-Object FullName | Format-Table -AutoSize)"
+      "PowerShell(Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\" | Where-Object { $_.Name -match \"[Ii]nsumo\" } | Select-Object FullName | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\lib\\\\farm\" | Where-Object { -not $_.PSIsContainer } | ForEach-Object { \"{0,8} {1}\" -f $_.Length, $_.Name }; Write-Output \"---\"; Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\components\\\\Farm\" | Where-Object { -not $_.PSIsContainer } | ForEach-Object { \"{0,8} {1}\" -f $_.Length, $_.Name }; Write-Output \"---\"; Get-ChildItem -Recurse -Force \"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\src\\\\app\\\\proveedor-portal\" -Filter \"page.tsx\" | ForEach-Object { \"{0,8} {1}\" -f $_.Length, $_.FullName.Substring\\(\"C:\\\\Users\\\\valle\\\\flores-siberianas\\\\\".Length\\) })",
+      "PowerShell($out = \\(npx tsc --noEmit --skipLibCheck 2>&1 | Out-String\\); $real = \\($out -split \"`n\" | Where-Object { $_ -match \"error TS\" -and $_ -notmatch \"\\\\.next\" }\\); Write-Output \"Real errors: $\\($real.Count\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(xargs grep *)"
     ]
   }
 }

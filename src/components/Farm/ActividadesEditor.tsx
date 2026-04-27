@@ -150,6 +150,10 @@ export default function ActividadesEditor({
   const [insumoRow, setInsumoRow] = useState<InsumoRowState>(EMPTY_INSUMO_ROW);
   const [insumoRowError, setInsumoRowError] = useState<string>("");
 
+  // Inline edit state for existing insumo items
+  const [editingInsumoIdx, setEditingInsumoIdx] = useState<number | null>(null);
+  const [editingInsumoValues, setEditingInsumoValues] = useState<{ cantidad: string; unidad: string }>({ cantidad: "", unidad: "g" });
+
   function showBanner(b: Banner) {
     setBanner(b);
     if (b) setTimeout(() => setBanner(null), 3500);
@@ -196,6 +200,7 @@ export default function ActividadesEditor({
     setForm(EMPTY_FORM);
     setInsumoRow(EMPTY_INSUMO_ROW);
     setInsumoRowError("");
+    setEditingInsumoIdx(null);
     setModalOpen(true);
   }
 
@@ -204,11 +209,13 @@ export default function ActividadesEditor({
     setForm(fromActividad(a));
     setInsumoRow(EMPTY_INSUMO_ROW);
     setInsumoRowError("");
+    setEditingInsumoIdx(null);
     setModalOpen(true);
   }
 
   function closeModal() {
     if (saving) return;
+    setEditingInsumoIdx(null);
     setModalOpen(false);
   }
 
@@ -248,6 +255,30 @@ export default function ActividadesEditor({
       ...prev,
       insumos_list: prev.insumos_list.filter((_, i) => i !== idx),
     }));
+    if (editingInsumoIdx === idx) setEditingInsumoIdx(null);
+  }
+
+  function startEditInsumoItem(idx: number) {
+    const it = form.insumos_list[idx];
+    setEditingInsumoIdx(idx);
+    setEditingInsumoValues({
+      cantidad: String(it.cantidad_por_planta),
+      unidad: it.unidad_medida_por_planta,
+    });
+  }
+
+  function saveEditInsumoItem(idx: number) {
+    const cantidad = parseFloat(editingInsumoValues.cantidad);
+    if (isNaN(cantidad) || cantidad <= 0) return;
+    setForm((prev) => ({
+      ...prev,
+      insumos_list: prev.insumos_list.map((it, i) =>
+        i === idx
+          ? { ...it, cantidad_por_planta: cantidad, unidad_medida_por_planta: editingInsumoValues.unidad }
+          : it,
+      ),
+    }));
+    setEditingInsumoIdx(null);
   }
 
   // ─── Submit ────────────────────────────────────────────────────────────────
@@ -800,44 +831,101 @@ export default function ActividadesEditor({
               {/* Current list */}
               {form.insumos_list.length > 0 ? (
                 <ul className="mb-4 space-y-1.5">
-                  {form.insumos_list.map((it, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-center justify-between rounded-lg border border-stroke bg-white px-3 py-2 text-xs dark:border-strokedark dark:bg-dark"
-                    >
-                      <span>
-                        <span className="font-medium text-black dark:text-white">
-                          {it.nombre}
-                        </span>
-                        <span className="ml-2 text-body-color dark:text-body-color-dark">
-                          {it.cantidad_por_planta} {it.unidad_medida_por_planta}
-                          /planta
-                        </span>
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => removeInsumoItem(idx)}
-                        className="ml-3 rounded p-0.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
-                        title="Quitar insumo"
+                  {form.insumos_list.map((it, idx) =>
+                    editingInsumoIdx === idx ? (
+                      /* ── Inline edit row ── */
+                      <li
+                        key={idx}
+                        className="rounded-lg border border-primary/40 bg-white px-3 py-2 text-xs dark:border-primary/30 dark:bg-dark"
                       >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6l-1 14H6L5 6" />
-                          <path d="M10 11v6M14 11v6" />
-                          <path d="M9 6V4h6v2" />
-                        </svg>
-                      </button>
-                    </li>
-                  ))}
+                        <p className="mb-1.5 font-medium text-black dark:text-white">
+                          {it.nombre}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            autoFocus
+                            value={editingInsumoValues.cantidad}
+                            onChange={(e) =>
+                              setEditingInsumoValues((v) => ({ ...v, cantidad: e.target.value }))
+                            }
+                            className="w-24 rounded-lg border border-stroke bg-white px-2 py-1 text-xs text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
+                          />
+                          <Select
+                            variant="sm"
+                            value={editingInsumoValues.unidad}
+                            onChange={(e) =>
+                              setEditingInsumoValues((v) => ({ ...v, unidad: e.target.value }))
+                            }
+                          >
+                            {UNIDADES_INSUMO.map((u) => (
+                              <option key={u} value={u}>{u}</option>
+                            ))}
+                          </Select>
+                          <span className="text-body-color dark:text-body-color-dark">/planta</span>
+                          <div className="ml-auto flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => saveEditInsumoItem(idx)}
+                              className="rounded-lg bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:bg-primary-600"
+                            >
+                              Guardar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingInsumoIdx(null)}
+                              className="rounded-lg border border-stroke px-2.5 py-1 text-xs text-body-color hover:bg-gray-50 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    ) : (
+                      /* ── Display row ── */
+                      <li
+                        key={idx}
+                        className="flex items-center justify-between rounded-lg border border-stroke bg-white px-3 py-2 text-xs dark:border-strokedark dark:bg-dark"
+                      >
+                        <span>
+                          <span className="font-medium text-black dark:text-white">
+                            {it.nombre}
+                          </span>
+                          <span className="ml-2 text-body-color dark:text-body-color-dark">
+                            {it.cantidad_por_planta} {it.unidad_medida_por_planta}/planta
+                          </span>
+                        </span>
+                        <div className="ml-3 flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => startEditInsumoItem(idx)}
+                            className="rounded p-0.5 text-body-color hover:bg-primary-100 hover:text-primary dark:text-body-color-dark dark:hover:bg-primary-500/15 dark:hover:text-primary-300"
+                            title="Editar cantidad"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeInsumoItem(idx)}
+                            className="rounded p-0.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                            title="Quitar insumo"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6l-1 14H6L5 6" />
+                              <path d="M10 11v6M14 11v6" />
+                              <path d="M9 6V4h6v2" />
+                            </svg>
+                          </button>
+                        </div>
+                      </li>
+                    )
+                  )}
                 </ul>
               ) : (
                 <p className="mb-4 text-xs italic text-body-color/60 dark:text-body-color-dark/60">

@@ -49,12 +49,12 @@ export default function Topbar({ displayName, memberDays, onMenuToggle }: Topbar
         <button
           aria-label="Cambiar tema"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-black transition-colors hover:bg-gray-200 dark:bg-dark-bg dark:text-white dark:hover:bg-white/10"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-transparent bg-gray-100 text-black transition-all hover:bg-gray-200 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-white/12 dark:bg-white/[0.08] dark:text-amber-100 dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] dark:hover:border-primary-400/35 dark:hover:bg-primary-500/20 dark:hover:text-amber-50 dark:hover:shadow-[0_0_0_1px_rgba(20,184,166,0.25)] dark:focus-visible:ring-primary-300 dark:focus-visible:ring-offset-dark"
         >
           {/* Moon — show in light mode */}
           <svg
             viewBox="0 0 23 23"
-            className="h-5 w-5 stroke-current dark:hidden"
+            className="h-5 w-5 stroke-current text-slate-700 dark:hidden"
             fill="none"
           >
             <path
@@ -67,7 +67,7 @@ export default function Topbar({ displayName, memberDays, onMenuToggle }: Topbar
           {/* Sun — show in dark mode */}
           <svg
             viewBox="0 0 24 24"
-            className="hidden h-5 w-5 dark:block"
+            className="hidden h-5 w-5 text-amber-300 dark:block dark:drop-shadow-[0_0_6px_rgba(251,191,36,0.35)]"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"

@@ -101,7 +101,7 @@ export default function ClasesEditor({ initialClases }: ClasesEditorProps) {
     await confirm({
       title: `Eliminar "${c.nombre}"`,
       description:
-        "Esto también eliminará todas las actividades y variedades asociadas a esta clase. Esta acción no se puede deshacer.",
+        "Esto también eliminará las actividades asociadas a esta clase. Las variedades con este tipo de cultivo conservarán la etiqueta. Esta acción no se puede deshacer.",
       confirmLabel: "Eliminar",
       tone: "danger",
       onConfirm: async () => {

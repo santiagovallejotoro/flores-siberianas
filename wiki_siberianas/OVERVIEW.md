@@ -31,6 +31,7 @@
 | Theming | **next-themes** | Light/dark toggle with no flash on load |
 | Backend / DB | **Supabase** (Postgres + Auth) | Managed DB, built-in auth, token refresh, real-time |
 | PDF | **jsPDF** + **jspdf-autotable** | Client-side PDF generation for [[features/credit-application|credit application]] |
+| Charts (portal) | **Recharts** | Interactive charts on the [[features/proveedor-portal|proveedor]] dashboard (`ResponsiveContainer`, composición barras/líneas) |
 | Body font | **Inter** | Clean, readable at all sizes |
 | Heading font | **Playfair Display** | Elegant, premium editorial feel |
 
@@ -140,6 +141,49 @@ For the full grouped route table, see [[ARCHITECTURE]].
 **Portals:** [[features/client-portal|client portal]] — `/client-portal`; [[features/proveedor-portal|proveedor portal]] — `/proveedor-portal`
 
 **Other:** [[features/credit-application|credit application]] — `/apply/credit`; also [[features/proveedores|Proveedores]] at `/proveedores`
+
+---
+
+## Proveedor farm: Mi Finca operations (2026)
+
+The **Mi Finca** area extends beyond catalog editors ([[features/proveedor-portal|proveedor portal]]) with **operational** screens that mirror the legacy `FarmPanel` Google Sheets/Apps Script flows, implemented in **Next.js (App Router) + Supabase** with **mobile-first** layouts.
+
+| Area | Route | Code map |
+|------|-------|----------|
+| **Dashboard** | `/proveedor-portal` | `src/app/proveedor-portal/page.tsx` → `ProveedorDashboard` + `buildDashboardPayload` (`src/lib/farm/dashboard.ts`); refetch con `reloadProveedorDashboard` (`src/app/proveedor-portal/actions.ts`) |
+| **Cultivos** | `/proveedor-portal/farm/cultivos` | `…/farm/cultivos/page.tsx` → `CultivosEditor` |
+| **Reportes** | `/proveedor-portal/farm/reportes` | `…/farm/reportes/page.tsx` → `ReportesViewer` |
+| **Producción** | `/proveedor-portal/farm/produccion` | `…/farm/produccion/page.tsx` → `ProduccionEditor` |
+| **Costos** | `/proveedor-portal/farm/costos` | `…/farm/costos/page.tsx` → `CostosEditor` |
+| **Inventario** | `/proveedor-portal/farm/inventario` | `…/farm/inventario/page.tsx` → `InventarioEditor` |
+| **Library** | — | `src/lib/farm/*` — e.g. `cultivos.ts`, `generacion.ts`, `reportes.ts`, `produccion.ts`, `costos.ts`, `inventario.ts`, `insumos.ts`, `dashboard.ts` |
+
+### Dashboard (`/proveedor-portal`)
+
+- **KPI cards** (rango **Desde / Hasta**): cultivos activos, costos del período, ingresos (producción con `precio_venta` definido → `cantidad_cosechada × precio_venta`), actividades planificadas (`actividades_cultivo` en rango con cultivo `Activo` o `Planificado`), unidades cosechadas, insumos bajo mínimo.
+- **Flujo financiero**: selector de **año calendario**; por mes agrega costos por `tipo_costo` (incl. `GENERAL`), ingresos y **neto**; gráfico con **Recharts** (barras apiladas + líneas).
+- **Producción por mes** y **déficit de inventario** (insumos por debajo de `stock_minimo`) respecto al mismo rango o estado actual.
+- **Acciones rápidas**: enlaces a Cultivos, Producción, Costos e Inventario.
+- **Costos** en agregaciones usan solo filas con **`fecha`** (no se contempla `fecha` nula).
+
+### Otros módulos (resumen)
+
+- **Producción** — CRUD sobre `produccion`; al elegir ciclo se puede autollenar observaciones al estilo legacy.
+- **Costos** — CRUD sobre `public.costos` (`tipo_costo` incluye `ARRENDAMIENTO`, `SERVICIO`, etc.). **Tipo INSUMO:** al guardar se crea movimiento de inventario **SALIDA** vinculado (`id_costo`); al eliminar el costo, cascada devuelve stock.
+- **Inventario** — catálogo `insumos` con `stock_actual` y `valor_unitario` (promedio ponderado vía trigger en `inventario_movimientos`); pestañas stock, movimientos y reporte de compras (con filtros de fecha planeada).
+
+### Cultivos
+
+- **Server page** loads in parallel: cultivos, variedades, ubicaciones, and `clases_cultivo` (clases) for source selection in generation.
+- **CRUD** on `cultivos` (create/edit in a modal, delete with confirm). **`estado`** is aligned with Postgres `cultivos_estado_check`: `Planificado`, `Activo`, `Finalizado`, `Cancelado` (defaults use **`Activo`** for new rows — previous app-only labels like *En Progreso* are not valid in the database).
+- **Generación de datos** (from the edit modal, inspired by the legacy panel): **Generar ciclos** materializes `ciclos_cultivo` from the variety’s `ciclo_produccion` template; **Generar actividades** and **Generar insumos** use activity templates (variety or class scope, with a source picker when both exist) into `actividades_cultivo` and `insumos_cultivo`. Generation **replaces** existing generated rows for that cultivo in each category before insert. A **Gen.** column shows quick status (counts/icons) for generated ciclos, actividades, and insumos.
+- **Schema** for relationships and RLS intent: see [[DATABASE]].
+
+### Reportes
+
+- **Data layer** (`src/lib/farm/reportes.ts`): **ISO week** helpers (`getISOWeekStart`, `getISOWeek`, `weekRangeToDateRange`, `formatWeekRange`), month→week quick ranges, and fetchers `fetchReportCiclos`, `fetchReportActividades`, `fetchReportInsumos` (PostgREST embeds, date range + optional filters by ubicación/variedad).
+- **UI** (`ReportesViewer`): three tabs (producción / mano de obra / materiales), **summary** strip, and **print/PDF** via a dedicated print window. Filters stay **always visible** (no collapsible panel). Primary action is a single **Generar**; **Exportar PDF** is secondary. **Month** quick-select re-runs the report. **Ubicaciones** and **Variedades** use **pill toggles** (`FilterPills`) instead of native multi-selects. Year / month / week **selects** use **auto width** for a compact bar. Tables group rows by week using a **group header band** (week label + range + subtotal) to save vertical space versus repeated week columns. **Table column headers** use the **secondary (purple)** brand treatment (`text-secondary-600` / `bg-secondary-100/30`) to separate headers from data, consistent with badges such as *Ciclos* in `VariedadesEditor`.
+- **Columnas unificadas:** primera columna **Ubicación – Cultivo** (`nombre_cultivo` o `vereda` + `numero_cultivo`); columna **Observaciones** antes de la métrica numérica — producción: `cultivos.observaciones` + `ciclos_cultivo.ciclo_produccion`; mano de obra: cultivo + `actividades_cultivo.observaciones`; materiales: cultivo + `insumos_cultivo.observaciones`. Misma lógica en el **PDF** exportado.
 
 ---
 
