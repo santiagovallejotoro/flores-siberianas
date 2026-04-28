@@ -25,11 +25,19 @@ export class SassClient {
     });
   }
 
-  async registerEmail(email: string, password: string, metadata?: object) {
+  async registerEmail(
+    email: string,
+    password: string,
+    metadata?: object,
+    emailRedirectTo?: string,
+  ) {
     return this.client.auth.signUp({
       email,
       password,
-      options: { data: metadata || {} },
+      options: {
+        data: metadata || {},
+        ...(emailRedirectTo ? { emailRedirectTo } : {}),
+      },
     });
   }
 
@@ -37,8 +45,14 @@ export class SassClient {
     return this.client.auth.exchangeCodeForSession(code);
   }
 
-  async resendVerificationEmail(email: string) {
-    return this.client.auth.resend({ email, type: "signup" });
+  async resendVerificationEmail(email: string, emailRedirectTo?: string) {
+    return this.client.auth.resend({
+      email,
+      type: "signup",
+      ...(emailRedirectTo
+        ? { options: { emailRedirectTo } }
+        : {}),
+    });
   }
 
   async logout(redirectTo = "/auth/clientes/login") {

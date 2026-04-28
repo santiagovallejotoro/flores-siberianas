@@ -74,6 +74,7 @@ export default function ClienteRegisterPage() {
     setLoading(true);
     try {
       const client = createSPASassClient();
+      const emailRedirectTo = `${window.location.origin}/api/auth/callback?next=${encodeURIComponent("/client-portal")}&role=cliente`;
       const { error: signUpError } = await client.registerEmail(
         form.correo,
         form.password,
@@ -85,6 +86,7 @@ export default function ClienteRegisterPage() {
           numero_identificacion: form.numero_identificacion,
           numero_telefono: form.numero_telefono,
         },
+        emailRedirectTo,
       );
       if (signUpError) throw signUpError;
       router.push("/auth/verify-email?back=/auth/clientes/login");

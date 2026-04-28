@@ -18,6 +18,15 @@ function mapError(message: string): string {
   return message;
 }
 
+/** Match redirect used at sign-up so the new link still logs the user in on the right portal. */
+function emailRedirectToForBack(back: string) {
+  const isProveedor = back.includes("proveedores");
+  const next = isProveedor ? "/proveedor-portal" : "/client-portal";
+  const role = isProveedor ? "proveedor" : "cliente";
+  const params = new URLSearchParams({ next, role });
+  return `${window.location.origin}/api/auth/callback?${params.toString()}`;
+}
+
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const back = searchParams.get("back") ?? "/auth/clientes/login";
@@ -35,7 +44,8 @@ function VerifyEmailContent() {
     setLoading(true);
     try {
       const client = createSPASassClient();
-      const { error } = await client.resendVerificationEmail(email);
+      const redirectTo = emailRedirectToForBack(back);
+      const { error } = await client.resendVerificationEmail(email, redirectTo);
       if (error) throw error;
       setSuccess(true);
     } catch (err) {

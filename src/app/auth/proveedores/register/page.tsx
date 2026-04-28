@@ -76,6 +76,7 @@ export default function ProveedorRegisterPage() {
     setLoading(true);
     try {
       const client = createSPASassClient();
+      const emailRedirectTo = `${window.location.origin}/api/auth/callback?next=${encodeURIComponent("/proveedor-portal")}&role=proveedor`;
       const { error: signUpError } = await client.registerEmail(
         form.correo,
         form.password,
@@ -87,6 +88,7 @@ export default function ProveedorRegisterPage() {
           numero_identificacion: form.numero_identificacion,
           numero_telefono: form.numero_telefono,
         },
+        emailRedirectTo,
       );
       if (signUpError) throw signUpError;
       router.push("/auth/verify-email?back=/auth/proveedores/login");
