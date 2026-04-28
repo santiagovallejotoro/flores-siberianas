@@ -187,7 +187,7 @@ export default function CostosEditor({
   const [tipoFilter, setTipoFilter] = useState("");
   const [ubicacionFilter, setUbicacionFilter] = useState("");
   const [cultivoFilter, setCultivoFilter] = useState("");
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
 
   // ── Modal state ─────────────────────────────────────────────────────────────
   const [modalOpen, setModalOpen] = useState(false);

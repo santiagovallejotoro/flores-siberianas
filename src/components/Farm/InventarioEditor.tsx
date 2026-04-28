@@ -161,7 +161,7 @@ export default function InventarioEditor({
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<Tab>("stock");
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
   const [banner, setBanner] = useState<Banner>(null);
 
   // ── Live insumos (stock_actual updated on movements) ────────────────────────

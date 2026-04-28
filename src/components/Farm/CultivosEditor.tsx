@@ -152,7 +152,7 @@ export default function CultivosEditor({
 
   // Filter
   const [estadoFilter, setEstadoFilter] = useState<string>("");
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
 
   // Generation state
   const [genStatus, setGenStatus] = useState<Map<string, GenStatus>>(new Map());

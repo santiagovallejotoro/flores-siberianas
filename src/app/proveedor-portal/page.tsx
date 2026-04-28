@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import ProveedorDashboard from "@/components/ProveedorPortal/ProveedorDashboard";
+import OnboardingBanner from "@/components/Onboarding/OnboardingBanner";
 import { buildDashboardPayload } from "@/lib/farm/dashboard";
+import { getOnboardingStatus } from "@/lib/farm/onboarding";
 import { createSSRSassClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -27,18 +29,24 @@ export default async function ProveedorPortalDashboard() {
   const defaultFrom = isoDateLocal(startOfMonth);
   const defaultFinancialYear = now.getFullYear();
 
-  const initial = await buildDashboardPayload(client, {
-    from: defaultFrom,
-    to: defaultTo,
-    financialYear: defaultFinancialYear,
-  });
+  const [initial, onboardingStatus] = await Promise.all([
+    buildDashboardPayload(client, {
+      from: defaultFrom,
+      to: defaultTo,
+      financialYear: defaultFinancialYear,
+    }),
+    getOnboardingStatus(client),
+  ]);
 
   return (
-    <ProveedorDashboard
-      initial={initial}
-      defaultFrom={defaultFrom}
-      defaultTo={defaultTo}
-      defaultFinancialYear={defaultFinancialYear}
-    />
+    <div className="space-y-6">
+      <OnboardingBanner status={onboardingStatus} />
+      <ProveedorDashboard
+        initial={initial}
+        defaultFrom={defaultFrom}
+        defaultTo={defaultTo}
+        defaultFinancialYear={defaultFinancialYear}
+      />
+    </div>
   );
 }

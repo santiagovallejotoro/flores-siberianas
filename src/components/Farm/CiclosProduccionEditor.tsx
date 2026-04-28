@@ -70,7 +70,7 @@ export default function CiclosProduccionEditor({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
   const [, startTransition] = useTransition();
 
   const variedad = useMemo(

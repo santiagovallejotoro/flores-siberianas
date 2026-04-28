@@ -227,6 +227,7 @@ export default function ReportesViewer({
 
   // Tab
   const [activeTab, setActiveTab] = useState<TabKey>("ciclos");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
 
   // Report data
   const [ciclos, setCiclos] = useState<CicloReportRow[]>([]);
@@ -468,82 +469,94 @@ export default function ReportesViewer({
       {/* ── Filter panel ── */}
       <div className="rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
         {/* Header: title + actions */}
-        <div className="flex items-center justify-between gap-3 border-b border-stroke px-4 py-3 dark:border-strokedark">
-          <p className="text-sm font-medium text-black dark:text-white">Filtros</p>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-stroke/50 px-4 py-3 dark:border-strokedark/50">
+          <div className="flex w-full items-center justify-between sm:w-auto">
+            <p className="text-sm font-medium text-black dark:text-white">Filtros</p>
+          </div>
+          
+          <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-2">
+            <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex mr-2">
+               <button type="button" onClick={() => setViewMode("table")} className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${viewMode === "table" ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white" : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"}`}>Tabla</button>
+               <button type="button" onClick={() => setViewMode("card")} className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${viewMode === "card" ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white" : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"}`}>Tarjetas</button>
+            </div>
+          
             <button
               type="button"
               onClick={exportToPDF}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-stroke px-3 py-1.5 text-xs font-medium text-body-color transition-colors hover:bg-gray-50 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
+              className="inline-flex flex-1 sm:flex-none justify-center items-center gap-1.5 rounded-lg border border-stroke px-3 py-1.5 text-xs font-medium text-body-color transition-colors hover:bg-gray-50 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Exportar PDF
+              Exportar
             </button>
             <button
               type="button"
               onClick={runReport}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-60"
+              className="inline-flex flex-1 sm:flex-none justify-center items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-60"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={isLoading ? "animate-spin" : ""}>
                 <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
               </svg>
-              {isLoading ? "Cargando…" : "Generar"}
+              {isLoading ? "..." : "Generar"}
             </button>
           </div>
         </div>
 
-        {/* All filter controls in one flex row — each select auto-sizes to its content */}
-        <div className="flex flex-wrap items-end gap-3 px-4 py-4">
-          <div className="space-y-1">
-            <label className={labelCls}>Año</label>
-            <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={selectClsAuto}>
-              {yearOptions.map((y) => <option key={y} value={y}>{y}</option>)}
-            </select>
+        {/* All filter controls in one responsive flex column */}
+        <div className="flex flex-col gap-4 px-4 py-4">
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
+            <div className="space-y-1">
+              <label className={labelCls}>Año</label>
+              <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={`${selectClsAuto} w-full`}>
+                {yearOptions.map((y) => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className={labelCls}>Mes</label>
+              <select value={selectedMonth} onChange={(e) => handleMonthChange(e.target.value)} className={`${selectClsAuto} w-full`}>
+                <option value="">Todo el año</option>
+                {["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"].map((m, i) => (
+                  <option key={i + 1} value={i + 1}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className={labelCls}>Sem. inicio</label>
+              <select value={weekStart} onChange={(e) => { setWeekStart(Number(e.target.value)); setSelectedMonth(""); }} className={`${selectClsAuto} w-full`}>
+                {weekOptions.map((w) => <option key={w} value={w}>{w}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className={labelCls}>Sem. fin</label>
+              <select value={weekEnd} onChange={(e) => { setWeekEnd(Number(e.target.value)); setSelectedMonth(""); }} className={`${selectClsAuto} w-full`}>
+                {weekOptions.map((w) => <option key={w} value={w}>{w}</option>)}
+              </select>
+            </div>
           </div>
+          
+          <div className="flex flex-col gap-3">
+            <FilterPills
+              label="Ubicaciones"
+              items={initialUbicaciones.map((u) => ({
+                id: u.id,
+                label: u.nombre_cultivo ?? u.vereda ?? u.id,
+              }))}
+              selected={selectedUbicaciones}
+              onChange={setSelectedUbicaciones}
+            />
 
-          <div className="space-y-1">
-            <label className={labelCls}>Mes</label>
-            <select value={selectedMonth} onChange={(e) => handleMonthChange(e.target.value)} className={selectClsAuto}>
-              <option value="">Todo el año</option>
-              {["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"].map((m, i) => (
-                <option key={i + 1} value={i + 1}>{m}</option>
-              ))}
-            </select>
+            <FilterPills
+              label="Variedades"
+              items={initialVariedades.map((v) => ({ id: v.id, label: v.nombre }))}
+              selected={selectedVariedades}
+              onChange={setSelectedVariedades}
+            />
           </div>
-
-          <div className="space-y-1">
-            <label className={labelCls}>Sem. inicio</label>
-            <select value={weekStart} onChange={(e) => { setWeekStart(Number(e.target.value)); setSelectedMonth(""); }} className={selectClsAuto}>
-              {weekOptions.map((w) => <option key={w} value={w}>{w}</option>)}
-            </select>
-          </div>
-
-          <div className="space-y-1">
-            <label className={labelCls}>Sem. fin</label>
-            <select value={weekEnd} onChange={(e) => { setWeekEnd(Number(e.target.value)); setSelectedMonth(""); }} className={selectClsAuto}>
-              {weekOptions.map((w) => <option key={w} value={w}>{w}</option>)}
-            </select>
-          </div>
-
-          <FilterPills
-            label="Ubicaciones"
-            items={initialUbicaciones.map((u) => ({
-              id: u.id,
-              label: u.nombre_cultivo ?? u.vereda ?? u.id,
-            }))}
-            selected={selectedUbicaciones}
-            onChange={setSelectedUbicaciones}
-          />
-
-          <FilterPills
-            label="Variedades"
-            items={initialVariedades.map((v) => ({ id: v.id, label: v.nombre }))}
-            selected={selectedVariedades}
-            onChange={setSelectedVariedades}
-          />
         </div>
       </div>
 
@@ -596,7 +609,7 @@ export default function ReportesViewer({
               <EmptyState tab="ciclos" year={year} weekStart={weekStart} weekEnd={weekEnd} />
             ) : (
               <>
-                <div className="overflow-x-auto">
+                <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-x-auto`}>
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-secondary-100 bg-secondary-100/30 dark:border-secondary-500/20 dark:bg-secondary-500/5">
@@ -636,6 +649,42 @@ export default function ReportesViewer({
                     </tbody>
                   </table>
                 </div>
+                
+                {/* CARD VIEW */}
+                <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-4 p-4 lg:grid-cols-2 xl:grid-cols-3`}>
+                   {cicloGroups.map((g) => {
+                      const weekTotal = g.rows.reduce((s, r) => s + r.cantidadPlaneada, 0);
+                      return (
+                        <div key={g.weekNum} className="overflow-hidden rounded-xl border border-stroke bg-white shadow-sm dark:border-strokedark dark:bg-dark">
+                          <div className="flex items-center justify-between border-b border-stroke/50 bg-gray-50/50 px-4 py-3 dark:border-strokedark/50 dark:bg-white/5">
+                            <div className="flex flex-col">
+                               <span className="text-sm font-bold text-black dark:text-white">Semana {g.weekNum}</span>
+                               <span className="text-[11px] font-medium text-body-color dark:text-body-color-dark">{g.dateRange}</span>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Prod. Total</span>
+                              <span className="text-sm font-bold text-primary dark:text-primary-300">{weekTotal.toFixed(2)}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="divide-y divide-stroke/50 dark:divide-strokedark/50 px-4 py-2">
+                             {g.rows.map((r, i) => (
+                               <div key={i} className="flex flex-col gap-1 py-2">
+                                  <div className="flex justify-between gap-2">
+                                    <span className="text-xs font-semibold text-black dark:text-white truncate" title={r.ubicacionCultivo}>{r.ubicacionCultivo}</span>
+                                    <span className="text-xs font-bold text-black dark:text-white tabular-nums shrink-0">{r.cantidadPlaneada.toFixed(2)}</span>
+                                  </div>
+                                  <div className="flex justify-between text-[11px] text-body-color dark:text-body-color-dark items-center gap-2">
+                                     <span className="truncate" title={r.variedad}>{r.variedad}</span>
+                                     <span className="truncate max-w-[50%] shrink-0 text-right" title={r.observaciones ?? ""}>{r.observaciones ?? "—"}</span>
+                                  </div>
+                               </div>
+                             ))}
+                          </div>
+                        </div>
+                      );
+                   })}
+                </div>
                 <div className="grid grid-cols-2 gap-2 border-t border-stroke px-4 py-3 dark:border-strokedark md:grid-cols-4">
                   <SummaryCard label="Total Producción" value={cicloStats.total.toFixed(2)} />
                   <SummaryCard label="Semanas con Prod." value={String(cicloGroups.length)} />
@@ -658,7 +707,7 @@ export default function ReportesViewer({
               <EmptyState tab="actividades" year={year} weekStart={weekStart} weekEnd={weekEnd} />
             ) : (
               <>
-                <div className="overflow-x-auto">
+                <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-x-auto`}>
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-secondary-100 bg-secondary-100/30 dark:border-secondary-500/20 dark:bg-secondary-500/5">
@@ -696,6 +745,42 @@ export default function ReportesViewer({
                     </tbody>
                   </table>
                 </div>
+
+                {/* CARD VIEW */}
+                <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-4 p-4 lg:grid-cols-2 xl:grid-cols-3`}>
+                   {actividadGroups.map((g) => {
+                      const weekTotal = g.rows.reduce((s, r) => s + r.tiempoHoras, 0);
+                      return (
+                        <div key={g.weekNum} className="overflow-hidden rounded-xl border border-stroke bg-white shadow-sm dark:border-strokedark dark:bg-dark">
+                          <div className="flex items-center justify-between border-b border-stroke/50 bg-gray-50/50 px-4 py-3 dark:border-strokedark/50 dark:bg-white/5">
+                            <div className="flex flex-col">
+                               <span className="text-sm font-bold text-black dark:text-white">Semana {g.weekNum}</span>
+                               <span className="text-[11px] font-medium text-body-color dark:text-body-color-dark">{g.dateRange}</span>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Horas Tolales</span>
+                              <span className="text-sm font-bold text-primary dark:text-primary-300">{weekTotal.toFixed(2)}h</span>
+                            </div>
+                          </div>
+                          
+                          <div className="divide-y divide-stroke/50 dark:divide-strokedark/50 px-4 py-2">
+                             {g.rows.map((r, i) => (
+                               <div key={i} className="flex flex-col gap-1 py-2">
+                                  <div className="flex justify-between gap-2">
+                                    <span className="text-xs font-semibold text-black dark:text-white truncate" title={r.actividad}>{r.actividad}</span>
+                                    <span className="text-xs font-bold text-black dark:text-white tabular-nums shrink-0">{r.tiempoHoras.toFixed(2)}h</span>
+                                  </div>
+                                  <div className="flex justify-between text-[11px] text-body-color dark:text-body-color-dark items-center gap-2">
+                                     <span className="truncate" title={r.ubicacionCultivo}>{r.ubicacionCultivo}</span>
+                                     <span className="truncate max-w-[50%] shrink-0 text-right" title={r.observaciones ?? ""}>{r.observaciones ?? "—"}</span>
+                                  </div>
+                               </div>
+                             ))}
+                          </div>
+                        </div>
+                      );
+                   })}
+                </div>
                 <div className="grid grid-cols-2 gap-2 border-t border-stroke px-4 py-3 dark:border-strokedark md:grid-cols-4">
                   <SummaryCard label="Total Horas" value={`${actStats.total.toFixed(2)}h`} />
                   <SummaryCard label="Equiv. en Días (8h)" value={`${(actStats.total / 8).toFixed(1)} días`} />
@@ -718,7 +803,8 @@ export default function ReportesViewer({
               <EmptyState tab="insumos" year={year} weekStart={weekStart} weekEnd={weekEnd} />
             ) : (
               <>
-                <div className="overflow-x-auto">
+                {/* TABLE VIEW */}
+                <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-x-auto`}>
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-secondary-100 bg-secondary-100/30 dark:border-secondary-500/20 dark:bg-secondary-500/5">
@@ -759,6 +845,45 @@ export default function ReportesViewer({
                       })}
                     </tbody>
                   </table>
+                </div>
+
+                {/* CARD VIEW */}
+                <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-4 p-4 lg:grid-cols-2 xl:grid-cols-3`}>
+                   {insumoGroups.map((g) => {
+                      const weekTotal = g.rows.reduce((s, r) => s + r.costoEstimado, 0);
+                      return (
+                        <div key={g.weekNum} className="overflow-hidden rounded-xl border border-stroke bg-white shadow-sm dark:border-strokedark dark:bg-dark">
+                          <div className="flex items-center justify-between border-b border-stroke/50 bg-gray-50/50 px-4 py-3 dark:border-strokedark/50 dark:bg-white/5">
+                            <div className="flex flex-col">
+                               <span className="text-sm font-bold text-black dark:text-white">Semana {g.weekNum}</span>
+                               <span className="text-[11px] font-medium text-body-color dark:text-body-color-dark">{g.dateRange}</span>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Costo Est.</span>
+                              <span className="text-sm font-bold text-primary dark:text-primary-300">{fmtCOP(weekTotal)}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="divide-y divide-stroke/50 dark:divide-strokedark/50 px-4 py-2">
+                             {g.rows.map((r, i) => (
+                               <div key={i} className="flex flex-col py-2">
+                                  <div className="flex justify-between items-start gap-2 mb-1">
+                                    <span className="text-xs font-semibold text-black dark:text-white truncate" title={r.insumo}>{r.insumo}</span>
+                                    <div className="flex flex-col items-end shrink-0">
+                                      <span className="text-xs font-bold text-black dark:text-white tabular-nums">{fmtCOP(r.costoEstimado)}</span>
+                                      <span className="text-[10px] text-body-color dark:text-body-color-dark">{r.cantidadRequerida.toFixed(2)} {r.unidad}</span>
+                                    </div>
+                                  </div>
+                                  <div className="flex justify-between text-[11px] text-body-color dark:text-body-color-dark items-center gap-2">
+                                     <span className="truncate" title={r.ubicacionCultivo}>{r.ubicacionCultivo}</span>
+                                     <span className="truncate max-w-[50%] shrink-0 text-right" title={r.observaciones ?? ""}>{r.observaciones ?? "—"}</span>
+                                  </div>
+                               </div>
+                             ))}
+                          </div>
+                        </div>
+                      );
+                   })}
                 </div>
                 <div className="grid grid-cols-2 gap-2 border-t border-stroke px-4 py-3 dark:border-strokedark md:grid-cols-4">
                   <SummaryCard label="Costo Total Estimado" value={fmtCOP(insumoStats.total)} />

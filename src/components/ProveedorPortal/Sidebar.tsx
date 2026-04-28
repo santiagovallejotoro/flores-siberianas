@@ -152,6 +152,12 @@ const icons = {
       <polyline points="20 6 9 17 4 12" />
     </Icon>
   ),
+  compass: (
+    <Icon>
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </Icon>
+  ),
   user: (
     <Icon>
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -206,6 +212,18 @@ function buildSections(cultivosCount: number): NavSection[] {
     {
       title: "Planificación de Cultivo",
       entries: [
+        ...(cultivosCount === 0
+          ? [
+              {
+                kind: "link" as const,
+                item: {
+                  label: "Primeros pasos",
+                  href: "/proveedor-portal/primeros-pasos",
+                  icon: icons.compass,
+                },
+              },
+            ]
+          : []),
         {
           kind: "link",
           item: {

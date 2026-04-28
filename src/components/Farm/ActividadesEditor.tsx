@@ -143,7 +143,7 @@ export default function ActividadesEditor({
   const [entidadId, setEntidadId] = useState<string>("");
   const [actividades, setActividades] = useState<Actividad[] | null>(null);
   const [loadingList, setLoadingList] = useState(false);
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Actividad | null>(null);
