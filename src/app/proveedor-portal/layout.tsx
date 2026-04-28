@@ -33,6 +33,18 @@ export default async function ProveedorPortalLayout({
     client.from("cultivos").select("*", { count: "exact", head: true }),
   ]);
 
+  // Gate: require all mandatory profile fields before portal access
+  const profileComplete =
+    proveedor?.nombres &&
+    proveedor?.apellidos &&
+    proveedor?.tipo_identificacion &&
+    proveedor?.numero_identificacion &&
+    proveedor?.numero_telefono;
+
+  if (!profileComplete) {
+    redirect("/auth/proveedores/completar-perfil");
+  }
+
   const displayName =
     proveedor?.nombres && proveedor?.apellidos
       ? `${proveedor.nombres} ${proveedor.apellidos}`

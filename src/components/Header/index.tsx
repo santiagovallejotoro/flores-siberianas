@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ThemeToggler from "./ThemeToggler";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -23,6 +23,22 @@ const Header = () => {
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
   };
+
+  // Login Dropdown Desktop
+  const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setLoginDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Sticky Navbar
   const [sticky, setSticky] = useState(false);
@@ -133,91 +149,113 @@ const Header = () => {
                               ? "text-primary dark:text-primary-300"
                               : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-primary-300"
                           }`}
+                          onClick={() => setNavbarOpen(false)}
                         >
                           {getMenuTitle(menuItem.title)}
                         </Link>
                       </li>
                     ))}
-                    {isProveedoresPage ? (
-                      <>
-                        <li className="mt-2 lg:hidden">
-                          <Link
-                            href="/proveedores#registro-proveedor"
-                            className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
-                          >
-                            Vender
-                          </Link>
-                        </li>
-                        <li className="mt-2 lg:hidden">
-                          <Link
-                            href="/proveedor-portal"
-                            className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
-                          >
-                            Proveedor
-                          </Link>
-                        </li>
-                      </>
-                    ) : isProveedorPortalPage ? (
-                      <li className="mt-2 lg:hidden">
-                        <Link
-                          href="/proveedores#registro-proveedor"
-                          className="bg-primary hover:bg-primary-600 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
-                        >
-                          Vender
-                        </Link>
-                      </li>
-                    ) : (
-                      <li className="lg:hidden">
-                        <Link
-                          href="/client-portal"
-                          className="bg-primary hover:bg-primary-600 mt-2 flex rounded-xl px-4 py-2.5 text-center text-[15px] font-semibold text-white"
-                        >
-                          {t.common.clientPortal}
-                        </Link>
-                      </li>
-                    )}
+
                   </ul>
+                  
+                  {/* MOBILE specific PORTALS AND CTA */}
+                  <div className="mt-8 border-t border-body-color/20 pt-6 lg:hidden">
+                    <p className="mb-4 text-xs tracking-wider uppercase font-semibold text-dark/60 dark:text-white/60">
+                      Accesos
+                    </p>
+                    <div className="flex flex-col space-y-3">
+                      <Link
+                        href="/client-portal"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-primary dark:hover:text-white"
+                        onClick={() => setNavbarOpen(false)}
+                      >
+                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                         Portal Cliente
+                      </Link>
+                      <Link
+                        href="/proveedor-portal"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-primary dark:hover:text-white"
+                        onClick={() => setNavbarOpen(false)}
+                      >
+                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                         Portal Proveedor
+                      </Link>
+                    </div>
+
+                    <div className="mt-6 border-t border-body-color/20 pt-6">
+                       {isProveedoresPage || isProveedorPortalPage ? (
+                            <Link
+                                href="/proveedores#registro-proveedor"
+                                className="shadow-btn bg-primary hover:bg-primary-600 block w-full rounded-xl px-4 py-3 text-center text-base font-semibold text-white transition duration-300"
+                                onClick={() => setNavbarOpen(false)}
+                            >
+                                Vender
+                            </Link>
+                       ) : (
+                            <Link
+                                href="/contact"
+                                className="shadow-btn bg-primary hover:bg-primary-600 block w-full rounded-xl px-4 py-3 text-center text-base font-semibold text-white transition duration-300"
+                                onClick={() => setNavbarOpen(false)}
+                            >
+                                {t.common.getQuote || "Obtener cotización"}
+                            </Link>
+                       )}
+                    </div>
+                  </div>
                 </nav>
               </div>
               <div className="flex items-center justify-end gap-3 pr-16 lg:pr-0">
-                {isProveedoresPage ? (
-                  <>
-                    <Link
-                      href="/proveedores#registro-proveedor"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
-                    >
-                      Vender
-                    </Link>
-                    <Link
-                      href="/proveedor-portal"
-                      className="bg-primary hover:bg-primary-600 hidden rounded-xl px-5 py-2.5 text-base font-semibold text-white transition duration-300 md:flex md:items-center"
-                    >
-                      Proveedor
-                    </Link>
-                  </>
-                ) : isProveedorPortalPage ? (
-                  <Link
-                    href="/proveedores#registro-proveedor"
-                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
+                {/* LOGIN DROPDOWN (Desktop only) */}
+                <div className="relative hidden md:block" ref={dropdownRef}>
+                  <button
+                    onClick={() => setLoginDropdownOpen(!loginDropdownOpen)}
+                    className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-[15px] font-semibold text-dark transition hover:text-primary dark:text-white dark:hover:text-primary-300"
                   >
-                    Vender
-                  </Link>
+                    <span>Acceder</span>
+                    <svg width="12" height="12" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transition-transform duration-200 ${loginDropdownOpen ? "rotate-180" : ""}`}>
+                        <path d="M7.81602 9.97495C7.68477 9.97495 7.57539 9.9312 7.46602 9.8437L2.43477 4.89995C2.23789 4.70308 2.23789 4.39683 2.43477 4.19995C2.63164 4.00308 2.93789 4.00308 3.13477 4.19995L7.81602 8.77183L12.4973 4.1562C12.6941 3.95933 13.0004 3.95933 13.1973 4.1562C13.3941 4.35308 13.3941 4.65933 13.1973 4.8562L8.16601 9.79995C8.05664 9.90933 7.94727 9.97495 7.81602 9.97495Z" fill="currentColor"/>
+                    </svg>
+                  </button>
+                  
+                  {loginDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-[220px] rounded-xl border border-body-color/10 bg-white p-3 shadow-lg dark:border-white/10 dark:bg-dark">
+                      <Link
+                        href="/client-portal"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-body-color transition hover:bg-primary/5 hover:text-primary dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
+                        onClick={() => setLoginDropdownOpen(false)}
+                      >
+                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Portal Cliente
+                      </Link>
+                      <Link
+                        href="/proveedor-portal"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-body-color transition hover:bg-primary/5 hover:text-primary dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
+                        onClick={() => setLoginDropdownOpen(false)}
+                      >
+                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Portal Proveedor
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* DYNAMIC PRIMARY CTA (Desktop only) */}
+                {isProveedoresPage || isProveedorPortalPage ? (
+                   <Link
+                    href="/proveedores#registro-proveedor"
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 md:block"
+                   >
+                     Vender
+                   </Link>
                 ) : (
-                  <>
                     <Link
-                      href="/contact"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-3 text-base font-semibold text-white transition duration-300 md:block"
+                    href="/contact"
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 md:block"
                     >
-                      {t.common.getQuote}
+                    {t?.common?.getQuote || "Obtener cotización"}
                     </Link>
-                    <Link
-                      href="/client-portal"
-                      className="bg-primary hover:bg-primary-600 hidden rounded-xl px-5 py-2.5 text-base font-semibold text-white transition duration-300 md:flex md:items-center"
-                    >
-                      {t.common.clientPortal}
-                    </Link>
-                  </>
                 )}
+
                 <LanguageSelector />
                 <ThemeToggler />
               </div>

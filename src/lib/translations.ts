@@ -6,6 +6,7 @@ export const translations = {
       technology: 'Technology',
       about: 'About',
       exports: 'Exports',
+      proveedores: 'Suppliers',
       contact: 'Contact'
     },
     // Hero
@@ -461,6 +462,7 @@ export const translations = {
       technology: 'Технологии',
       about: 'О нас',
       exports: 'Экспорт',
+      proveedores: 'Поставщики',
       contact: 'Контакты'
     },
     // Hero
@@ -898,6 +900,7 @@ export const translations = {
       technology: 'Tecnología',
       about: 'Nosotros',
       exports: 'Exportación',
+      proveedores: 'Proveedores',
       contact: 'Contacto'
     },
     // Hero
@@ -1335,6 +1338,7 @@ export const translations = {
       technology: '技术',
       about: '关于',
       exports: '出口',
+      proveedores: '供应商',
       contact: '联系'
     },
     // Hero
