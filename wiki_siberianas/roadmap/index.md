@@ -47,6 +47,23 @@ Features with existing routes but incomplete implementation:
 
 - [ ] Define what `UpcomingTools/` component will become → currently a placeholder
 
+### Mi Finca — onboarding & farmer guidance
+
+> [!note]
+> Phase 1 (wizard at `/proveedor-portal/primeros-pasos`, dashboard banner, sidebar entry) and Phase 2 Round 1 (checklist hub at `/proveedor-portal/farm`, `CatalogHelp` blocks on the 7 catálogo pages) are **shipped**. The items below were scoped but deferred — they touch the existing editors and need separate review before implementing.
+
+**Priority — flagged by the team:**
+
+- [ ] **Suggested activities seed** — "Cargar ejemplos típicos" button on `Actividades` (and optionally `Clases`, `Insumos`) that one-click loads ~8 hortensia-typical activities (riego, fertilización, poda, cosecha, empaque, etc.) when the catalog is empty. User can edit or delete each. Touches `ActividadesEditor`. **Why important:** removes the cold-start blank-page problem for the hardest catálogo to fill.
+- [ ] **Smart empty states for variedad and dependents** — In `VariedadesEditor`, `ActividadesEditor`, `CiclosProduccionEditor`, `CultivosEditor`, when a prerequisite dropdown is empty (no Clases / Ubicaciones / Variedades / Insumos), show inline CTAs ("Crear primera Clase rápido", "Ir a Clases →") instead of a silent empty `<select>`. **Why important:** the only remaining hard dead-end for a farmer who navigates outside the wizard.
+
+**Polish (lower priority):**
+
+- [ ] **Mobile polish on dense forms** — Convert `VariedadesEditor` modal to full-screen sheet on phones; stack `UbicacionesEditor` 4-col grid vertically <640px; audit `inputMode` on remaining numeric fields.
+- [ ] **Plain-language relabel pass** — Field labels still office-Spanish ("SMMLV", "Tasa de producción por planta"). Add finca-Spanish helper hints inline.
+- [ ] **Cultivo modal generation strip** — Reframe the three "Generar ciclos / actividades / insumos" buttons inside `CultivosEditor` as a numbered status strip with one-line explanations and per-step progress pills.
+- [ ] **Dashboard quick-actions blocked state** — When `cultivosCount === 0`, render the dashboard's *Acciones rápidas* cards as visually disabled with a "Necesita configuración" pill instead of silently linking to empty pages.
+
 ---
 
 ## Discarded Ideas

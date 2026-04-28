@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { createSSRSassClient } from "@/lib/supabase/server";
 import { listInsumos } from "@/lib/farm/insumos";
 import InsumosEditor from "@/components/Farm/InsumosEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Insumos | Portal Proveedor",
@@ -21,6 +22,11 @@ export default async function InsumosPage() {
           pesticidas, sustratos y más, con precios unitarios y stock mínimo.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Fertilizantes, sustratos, pesticidas y materiales — todo lo que usas en la operación. Aquí defines el costo unitario y stock mínimo, datos que alimentan inventario y costos por cultivo."
+        example="Triple 15 — kg — $3.200/kg — proveedor La Cosecha — stock mínimo 50 kg."
+      />
 
       <InsumosEditor initialInsumos={initialInsumos} />
     </div>

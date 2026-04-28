@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { createSSRSassClient } from "@/lib/supabase/server";
 import { listClases } from "@/lib/farm/clases";
 import ClasesEditor from "@/components/Farm/ClasesEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Clases de Cultivo | Portal Proveedor",
@@ -23,6 +24,11 @@ export default async function ClasesPage() {
           CLAVEL.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Las clases son las familias de flores que cultivas — HORTENSIA, ROSA, CLAVEL. Cada variedad pertenece a una clase, y muchas actividades pueden definirse a nivel de clase para que apliquen automáticamente a todas sus variedades."
+        example="Si cultivas tres variedades de hortensia (Limelight, Pink Lady, Bobo), todas pertenecen a la clase HORTENSIA y comparten las actividades base."
+      />
 
       <ClasesEditor initialClases={initialClases} />
     </div>

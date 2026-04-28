@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { OnboardingStatus } from "@/lib/farm/onboarding";
 
-const DISMISSED_KEY = "fs_onboarding_banner_dismissed";
+const DISMISSED_KEY = "fs_onboarding_banner_dismissed_session";
 
 function ArrowRight() {
   return (
@@ -35,7 +35,7 @@ export default function OnboardingBanner({
   useEffect(() => {
     setDismissed(
       typeof window !== "undefined" &&
-        window.localStorage.getItem(DISMISSED_KEY) === "1",
+        window.sessionStorage.getItem(DISMISSED_KEY) === "1",
     );
   }, []);
 
@@ -53,7 +53,7 @@ export default function OnboardingBanner({
       : `Te faltan ${remaining} pasos para empezar a registrar cultivos.`;
 
   function handleDismiss() {
-    window.localStorage.setItem(DISMISSED_KEY, "1");
+    window.sessionStorage.setItem(DISMISSED_KEY, "1");
     setDismissed(true);
   }
 

@@ -28,6 +28,12 @@ function buildForm(rows: ConfigVar[]): FormValues {
 const inputCls =
   "w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-strokedark dark:bg-dark dark:text-white dark:focus:ring-primary/15";
 
+/** Jornal diario (COP) desde salario mensual, referencia 42 h/semana (Colombia). */
+function jornalDesdeSalarioMensual(salarioMensual: number, horasJornal: number): number {
+  const h = horasJornal > 0 ? horasJornal : 8;
+  return Math.round((salarioMensual * 12 * h) / (42 * 52));
+}
+
 export default function ConfiguracionEditor({
   initial,
 }: ConfiguracionEditorProps) {
@@ -134,7 +140,7 @@ export default function ConfiguracionEditor({
                   </p>
                 </div>
 
-                <div className="w-full sm:w-48">
+                <div className="w-full sm:w-48 space-y-1.5">
                   <input
                     id={`cfg-${f.variable}`}
                     type="number"
@@ -145,6 +151,34 @@ export default function ConfiguracionEditor({
                     placeholder={f.placeholder}
                     className={`${inputCls} tabular-nums`}
                   />
+                  {f.variable === "JORNAL_DIA" && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const sal = Number(form.SMMLV);
+                          const hj = Number(form.HORAS_JORNAL);
+                          if (!sal || sal <= 0) {
+                            showBanner({
+                              kind: "error",
+                              text: "Indica primero un salario mensual válido (campo SMMLV).",
+                            });
+                            return;
+                          }
+                          setField(
+                            "JORNAL_DIA",
+                            String(jornalDesdeSalarioMensual(sal, hj)),
+                          );
+                        }}
+                        className="w-full rounded-md border border-stroke bg-gray-50 px-2 py-1.5 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:bg-white/5 dark:text-body-color-dark dark:hover:bg-white/10"
+                      >
+                        Calcular desde salario mensual
+                      </button>
+                      <p className="text-[10px] leading-snug text-body-color/70 dark:text-body-color-dark/60">
+                        Usa el salario mensual de arriba, 42 h/semana y las horas por jornal. Puedes ajustar el valor a mano.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             ))}

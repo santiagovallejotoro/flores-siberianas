@@ -3,6 +3,7 @@ import { createSSRSassClient } from "@/lib/supabase/server";
 import { listVariedades } from "@/lib/farm/variedades";
 import { listCiclosByVariedad } from "@/lib/farm/ciclos";
 import CiclosProduccionEditor from "@/components/Farm/CiclosProduccionEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Ciclos de Producción | Portal Proveedor",
@@ -42,6 +43,11 @@ export default async function CiclosProduccionPage({
           necesitas.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Los ciclos son la plantilla semanal de cortes para una variedad: cuánta flor cosechas en cada semana del ciclo. El sistema los genera automáticamente al guardar la variedad — pico al medio del ciclo, menos al inicio y al final — y luego puedes ajustar los porcentajes a mano."
+        example="Variedad de 6 semanas: 12% sem 1 — 18% sem 2 — 23% sem 3 — 23% sem 4 — 15% sem 5 — 9% sem 6."
+      />
 
       <CiclosProduccionEditor
         variedades={variedades}

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { createSSRSassClient } from "@/lib/supabase/server";
 import { listUbicaciones } from "@/lib/farm/ubicaciones";
 import UbicacionesEditor from "@/components/Farm/UbicacionesEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Ubicaciones | Portal Proveedor",
@@ -23,6 +24,11 @@ export default async function UbicacionesPage() {
           varios cultivos a lo largo del tiempo.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Una ubicación es un lote, cama o invernadero físico de tu finca. Una misma ubicación puede albergar varios cultivos a lo largo del tiempo. Sirve para separar costos, producción y rendimientos por área."
+        example="Lote 1 — vereda La Esperanza, 1.200 m² — donde alternas hortensias y rosas según la temporada."
+      />
 
       <UbicacionesEditor initialUbicaciones={initialUbicaciones} />
     </div>

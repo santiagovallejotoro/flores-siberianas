@@ -4,6 +4,7 @@ import { listClases } from "@/lib/farm/clases";
 import { listVariedades } from "@/lib/farm/variedades";
 import { listInsumos } from "@/lib/farm/insumos";
 import ActividadesEditor from "@/components/Farm/ActividadesEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Actividades | Portal Proveedor",
@@ -29,6 +30,11 @@ export default async function ActividadesPage() {
           fertilización, poda, cosecha y empaque.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Las actividades son el catálogo de tareas que se repiten en cada cultivo: riego, fertilización, poda, cosecha, empaque. Las defines una vez por clase o por variedad y el sistema las copia automáticamente en cada cultivo nuevo."
+        example="Fertilización con Triple 15 — semana 4 — 30 segundos por planta — requiere 5 g de Triple 15 por planta."
+      />
 
       <ActividadesEditor clases={clases} variedades={variedades} insumos={insumos} />
     </div>

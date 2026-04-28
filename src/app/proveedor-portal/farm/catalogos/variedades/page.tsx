@@ -4,6 +4,7 @@ import { listClases } from "@/lib/farm/clases";
 import { listUbicaciones } from "@/lib/farm/ubicaciones";
 import { listVariedades } from "@/lib/farm/variedades";
 import VariedadesEditor from "@/components/Farm/VariedadesEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Variedades | Portal Proveedor",
@@ -29,6 +30,11 @@ export default async function VariedadesPage() {
           rendimiento esperado por planta y ubicación típica.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Cada variedad tiene su tiempo de cosecha en semanas, su rendimiento por planta y la semana en que comienzas a cortar. Con esto el sistema arma automáticamente los ciclos de producción y proyecta tus cosechas."
+        example="Hortensia Limelight: ciclo de 12 semanas, comienzas a cortar en la semana 8, rinde 6 tallos por planta."
+      />
 
       <VariedadesEditor
         initialVariedades={variedades}

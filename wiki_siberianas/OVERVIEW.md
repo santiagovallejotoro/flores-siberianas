@@ -166,6 +166,14 @@ The **Mi Finca** area extends beyond catalog editors ([[features/proveedor-porta
 - **Acciones rápidas**: enlaces a Cultivos, Producción, Costos e Inventario.
 - **Costos** en agregaciones usan solo filas con **`fecha`** (no se contempla `fecha` nula).
 
+### Onboarding & guía para agricultores (2026-04)
+
+- **Wizard** at `/proveedor-portal/primeros-pasos` — 6 steps (Configuración → Clases → Ubicaciones → Variedades → Insumos*opcional* → Actividades*opcional*) reusing the existing catálogo editors with chrome (progress bar, "¿Por qué este paso?" callout, back/next/skip).
+- **Soft surfacing** — dashboard banner ("Te faltan N pasos…", session-storage dismissal) and a sidebar **Primeros pasos** link, both auto-hide once the user has at least one cultivo.
+- **Hub** at `/proveedor-portal/farm` redone as a numbered checklist with status badges per setup item + a separate *Operación* card grid; the Cultivos card carries a *Necesita variedades* pill while the catálogo is incomplete.
+- **In-page help** — a `<CatalogHelp>` collapsible "¿Por qué necesito esto?" with example sits above each catálogo editor; native `<details>`, no JS overhead.
+- **Pending follow-ups** (suggested-activities seed, smart empty states on variedad/cultivos dropdowns, mobile polish, plain-language relabel) → tracked in [[roadmap/index#Mi Finca — onboarding & farmer guidance]].
+
 ### Otros módulos (resumen)
 
 - **Producción** — CRUD sobre `produccion`; al elegir ciclo se puede autollenar observaciones al estilo legacy.

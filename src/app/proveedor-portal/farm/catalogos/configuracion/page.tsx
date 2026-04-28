@@ -6,6 +6,7 @@ import {
   upsertConfigBatch,
 } from "@/lib/farm/configuracion";
 import ConfiguracionEditor from "@/components/Farm/ConfiguracionEditor";
+import CatalogHelp from "@/components/Onboarding/CatalogHelp";
 
 export const metadata: Metadata = {
   title: "Configuración | Portal Proveedor",
@@ -39,6 +40,11 @@ export default async function ConfiguracionPage() {
           obra e insumos en toda la finca.
         </p>
       </div>
+
+      <CatalogHelp
+        why="Estos parámetros — la tasa de cambio del dólar, el SMMLV y el valor del jornal — son la base para que el sistema calcule costos de mano de obra, insumos y reportes financieros en toda la finca."
+        example="Si subes el jornal de $65.000 a $70.000, el costo estimado de cada actividad se ajusta automáticamente en todos los cultivos."
+      />
 
       <ConfiguracionEditor initial={rows} />
     </div>
