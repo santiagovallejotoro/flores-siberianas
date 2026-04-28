@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import ProveedorDashboard from "@/components/ProveedorPortal/ProveedorDashboard";
 import { buildDashboardPayload } from "@/lib/farm/dashboard";
 import { createSSRSassClient } from "@/lib/supabase/server";
@@ -21,13 +20,6 @@ function isoDateLocal(d: Date): string {
 export default async function ProveedorPortalDashboard() {
   const supabase = await createSSRSassClient();
   const client = supabase.getSupabaseClient();
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  if (!user) {
-    redirect("/auth/proveedores/login");
-  }
 
   const now = new Date();
   const defaultTo = isoDateLocal(now);

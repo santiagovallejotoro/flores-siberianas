@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { createSSRSassClient } from "@/lib/supabase/server";
+import { createSSRSassClient, getAuthUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Mi Perfil | Portal Proveedor",
@@ -7,14 +7,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PerfilPage() {
-  const supabase = await createSSRSassClient();
-  const {
-    data: { user },
-  } = await supabase.getSupabaseClient().auth.getUser();
+  const [{ data: { user } }, supabase] = await Promise.all([
+    getAuthUser(),
+    createSSRSassClient(),
+  ]);
+
+  const client = supabase.getSupabaseClient();
 
   const { data: proveedor } = user
-    ? await supabase
-        .getSupabaseClient()
+    ? await client
         .from("proveedores")
         .select("*")
         .eq("id", user.id)

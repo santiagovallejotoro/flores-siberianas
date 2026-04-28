@@ -16,12 +16,7 @@ export async function GET(request: Request) {
 
   try {
     const supabase = await createSSRSassClient();
-    await supabase.exchangeCodeForSession(code);
-
-    const {
-      data: { user },
-      error,
-    } = await supabase.getSupabaseClient().auth.getUser();
+    const { data: { user }, error } = await supabase.exchangeCodeForSession(code);
 
     if (error || !user) {
       return NextResponse.redirect(new URL("/auth/clientes/login", request.url));

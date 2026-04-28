@@ -1,13 +1,10 @@
-import { createSSRSassClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/ClientPortal/LogoutButton";
 import ClientPortalDashboardCards from "@/components/ClientPortal/ClientPortalDashboardCards";
 
 export default async function ClientPortalPage() {
-  const supabase = await createSSRSassClient();
-  const {
-    data: { user },
-  } = await supabase.getSupabaseClient().auth.getUser();
+  const { data: { user } } = await getAuthUser();
 
   if (!user) {
     redirect("/auth/clientes/login");

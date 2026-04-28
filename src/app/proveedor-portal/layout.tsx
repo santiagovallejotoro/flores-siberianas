@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createSSRSassClient } from "@/lib/supabase/server";
+import { createSSRSassClient, getAuthUser } from "@/lib/supabase/server";
 import PortalShell from "@/components/ProveedorPortal/PortalShell";
 
 export const metadata = {
@@ -11,10 +11,10 @@ export default async function ProveedorPortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createSSRSassClient();
-  const {
-    data: { user },
-  } = await supabase.getSupabaseClient().auth.getUser();
+  const [{ data: { user } }, supabase] = await Promise.all([
+    getAuthUser(),
+    createSSRSassClient(),
+  ]);
 
   if (!user) {
     redirect("/auth/proveedores/login");

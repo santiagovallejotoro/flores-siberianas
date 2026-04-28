@@ -69,6 +69,7 @@ export default function ProveedorLoginPage() {
       <GoogleSignInButton
         redirectPath="/proveedor-portal"
         label="Continuar con Google"
+        roleOverride="proveedor"
       />
 
       <div className="relative my-5 flex items-center">
