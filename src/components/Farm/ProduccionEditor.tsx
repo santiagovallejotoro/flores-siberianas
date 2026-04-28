@@ -184,6 +184,7 @@ export default function ProduccionEditor({
   const [ubicacionFilter, setUbicacionFilter] = useState("");
   const [cultivoFilter, setCultivoFilter] = useState("");
   const [estadoFilter, setEstadoFilter] = useState("");
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   // ── Modal state ─────────────────────────────────────────────────────────────
   const [modalOpen, setModalOpen] = useState(false);
@@ -448,95 +449,132 @@ export default function ProduccionEditor({
       )}
 
       {/* Header */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-end gap-3">
+      <div className="mb-4 flex flex-col gap-4">
+        {/* Filters Row */}
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end sm:justify-start">
           {/* Date range */}
-          <div>
+          <div className="col-span-1">
             <label className={labelCls}>Fecha inicio</label>
             <input
               type="date"
               value={fechaInicio}
               onChange={(e) => setFechaInicio(e.target.value)}
-              className={inputCls + " w-36"}
+              className={inputCls + " w-full sm:w-[130px]"}
             />
           </div>
-          <div>
+          <div className="col-span-1">
             <label className={labelCls}>Fecha fin</label>
             <input
               type="date"
               value={fechaFin}
               onChange={(e) => setFechaFin(e.target.value)}
-              className={inputCls + " w-36"}
+              className={inputCls + " w-full sm:w-[130px]"}
             />
           </div>
           {/* Ubicación filter */}
-          <Select
-            label="Ubicación"
-            value={ubicacionFilter}
-            onChange={(e) => setUbicacionFilter(e.target.value)}
-            wrapperClassName="w-44"
-          >
-            <option value="">Todas</option>
-            {ubicaciones.map((u) => (
-              <option key={u.id} value={u.id}>
-                {ubicacionLabel(u)}
-              </option>
-            ))}
-          </Select>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Ubicación"
+              value={ubicacionFilter}
+              onChange={(e) => setUbicacionFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[160px]"
+            >
+              <option value="">Todas</option>
+              {ubicaciones.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {ubicacionLabel(u)}
+                </option>
+              ))}
+            </Select>
+          </div>
           {/* Cultivo filter */}
-          <Select
-            label="Cultivo"
-            value={cultivoFilter}
-            onChange={(e) => setCultivoFilter(e.target.value)}
-            wrapperClassName="w-48"
-          >
-            <option value="">Todos</option>
-            {cultivos.map((c) => (
-              <option key={c.id} value={c.id}>
-                {cultivoLabel(c, variedadById)}
-              </option>
-            ))}
-          </Select>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Cultivo"
+              value={cultivoFilter}
+              onChange={(e) => setCultivoFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[180px]"
+            >
+              <option value="">Todos</option>
+              {cultivos.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {cultivoLabel(c, variedadById)}
+                </option>
+              ))}
+            </Select>
+          </div>
           {/* Estado venta filter */}
-          <Select
-            label="Estado venta"
-            value={estadoFilter}
-            onChange={(e) => setEstadoFilter(e.target.value)}
-            wrapperClassName="w-36"
-          >
-            <option value="">Todos</option>
-            {ESTADOS_VENTA.map((e) => (
-              <option key={e} value={e}>
-                {e}
-              </option>
-            ))}
-          </Select>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Estado venta"
+              value={estadoFilter}
+              onChange={(e) => setEstadoFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[130px]"
+            >
+              <option value="">Todos</option>
+              {ESTADOS_VENTA.map((e) => (
+                <option key={e} value={e}>
+                  {e}
+                </option>
+              ))}
+            </Select>
+          </div>
           {/* Clear */}
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="flex items-center gap-1.5 self-end rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
-          >
-            <IconX />
-            Limpiar
-          </button>
+          <div className="col-span-2 sm:col-span-1 sm:self-end">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5 sm:w-auto"
+            >
+              <IconX />
+              Limpiar
+            </button>
+          </div>
         </div>
 
-        {/* CTA */}
-        <button
-          type="button"
-          onClick={openCreate}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 dark:bg-primary dark:hover:bg-primary-400"
-        >
-          <IconPlus />
-          Registrar producción
-        </button>
+        {/* Action Row */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+           {/* VIEW TOGGLE */}
+           <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+             <button
+               type="button"
+               onClick={() => setViewMode("table")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "table"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tabla
+             </button>
+             <button
+               type="button"
+               onClick={() => setViewMode("card")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "card"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tarjetas
+             </button>
+           </div>
+           
+           <button
+             type="button"
+             onClick={openCreate}
+             className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 dark:bg-primary dark:hover:bg-primary-400 sm:w-auto sm:ml-auto"
+           >
+             <IconPlus />
+             Registrar producción
+           </button>
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
+      {/* Views */}
+      <div className="w-full">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-100 text-primary dark:bg-primary-500/15 dark:text-primary-300">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
@@ -551,105 +589,189 @@ export default function ProduccionEditor({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stroke bg-gray-50 dark:border-strokedark dark:bg-white/[0.03]">
-                  {[
-                    "Fecha",
-                    "Ubicación",
-                    "Cultivo",
-                    "Cosechado",
-                    "Pérdidas",
-                    "Precio",
-                    "Total COP",
-                    "Comprador",
-                    "Estado",
-                    "",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stroke dark:divide-strokedark">
-                {filtered.map((p) => {
-                  const estado = p.estado_venta ?? "Pendiente";
-                  const chipCls =
-                    ESTADO_CHIP[estado as EstadoVenta] ??
-                    ESTADO_CHIP.Pendiente;
-                  return (
-                    <tr
-                      key={p.id}
-                      className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02]"
-                    >
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-black dark:text-white">
-                        {p.fecha ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-body-color dark:text-body-color-dark">
-                        {getUbicacionLabel(p.id_ubicacion)}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-body-color dark:text-body-color-dark">
-                        {getCultivoLabel(p.id_cultivo)}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <span className="font-medium text-black dark:text-white">
-                          {p.cantidad_cosechada ?? 0}
-                        </span>{" "}
-                        <span className="text-xs text-body-color dark:text-body-color-dark">
-                          {p.unidad ?? ""}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                        {p.perdidas ?? 0}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-body-color dark:text-body-color-dark">
-                        {p.moneda ?? "COP"} $
-                        {(p.precio_venta ?? 0).toLocaleString()}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-black dark:text-white">
-                        COP ${(p.costo_total ?? 0).toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                        {p.comprador ?? "-"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${chipCls}`}
+          <>
+            {/* Table View (Desktop Only) */}
+            <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-stroke bg-gray-50 dark:border-strokedark dark:bg-white/[0.03]">
+                      {[
+                        "Fecha",
+                        "Ubicación",
+                        "Cultivo",
+                        "Cosechado",
+                        "Pérdidas",
+                        "Precio",
+                        "Total COP",
+                        "Comprador",
+                        "Estado",
+                        "",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark"
                         >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                    {filtered.map((p) => {
+                      const estado = p.estado_venta ?? "Pendiente";
+                      const chipCls = ESTADO_CHIP[estado as EstadoVenta] ?? ESTADO_CHIP.Pendiente;
+                      return (
+                        <tr
+                          key={p.id}
+                          className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02]"
+                        >
+                          <td className="whitespace-nowrap px-4 py-3 font-medium text-black dark:text-white">
+                            {p.fecha ?? "-"}
+                          </td>
+                          <td className="px-4 py-3 text-xs text-body-color dark:text-body-color-dark">
+                            {getUbicacionLabel(p.id_ubicacion)}
+                          </td>
+                          <td className="px-4 py-3 text-xs text-body-color dark:text-body-color-dark">
+                            {getCultivoLabel(p.id_cultivo)}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3">
+                            <span className="font-medium text-black dark:text-white">
+                              {p.cantidad_cosechada ?? 0}
+                            </span>{" "}
+                            <span className="text-xs text-body-color dark:text-body-color-dark">
+                              {p.unidad ?? ""}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                            {p.perdidas ?? 0}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-body-color dark:text-body-color-dark">
+                            {p.moneda ?? "COP"} $
+                            {(p.precio_venta ?? 0).toLocaleString()}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 font-medium text-black dark:text-white">
+                            COP ${(p.costo_total ?? 0).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                            {p.comprador ?? "-"}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${chipCls}`}
+                            >
+                              {estado}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => openEdit(p)}
+                                title="Editar"
+                                className="rounded-md p-1.5 text-body-color transition-colors hover:bg-primary-100 hover:text-primary dark:text-body-color-dark dark:hover:bg-primary-500/15 dark:hover:text-primary-300"
+                              >
+                                <IconEdit />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(p)}
+                                title="Eliminar"
+                                className="rounded-md p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
+                              >
+                                <IconTrash />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Card View (Mobile always, Desktop if selected) */}
+            <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+              {filtered.map((p) => {
+                const estado = p.estado_venta ?? "Pendiente";
+                const chipCls = ESTADO_CHIP[estado as EstadoVenta] ?? ESTADO_CHIP.Pendiente;
+                
+                return (
+                  <div key={p.id} className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark">
+                    
+                    {/* Header: Fecha, Estado y Acciones */}
+                    <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-black dark:text-white">{p.fecha ?? "-"}</span>
+                        <span className={["inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide", chipCls].join(" ")}>
                           {estado}
                         </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => openEdit(p)}
-                            title="Editar"
-                            className="rounded-md p-1.5 text-body-color transition-colors hover:bg-primary-100 hover:text-primary dark:text-body-color-dark dark:hover:bg-primary-500/15 dark:hover:text-primary-300"
-                          >
-                            <IconEdit />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(p)}
-                            title="Eliminar"
-                            className="rounded-md p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
-                          >
-                            <IconTrash />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+
+                      <div className="flex flex-shrink-0 items-center pl-2 gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(p)}
+                          className="rounded-full bg-primary/10 p-1.5 text-primary transition-colors hover:bg-primary/20 dark:bg-primary-500/10 dark:hover:bg-primary-500/20"
+                        >
+                           <IconEdit />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(p)}
+                          className="rounded-full bg-red-500/10 p-1.5 text-red-500 transition-colors hover:bg-red-500/20"
+                        >
+                           <IconTrash />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cultivo / Ubicación</span>
+                        <span className="truncate text-xs font-semibold text-black dark:text-white" title={getCultivoLabel(p.id_cultivo)}>
+                          {getCultivoLabel(p.id_cultivo)}
+                        </span>
+                        <span className="truncate text-[10px] text-body-color dark:text-body-color-dark" title={getUbicacionLabel(p.id_ubicacion)}>
+                          {getUbicacionLabel(p.id_ubicacion)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cosechado</span>
+                        <span className="text-sm font-bold text-primary dark:text-primary-300">
+                          {p.cantidad_cosechada ?? 0} <span className="text-[10px] font-normal uppercase text-body-color dark:text-body-color-dark">{p.unidad ?? ""}</span>
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Pérdidas</span>
+                        <span className="text-sm font-semibold text-red-500 dark:text-red-400">
+                          {p.perdidas ?? 0} <span className="text-[10px] font-normal uppercase text-body-color dark:text-body-color-dark">{p.unidad ?? ""}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-1 grid grid-cols-2 gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Venta Unit.</span>
+                        <span className="tabular-nums text-[11px] font-semibold text-black dark:text-white">
+                           {p.moneda ?? "COP"} ${(p.precio_venta ?? 0).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Total</span>
+                        <span className="tabular-nums text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                           COP ${(p.costo_total ?? 0).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 

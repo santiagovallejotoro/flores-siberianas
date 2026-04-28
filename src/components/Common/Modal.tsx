@@ -120,7 +120,7 @@ export default function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-stroke bg-gradient-to-r from-gray-50/90 via-primary-100/25 to-secondary-100/30 px-5 py-4 dark:border-strokedark dark:from-white/[0.02] dark:via-primary-500/[0.06] dark:to-secondary-500/[0.06] sm:flex-row sm:justify-end sm:gap-3 sm:px-6">
+          <div className="flex shrink-0 flex-col-reverse items-center gap-2 border-t border-stroke bg-gradient-to-r from-gray-50/90 via-primary-100/25 to-secondary-100/30 px-5 py-4 dark:border-strokedark dark:from-white/[0.02] dark:via-primary-500/[0.06] dark:to-secondary-500/[0.06] sm:flex-row sm:items-center sm:justify-center sm:gap-3 sm:px-6">
             {footer}
           </div>
         )}

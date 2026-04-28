@@ -152,6 +152,7 @@ export default function CultivosEditor({
 
   // Filter
   const [estadoFilter, setEstadoFilter] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   // Generation state
   const [genStatus, setGenStatus] = useState<Map<string, GenStatus>>(new Map());
@@ -514,17 +515,45 @@ export default function CultivosEditor({
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={openCreate}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Nuevo cultivo
-        </button>
+        <div className="flex items-center gap-2">
+           {/* VIEW TOGGLE */}
+           <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+             <button
+               type="button"
+               onClick={() => setViewMode("table")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "table"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tabla
+             </button>
+             <button
+               type="button"
+               onClick={() => setViewMode("card")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "card"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tarjetas
+             </button>
+           </div>
+
+          <button
+            type="button"
+            onClick={openCreate}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Nuevo cultivo
+          </button>
+        </div>
       </div>
 
       {/* Empty state */}
@@ -541,80 +570,156 @@ export default function CultivosEditor({
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stroke bg-gray-50 dark:border-strokedark dark:bg-white/5">
-                  <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Número</th>
-                  <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Variedad</th>
-                  <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white sm:table-cell">Ubicación</th>
-                  <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white md:table-cell">Fecha Inicio</th>
-                  <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white lg:table-cell">Fecha Fin Est.</th>
-                  <th className="hidden px-4 py-3 text-right font-semibold text-black dark:text-white xl:table-cell">Plantas</th>
-                  <th className="hidden px-4 py-3 text-right font-semibold text-black dark:text-white xl:table-cell">Área m²</th>
-                  <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Estado</th>
-                  <th className="px-4 py-3 text-center font-semibold text-black dark:text-white" title="Ciclos / Actividades / Insumos generados">Gen.</th>
-                  <th className="w-14 px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stroke dark:divide-strokedark">
-                {filtered.map((c) => {
-                  const variedad = c.id_variedad ? variedadById.get(c.id_variedad) : null;
-                  const ubicacion = c.id_ubicacion ? ubicacionById.get(c.id_ubicacion) : null;
-                  const estadoStyle = c.estado
-                    ? ESTADO_STYLES[coerceEstado(c.estado)]
-                    : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400";
+        <>
+          {/* Table View (Desktop Only) */}
+          <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+            <div className="overflow-x-auto scrollbar-thin">
+              <table className="min-w-full w-full text-sm">
+                <thead>
+                  <tr className="border-b border-stroke bg-gray-50/60 dark:border-strokedark dark:bg-white/5">
+                    <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Número</th>
+                    <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Variedad</th>
+                    <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white sm:table-cell">Ubicación</th>
+                    <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white md:table-cell">Fecha Inicio</th>
+                    <th className="hidden px-4 py-3 text-left font-semibold text-black dark:text-white lg:table-cell">Fecha Fin Est.</th>
+                    <th className="hidden px-4 py-3 text-right font-semibold text-black dark:text-white xl:table-cell">Plantas</th>
+                    <th className="hidden px-4 py-3 text-right font-semibold text-black dark:text-white xl:table-cell">Área m²</th>
+                    <th className="px-4 py-3 text-left font-semibold text-black dark:text-white">Estado</th>
+                    <th className="px-4 py-3 text-center font-semibold text-black dark:text-white" title="Ciclos / Actividades / Insumos generados">Gen.</th>
+                    <th className="w-14 px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                  {filtered.map((c) => {
+                    const variedad = c.id_variedad ? variedadById.get(c.id_variedad) : null;
+                    const ubicacion = c.id_ubicacion ? ubicacionById.get(c.id_ubicacion) : null;
+                    const estadoStyle = c.estado
+                      ? ESTADO_STYLES[coerceEstado(c.estado)]
+                      : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400";
 
-                  return (
-                    <tr key={c.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
-                      <td className="px-4 py-3 font-semibold text-black dark:text-white">{c.numero_cultivo}</td>
-                      <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                        {variedad?.nombre ?? <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark sm:table-cell">
-                        {ubicacion ? ubicacionLabel(ubicacion) : <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark md:table-cell">
-                        {c.fecha_inicio ?? <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark lg:table-cell">
-                        {c.fecha_fin_estimada ?? <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="hidden px-4 py-3 text-right tabular-nums text-body-color dark:text-body-color-dark xl:table-cell">
-                        {c.total_plantas != null ? c.total_plantas.toLocaleString("es-CO") : <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="hidden px-4 py-3 text-right tabular-nums text-body-color dark:text-body-color-dark xl:table-cell">
-                        {c.area_m2 != null ? `${c.area_m2.toLocaleString("es-CO")} m²` : <span className="text-gray-400">—</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={["inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", estadoStyle].join(" ")}>
-                          {c.estado != null ? c.estado : "—"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <GeneradosIcons cultivoId={c.id} />
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(c)}
-                          aria-label={`Editar cultivo ${c.numero_cultivo}`}
-                          className="rounded-lg p-1.5 text-body-color transition-colors hover:bg-gray-100 hover:text-black dark:text-body-color-dark dark:hover:bg-white/10 dark:hover:text-white"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr key={c.id} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
+                        <td className="px-4 py-3 font-semibold text-black dark:text-white">{c.numero_cultivo}</td>
+                        <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                          {variedad?.nombre ?? <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark sm:table-cell">
+                          {ubicacion ? ubicacionLabel(ubicacion) : <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark md:table-cell">
+                          {c.fecha_inicio ?? <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="hidden px-4 py-3 text-body-color dark:text-body-color-dark lg:table-cell">
+                          {c.fecha_fin_estimada ?? <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="hidden px-4 py-3 text-right tabular-nums text-body-color dark:text-body-color-dark xl:table-cell">
+                          {c.total_plantas != null ? c.total_plantas.toLocaleString("es-CO") : <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="hidden px-4 py-3 text-right tabular-nums text-body-color dark:text-body-color-dark xl:table-cell">
+                          {c.area_m2 != null ? `${c.area_m2.toLocaleString("es-CO")} m²` : <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={["inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", estadoStyle].join(" ")}>
+                            {c.estado != null ? c.estado : "—"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <GeneradosIcons cultivoId={c.id} />
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => openEdit(c)}
+                            aria-label={`Editar cultivo ${c.numero_cultivo}`}
+                            className="rounded-lg p-1.5 text-body-color transition-colors hover:bg-gray-100 hover:text-black dark:text-body-color-dark dark:hover:bg-white/10 dark:hover:text-white"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 20h9" />
+                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          {/* Card View (Mobile always, Desktop if selected) */}
+          <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+            {filtered.map((c) => {
+              const variedad = c.id_variedad ? variedadById.get(c.id_variedad) : null;
+              const ubicacion = c.id_ubicacion ? ubicacionById.get(c.id_ubicacion) : null;
+              const estadoStyle = c.estado ? ESTADO_STYLES[coerceEstado(c.estado)] : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400";
+              
+              return (
+                <div key={c.id} className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark">
+                  
+                  {/* Header: Numero y Acciones */}
+                  <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-black dark:text-white">{c.numero_cultivo}</span>
+                      <span className={["inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide", estadoStyle].join(" ")}>
+                        {c.estado != null ? c.estado : "—"}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-shrink-0 items-center pl-2">
+                      <button
+                        type="button"
+                        onClick={() => openEdit(c)}
+                        aria-label={`Editar cultivo ${c.numero_cultivo}`}
+                        className="rounded-full bg-primary/10 p-1.5 text-primary transition-colors hover:bg-primary/20 dark:bg-primary-500/10 dark:hover:bg-primary-500/20"
+                      >
+                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Variedad</span>
+                      <span className="truncate text-xs font-semibold text-black dark:text-white" title={variedad?.nombre}>
+                        {variedad?.nombre ?? "—"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Ubicación</span>
+                      <span className="truncate text-xs font-semibold text-black dark:text-white" title={ubicacion ? ubicacionLabel(ubicacion) : undefined}>
+                        {ubicacion ? ubicacionLabel(ubicacion) : "—"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Plantas / Área</span>
+                      <span className="tabular-nums text-xs font-semibold text-black dark:text-white">
+                        {c.total_plantas != null ? c.total_plantas.toLocaleString("es-CO") : "—"}{c.area_m2 != null ? ` / ${c.area_m2.toLocaleString("es-CO")}` : ""}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Fechas</span>
+                      <span className="tabular-nums text-[10px] font-medium text-black dark:text-white leading-tight">
+                        <div className="flex flex-col gap-0.5">
+                          <span>I: {c.fecha_inicio ?? "—"}</span>
+                          <span>F: {c.fecha_fin_estimada ?? "—"}</span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-1 flex flex-col items-center justify-between gap-2 border-t border-stroke/50 pt-2 dark:border-strokedark/50 sm:flex-row sm:gap-0">
+                     <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">
+                       Generados
+                     </span>
+                     <GeneradosIcons cultivoId={c.id} />
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {/* Modal */}

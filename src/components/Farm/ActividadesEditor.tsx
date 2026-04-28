@@ -29,7 +29,10 @@ type InsumoItem = {
   unidad_medida_por_planta: string;
 };
 
-const UNIDADES_INSUMO = ["g", "mg", "ml", "L", "kg", "bultos", "unidades"] as const;
+function unidadInsumoCatalogo(insumo: Insumo | undefined): string {
+  const u = insumo?.unidad_medida?.trim();
+  return u && u.length > 0 ? u : "";
+}
 
 function parseInsumosJson(raw: string): InsumoItem[] {
   try {
@@ -123,7 +126,7 @@ type InsumoRowState = {
   unidad: string;
 };
 
-const EMPTY_INSUMO_ROW: InsumoRowState = { id: "", cantidad: "", unidad: "g" };
+const EMPTY_INSUMO_ROW: InsumoRowState = { id: "", cantidad: "", unidad: "" };
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function ActividadesEditor({
@@ -140,6 +143,7 @@ export default function ActividadesEditor({
   const [entidadId, setEntidadId] = useState<string>("");
   const [actividades, setActividades] = useState<Actividad[] | null>(null);
   const [loadingList, setLoadingList] = useState(false);
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Actividad | null>(null);
@@ -152,7 +156,9 @@ export default function ActividadesEditor({
 
   // Inline edit state for existing insumo items
   const [editingInsumoIdx, setEditingInsumoIdx] = useState<number | null>(null);
-  const [editingInsumoValues, setEditingInsumoValues] = useState<{ cantidad: string; unidad: string }>({ cantidad: "", unidad: "g" });
+  const [editingInsumoValues, setEditingInsumoValues] = useState<{ cantidad: string }>({
+    cantidad: "",
+  });
 
   function showBanner(b: Banner) {
     setBanner(b);
@@ -237,11 +243,18 @@ export default function ActividadesEditor({
     }
     const insumo = insumos.find((i) => i.id === insumoRow.id);
     if (!insumo) return;
+    const unidadCat = unidadInsumoCatalogo(insumo);
+    if (!unidadCat) {
+      setInsumoRowError(
+        "Ese insumo no tiene unidad en el catálogo. Complétala primero en Catálogo → Insumos.",
+      );
+      return;
+    }
     const newItem: InsumoItem = {
       id: insumo.id,
       nombre: insumo.nombre,
       cantidad_por_planta: cantidad,
-      unidad_medida_por_planta: insumoRow.unidad,
+      unidad_medida_por_planta: unidadCat,
     };
     setForm((prev) => ({
       ...prev,
@@ -263,7 +276,6 @@ export default function ActividadesEditor({
     setEditingInsumoIdx(idx);
     setEditingInsumoValues({
       cantidad: String(it.cantidad_por_planta),
-      unidad: it.unidad_medida_por_planta,
     });
   }
 
@@ -272,11 +284,12 @@ export default function ActividadesEditor({
     if (isNaN(cantidad) || cantidad <= 0) return;
     setForm((prev) => ({
       ...prev,
-      insumos_list: prev.insumos_list.map((it, i) =>
-        i === idx
-          ? { ...it, cantidad_por_planta: cantidad, unidad_medida_por_planta: editingInsumoValues.unidad }
-          : it,
-      ),
+      insumos_list: prev.insumos_list.map((it, i) => {
+        if (i !== idx) return it;
+        const ins = insumos.find((x) => x.id === it.id);
+        const unidadCat = unidadInsumoCatalogo(ins) || it.unidad_medida_por_planta;
+        return { ...it, cantidad_por_planta: cantidad, unidad_medida_por_planta: unidadCat };
+      }),
     }));
     setEditingInsumoIdx(null);
   }
@@ -480,26 +493,55 @@ export default function ActividadesEditor({
                 </span>
               )}
             </div>
-            <button
-              type="button"
-              onClick={openCreate}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Nueva actividad
-            </button>
+            
+            <div className="flex items-center gap-2">
+               {/* VIEW TOGGLE */}
+               <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("table")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "table"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tabla
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("card")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "card"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tarjetas
+                 </button>
+               </div>
+
+               <button
+                 type="button"
+                 onClick={openCreate}
+                 className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
+               >
+                 <svg
+                   width="16"
+                   height="16"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   strokeWidth="2.5"
+                   strokeLinecap="round"
+                   strokeLinejoin="round"
+                 >
+                   <line x1="12" y1="5" x2="12" y2="19" />
+                   <line x1="5" y1="12" x2="19" y2="12" />
+                 </svg>
+                 Nueva actividad
+               </button>
+            </div>
           </div>
 
           {/* Empty / table */}
@@ -512,7 +554,9 @@ export default function ActividadesEditor({
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
+            <>
+            {/* Table View (Desktop Only) */}
+            <div className={`mt-2 ${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-x-auto rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
               <table className="min-w-full text-sm">
                 <thead>
                   <tr className="border-b border-stroke dark:border-strokedark">
@@ -629,10 +673,97 @@ export default function ActividadesEditor({
                 </tbody>
               </table>
             </div>
+
+            {/* Card Grid / Timeline */}
+            <div
+              className={`mt-2 ${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4`}
+            >
+              {(actividades ?? []).map((a) => {
+                const items = parseInsumosJson(a.insumos_json);
+                return (
+                  <div
+                    key={a.id}
+                    className="group flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark"
+                  >
+                    <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                      <h4 className="line-clamp-1 flex-1 text-sm font-semibold text-black dark:text-white" title={a.nombre_actividad}>
+                        {a.nombre_actividad}
+                      </h4>
+                      <div className="flex flex-shrink-0 items-center gap-1.5 pl-2">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(a)}
+                          className="rounded-full bg-primary/10 p-1.5 text-primary transition-colors hover:bg-primary/20 dark:bg-primary-500/10 dark:hover:bg-primary-500/20"
+                          aria-label={`Editar ${a.nombre_actividad}`}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(a)}
+                          className="rounded-full bg-red-50 p-1.5 text-red-500 transition-colors hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20"
+                          aria-label={`Eliminar ${a.nombre_actividad}`}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Semana</span>
+                        <span className="tabular-nums text-xs font-semibold text-black dark:text-white">
+                          {a.semana_actividad === 0 ? "General" : `Sem. ${a.semana_actividad}`}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Categoría</span>
+                        <span className="truncate text-xs font-semibold text-black dark:text-white" title={a.categoria || "—"}>
+                          {a.categoria || "—"}
+                        </span>
+                      </div>
+                      <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Tiempo / Planta</span>
+                        <span className="tabular-nums text-xs font-semibold text-black dark:text-white">
+                          {a.tiempo_por_planta_seg != null ? `${a.tiempo_por_planta_seg} seg` : "—"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {a.requiere_insumos && (
+                      <div className="mt-1 flex flex-col gap-1">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Insumos ({items.length})</span>
+                        {items.length > 0 ? (
+                          <div className="scrollbar-thin max-h-20 space-y-1 overflow-y-auto pr-1">
+                            {items.map((it, i) => (
+                              <div key={i} className="flex justify-between text-[11px] text-body-color dark:text-body-color-dark">
+                                <span className="truncate pr-2 font-medium text-black dark:text-white" title={it.nombre}>{it.nombre}</span>
+                                <span className="tabular-nums flex-shrink-0">{it.cantidad_por_planta} {it.unidad_medida_por_planta}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="self-start inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">Sin configurar</span>
+                        )}
+                      </div>
+                    )}
+
+                    {a.descripcion && (
+                      <div className="mt-auto border-t border-stroke/50 pt-2 dark:border-strokedark/50">
+                        <p className="line-clamp-2 text-[11px] leading-relaxed text-body-color dark:text-body-color-dark" title={a.descripcion}>
+                          {a.descripcion}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            </>
           )}
 
           <p className="text-xs text-body-color/60 dark:text-body-color-dark/60">
-            Semana 0 = actividad general, no asociada a una semana específica.
+            Semana del ciclo en la que se hace la labor. 0 = actividad general (no va a una semana fija del ciclo).
           </p>
         </div>
       )}
@@ -731,11 +862,12 @@ export default function ActividadesEditor({
                 step={1}
                 value={form.semana_actividad}
                 onChange={(e) => setField("semana_actividad", e.target.value)}
-                placeholder="0 = general"
+                placeholder="Ej. 3"
                 className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
               />
               <p className="mt-1 text-xs text-body-color/60 dark:text-body-color-dark/60">
-                0 = actividad general
+                Número de la semana del ciclo en la que se realiza la actividad. Usa 0 si es general (no atada a una
+                semana concreta).
               </p>
             </div>
 
@@ -756,13 +888,13 @@ export default function ActividadesEditor({
               ))}
             </Select>
 
-            {/* Tiempo por planta */}
+            {/* Tiempo en una planta */}
             <div>
               <label
                 htmlFor="act-tiempo"
                 className="mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark"
               >
-                Tiempo por planta (seg)
+                Tiempo en una planta (seg)
               </label>
               <input
                 id="act-tiempo"
@@ -776,30 +908,40 @@ export default function ActividadesEditor({
                 placeholder="Ej. 30"
                 className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
               />
+              <p className="mt-1 text-xs text-body-color/60 dark:text-body-color-dark/60">
+                Segundos que toma la labor en una sola planta. Sirve para estimar el requerimiento de mano de obra al
+                registrar esta actividad en el cultivo.
+              </p>
             </div>
 
             {/* Requiere Insumos toggle */}
-            <div className="flex items-center gap-3">
-              <input
-                id="act-insumos"
-                type="checkbox"
-                checked={form.requiere_insumos}
-                onChange={(e) => {
-                  setField("requiere_insumos", e.target.checked);
-                  if (!e.target.checked) {
-                    setField("insumos_list", []);
-                    setInsumoRow(EMPTY_INSUMO_ROW);
-                    setInsumoRowError("");
-                  }
-                }}
-                className="h-4 w-4 rounded border-stroke accent-primary"
-              />
-              <label
-                htmlFor="act-insumos"
-                className="text-xs font-medium text-body-color dark:text-body-color-dark"
-              >
-                Requiere insumos
-              </label>
+            <div className="sm:col-span-2">
+              <div className="flex items-center gap-3">
+                <input
+                  id="act-insumos"
+                  type="checkbox"
+                  checked={form.requiere_insumos}
+                  onChange={(e) => {
+                    setField("requiere_insumos", e.target.checked);
+                    if (!e.target.checked) {
+                      setField("insumos_list", []);
+                      setInsumoRow(EMPTY_INSUMO_ROW);
+                      setInsumoRowError("");
+                    }
+                  }}
+                  className="h-4 w-4 rounded border-stroke accent-primary"
+                />
+                <label
+                  htmlFor="act-insumos"
+                  className="text-xs font-medium text-body-color dark:text-body-color-dark"
+                >
+                  Requiere insumos
+                </label>
+              </div>
+              <p className="mt-1.5 text-xs leading-snug text-body-color/60 dark:text-body-color-dark/60">
+                Si lo marcas, debes indicar los insumos de esta actividad por cada planta. Sirve para calcular
+                requerimientos futuros del cultivo (compras e inventario).
+              </p>
             </div>
 
             {/* Descripción */}
@@ -841,7 +983,7 @@ export default function ActividadesEditor({
                         <p className="mb-1.5 font-medium text-black dark:text-white">
                           {it.nombre}
                         </p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <input
                             type="number"
                             min={0}
@@ -853,17 +995,13 @@ export default function ActividadesEditor({
                             }
                             className="w-24 rounded-lg border border-stroke bg-white px-2 py-1 text-xs text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
                           />
-                          <Select
-                            variant="sm"
-                            value={editingInsumoValues.unidad}
-                            onChange={(e) =>
-                              setEditingInsumoValues((v) => ({ ...v, unidad: e.target.value }))
-                            }
+                          <span
+                            className="inline-flex items-center rounded-lg border border-stroke bg-gray-100/80 px-2 py-1 text-xs font-medium text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark"
+                            title="Unidad fija según el catálogo de insumos"
                           >
-                            {UNIDADES_INSUMO.map((u) => (
-                              <option key={u} value={u}>{u}</option>
-                            ))}
-                          </Select>
+                            {unidadInsumoCatalogo(insumos.find((i) => i.id === it.id)) ||
+                              it.unidad_medida_por_planta}
+                          </span>
                           <span className="text-body-color dark:text-body-color-dark">/planta</span>
                           <div className="ml-auto flex items-center gap-1.5">
                             <button
@@ -929,7 +1067,8 @@ export default function ActividadesEditor({
                 </ul>
               ) : (
                 <p className="mb-4 text-xs italic text-body-color/60 dark:text-body-color-dark/60">
-                  Aún no hay insumos. Agrega uno abajo.
+                  Aún no hay insumos en esta lista. Abajo elige el nombre del insumo y la cantidad que gastas por
+                  planta, usando la misma unidad de medida con la que está el producto en inventario.
                 </p>
               )}
 
@@ -938,13 +1077,19 @@ export default function ActividadesEditor({
                 <p className="mb-2 text-xs font-medium text-body-color dark:text-body-color-dark">
                   Agregar insumo
                 </p>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_90px_90px_auto]">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_minmax(5rem,6rem)_minmax(4.5rem,7rem)_auto]">
                   {/* Insumo select */}
                   <Select
                     variant="sm"
                     value={insumoRow.id}
                     onChange={(e) => {
-                      setInsumoRow((r) => ({ ...r, id: e.target.value }));
+                      const id = e.target.value;
+                      const sel = insumos.find((i) => i.id === id);
+                      setInsumoRow({
+                        id,
+                        cantidad: "",
+                        unidad: sel ? unidadInsumoCatalogo(sel) : "",
+                      });
                       setInsumoRowError("");
                     }}
                   >
@@ -968,23 +1113,19 @@ export default function ActividadesEditor({
                       setInsumoRowError("");
                     }}
                     placeholder="Cant."
-                    className="rounded-lg border border-stroke bg-white px-3 py-2 text-xs text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
+                    title="Cantidad por planta en la unidad del insumo en catálogo"
+                    className="min-w-0 rounded-lg border border-stroke bg-white px-3 py-2 text-xs text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
                   />
 
-                  {/* Unidad */}
-                  <Select
-                    variant="sm"
-                    value={insumoRow.unidad}
-                    onChange={(e) =>
-                      setInsumoRow((r) => ({ ...r, unidad: e.target.value }))
-                    }
+                  {/* Unidad (fija = catálogo) */}
+                  <div
+                    className="flex min-h-[34px] min-w-0 items-center justify-center rounded-lg border border-stroke bg-gray-100/90 px-2 text-center text-xs font-medium text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark"
+                    title="Unidad tomada del insumo en inventario; no se puede cambiar aquí"
                   >
-                    {UNIDADES_INSUMO.map((u) => (
-                      <option key={u} value={u}>
-                        {u}
-                      </option>
-                    ))}
-                  </Select>
+                    {insumoRow.id
+                      ? unidadInsumoCatalogo(insumos.find((i) => i.id === insumoRow.id)) || "—"
+                      : "—"}
+                  </div>
 
                   {/* Add button */}
                   <button
@@ -1008,6 +1149,12 @@ export default function ActividadesEditor({
                     Agregar
                   </button>
                 </div>
+
+                <p className="mt-2 text-xs leading-snug text-body-color/70 dark:text-body-color-dark/65">
+                  La cantidad debe ir en la <strong>misma unidad</strong> con la que está el insumo en inventario. Si
+                  está en <strong>kg</strong> y gastas 100 g, escribe <strong>0,1</strong> (coma o punto según tu
+                  teclado).
+                </p>
 
                 {insumoRowError && (
                   <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">

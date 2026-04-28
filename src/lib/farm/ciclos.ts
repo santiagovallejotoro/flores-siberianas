@@ -31,7 +31,7 @@ function trimOrNull(v: string | null | undefined): string | null {
 }
 
 /**
- * Bell-curve distribution across N cuts.
+ * Peak-in-the-middle % distribution across N weekly cuts (legacy Sheet shape).
  * Port of `calcularDistribucionProduccion` (.cursor/farm/Code.gs:1579) — kept
  * line-for-line so behavior matches the legacy Sheet exactly.
  */

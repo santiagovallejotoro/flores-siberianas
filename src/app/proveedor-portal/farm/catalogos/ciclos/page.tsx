@@ -36,9 +36,10 @@ export default async function CiclosProduccionPage({
           Ciclos de Producción
         </h1>
         <p className="mt-1 text-sm text-body-color dark:text-body-color-dark">
-          Plantillas de cortes y porcentajes por variedad. Genera la
-          distribución bell-curve a partir del ciclo y la semana de inicio de
-          corte, y ajústala manualmente si lo necesitas.
+          Plantillas de cortes y porcentajes por variedad. El sistema reparte el corte semana a semana: más
+          volumen en las semanas de pico de floración y menos al inicio y al final del ciclo, usando el total
+          de semanas y la semana en que empiezas a cortar. Luego puedes ajustar los porcentajes a mano si lo
+          necesitas.
         </p>
       </div>
 

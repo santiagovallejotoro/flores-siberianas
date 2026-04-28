@@ -217,7 +217,7 @@ export default function UbicacionesEditor({
                 onChange={(e) =>
                   setNewForm((f) => ({ ...f, nombre_cultivo: e.target.value }))
                 }
-                placeholder="Lote 1 — Hortensia"
+                placeholder="Cultivo Siberianas"
                 className={inputCls}
                 autoComplete="off"
               />
@@ -274,33 +274,34 @@ export default function UbicacionesEditor({
               />
             </div>
           </div>
-          <div>
-            <label htmlFor="newObs" className={labelCls}>
-              Observaciones
-            </label>
-            <textarea
-              id="newObs"
-              rows={2}
-              value={newForm.observaciones}
-              onChange={(e) =>
-                setNewForm((f) => ({ ...f, observaciones: e.target.value }))
-              }
-              placeholder="Detalles del lote, acceso, condiciones del suelo…"
-              className={inputCls}
-            />
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs text-body-color/70 dark:text-body-color-dark/60">
-              Una ubicación puede albergar varios cultivos a lo largo del tiempo.
-            </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
+            <div className="min-w-0 flex-1">
+              <label htmlFor="newObs" className={labelCls}>
+                Observaciones
+              </label>
+              <textarea
+                id="newObs"
+                rows={2}
+                value={newForm.observaciones}
+                onChange={(e) =>
+                  setNewForm((f) => ({ ...f, observaciones: e.target.value }))
+                }
+                placeholder="Detalles del lote, acceso, condiciones del suelo…"
+                className={inputCls}
+              />
+            </div>
             <button
               type="submit"
               disabled={isPending}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-9 shrink-0 items-center justify-center gap-1 self-start whitespace-nowrap rounded-lg bg-primary px-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60 sm:self-end"
             >
-              + Agregar
+              <span aria-hidden="true">+</span>
+              <span>Agregar</span>
             </button>
           </div>
+          <p className="text-xs text-body-color/70 dark:text-body-color-dark/60">
+            Una ubicación puede albergar varios cultivos a lo largo del tiempo.
+          </p>
         </form>
       </section>
 

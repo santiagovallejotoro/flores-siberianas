@@ -50,6 +50,19 @@ const EMPTY_FORM: FormState = {
   observaciones: "",
 };
 
+/** YYYY-MM-DD en hora local para `<input type="date">` */
+function fechaLocalHoy(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function emptyNewForm(): FormState {
+  return { ...EMPTY_FORM, fecha_ultima_compra: fechaLocalHoy() };
+}
+
 const CATEGORIAS = INSUMO_CATEGORIAS as readonly string[];
 const UNIDADES = INSUMO_UNIDADES as readonly string[];
 
@@ -118,6 +131,8 @@ const inputCls =
   "w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white";
 const labelCls =
   "mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark";
+const hintCls =
+  "mt-1.5 block text-xs leading-snug text-body-color/75 dark:text-body-color-dark/70";
 
 export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
   const router = useRouter();
@@ -126,7 +141,7 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
   const [banner, setBanner] = useState<Banner>(null);
   const [isPending, startTransition] = useTransition();
 
-  const [newForm, setNewForm] = useState<FormState>(EMPTY_FORM);
+  const [newForm, setNewForm] = useState<FormState>(emptyNewForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<FormState>(EMPTY_FORM);
 
@@ -170,7 +185,7 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
     try {
       const created = await createInsumo(client, toInput(newForm));
       setItems((prev) => [...prev, created].sort(sortByNombre));
-      setNewForm(EMPTY_FORM);
+      setNewForm(emptyNewForm());
       showBanner({
         kind: "success",
         text: `Insumo "${created.nombre}" agregado.`,
@@ -261,7 +276,7 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
               onChange={(e) =>
                 setForm((f) => ({ ...f, nombre: e.target.value }))
               }
-              placeholder="Triple 15"
+              placeholder="Abono Nutrimon 15-15-15"
               className={inputCls}
               autoComplete="off"
             />
@@ -310,6 +325,7 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
           <Select
             id={`${idPrefix}-unidad`}
             label="Unidad de medida"
+            hint="La misma unidad con la que vas a registrar el consumo en las actividades del cultivo (kilogramos, gramos, miligramos, litro…)."
             value={form.unidadSelect}
             onChange={(e) =>
               setForm((f) => ({
@@ -365,6 +381,10 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
               className={inputCls}
               autoComplete="off"
             />
+            <p className={hintCls}>
+              Precio por esa unidad: si eliges kilogramos, gramos o miligramos, pon el costo de una unidad de esa
+              medida (ej.: pesos por kg, por gramo o por mg).
+            </p>
           </div>
 
           <div>
@@ -385,6 +405,10 @@ export default function InsumosEditor({ initialInsumos }: InsumosEditorProps) {
               className={inputCls}
               autoComplete="off"
             />
+            <p className={hintCls}>
+              Sirve para las alertas de compra en inventario: cuando el stock baja de este nivel, verás aviso para
+              reponer.
+            </p>
           </div>
 
           <div>

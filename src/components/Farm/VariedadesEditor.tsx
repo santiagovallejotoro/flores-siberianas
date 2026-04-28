@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createSPASassClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/Common/ConfirmProvider";
@@ -27,6 +27,9 @@ interface VariedadesEditorProps {
 type Banner = { kind: "success" | "error"; text: string } | null;
 
 const UNIDADES: UnidadRendimiento[] = ["Tallo", "kg", "unidades", "lb"];
+
+const fieldHintCls =
+  "mb-1.5 block text-xs leading-relaxed text-body-color/70 dark:text-body-color-dark/65";
 
 const EMPTY_FORM: VariedadInput = {
   nombre: "",
@@ -56,6 +59,8 @@ export default function VariedadesEditor({
   const [form, setForm] = useState<VariedadInput>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [scrollToCiclos, setScrollToCiclos] = useState(false);
+  const ciclosRef = useRef<HTMLDivElement>(null);
 
   const ubicacionById = useMemo(() => {
     const m = new Map<string, Ubicacion>();
@@ -89,8 +94,14 @@ export default function VariedadesEditor({
     setModalOpen(true);
   }
 
+  function openEditCiclos(v: Variedad) {
+    openEdit(v);
+    setScrollToCiclos(true);
+  }
+
   function closeModal() {
     if (saving) return;
+    setScrollToCiclos(false);
     setModalOpen(false);
   }
 
@@ -110,10 +121,31 @@ export default function VariedadesEditor({
     setField(key, Number.isNaN(n) ? null : n);
   }
 
+  function validateVariedadForm(f: VariedadInput): string | null {
+    if (!f.nombre.trim()) return "El nombre es obligatorio.";
+    const ciclo = f.ciclo_en_semanas;
+    if (ciclo == null || !Number.isFinite(ciclo) || ciclo < 1) {
+      return "Indica el ciclo en semanas (número entero ≥ 1): tiempo estimado hasta la cosecha.";
+    }
+    const inicio = f.semana_inicio_corte;
+    if (inicio == null || !Number.isFinite(inicio) || inicio < 1) {
+      return "Indica la semana de inicio de producción o corte (número entero ≥ 1).";
+    }
+    if (inicio > ciclo) {
+      return "La semana de inicio no puede ser mayor que el ciclo en semanas.";
+    }
+    const rend = f.rendimiento_esperado_por_planta;
+    if (rend == null || !Number.isFinite(rend) || rend <= 0) {
+      return "Indica el rendimiento esperado por planta (número mayor que 0).";
+    }
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.nombre.trim()) {
-      showBanner({ kind: "error", text: "El nombre es obligatorio." });
+    const err = validateVariedadForm(form);
+    if (err) {
+      showBanner({ kind: "error", text: err });
       return;
     }
 
@@ -222,6 +254,19 @@ export default function VariedadesEditor({
     return `${left}${right}`;
   };
 
+  // When modal opens via the "Sin ciclos" badge, scroll the amber section into view
+  useEffect(() => {
+    if (!scrollToCiclos || !modalOpen || !ciclosRef.current) return;
+    // Wait two frames: one for paint, one for the modal slide-up animation to start
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ciclosRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setScrollToCiclos(false);
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [scrollToCiclos, modalOpen]);
+
   return (
     <div className="space-y-6">
       {banner && (
@@ -307,9 +352,11 @@ export default function VariedadesEditor({
                       Ciclos
                     </span>
                   ) : (
-                    <span
-                      title="Sin ciclos de producción definidos"
-                      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
+                    <button
+                      type="button"
+                      title="Sin ciclos de producción — haz clic para generar"
+                      onClick={() => openEditCiclos(v)}
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20"
                     >
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10" />
@@ -317,7 +364,7 @@ export default function VariedadesEditor({
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                       </svg>
                       Sin ciclos
-                    </span>
+                    </button>
                   )}
                 </div>
 
@@ -423,7 +470,7 @@ export default function VariedadesEditor({
                 required
                 value={form.nombre}
                 onChange={(e) => setField("nombre", e.target.value)}
-                placeholder="Hortensia Verena"
+                placeholder="Hortensia Blanca"
                 className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
                 autoComplete="off"
                 autoFocus
@@ -448,7 +495,8 @@ export default function VariedadesEditor({
             {/* Ubicación */}
             <Select
               id="ubicacion"
-              label="Ubicación típica"
+              label="Ubicación del cultivo"
+              hint="Selecciona el lote o sitio donde se cultiva esta variedad."
               value={form.id_ubicacion ?? ""}
               onChange={(e) => setField("id_ubicacion", e.target.value)}
             >
@@ -463,11 +511,15 @@ export default function VariedadesEditor({
             {/* Ciclo en semanas */}
             <div>
               <label htmlFor="ciclo" className="mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark">
-                Ciclo en semanas
+                Ciclo en semanas <span className="text-red-500">*</span>
               </label>
+              <p className={fieldHintCls}>
+                Tiempo estimado desde el inicio del cultivo hasta la cosecha (número entero de semanas).
+              </p>
               <input
                 id="ciclo"
                 type="number"
+                required
                 min={1}
                 step={1}
                 value={form.ciclo_en_semanas ?? ""}
@@ -479,11 +531,15 @@ export default function VariedadesEditor({
             {/* Semana inicio corte */}
             <div>
               <label htmlFor="inicio" className="mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark">
-                Semana inicio corte
+                Semana inicio de producción / corte <span className="text-red-500">*</span>
               </label>
+              <p className={fieldHintCls}>
+                Número de semana (1…ciclo) en la que comienza la producción o el corte comercial.
+              </p>
               <input
                 id="inicio"
                 type="number"
+                required
                 min={1}
                 step={1}
                 value={form.semana_inicio_corte ?? ""}
@@ -495,12 +551,16 @@ export default function VariedadesEditor({
             {/* Rendimiento + unidad */}
             <div>
               <label htmlFor="rendimiento" className="mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark">
-                Rendimiento esperado por planta
+                Rendimiento esperado por planta <span className="text-red-500">*</span>
               </label>
+              <p className={fieldHintCls}>
+                Cantidad de tallos (o la unidad elegida abajo) que esperas por planta.
+              </p>
               <input
                 id="rendimiento"
                 type="number"
-                min={0}
+                required
+                min={0.01}
                 step="0.01"
                 value={form.rendimiento_esperado_por_planta ?? ""}
                 onChange={(e) =>
@@ -530,18 +590,25 @@ export default function VariedadesEditor({
               <label htmlFor="observaciones" className="mb-1.5 block text-xs font-medium text-body-color dark:text-body-color-dark">
                 Observaciones
               </label>
+              <p className={fieldHintCls}>
+                Ubicación del cultivo, altura, condiciones climáticas y del suelo, o cualquier detalle útil.
+              </p>
               <textarea
                 id="observaciones"
-                rows={2}
+                rows={3}
                 value={form.observaciones ?? ""}
                 onChange={(e) => setField("observaciones", e.target.value)}
+                placeholder="Ej.: ladera norte, 2.600 msnm, suelo franco, buen drenaje…"
                 className="w-full resize-none rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none focus:border-primary dark:border-strokedark dark:bg-dark dark:text-white"
               />
             </div>
           </div>
 
           {editing && (
-            <div className="mt-2 border-t border-stroke pt-4 dark:border-strokedark">
+            <div
+              ref={ciclosRef}
+              className="mt-2 border-t border-stroke pt-4 dark:border-strokedark"
+            >
               {editing.tiene_ciclos_produccion ? (
                 <div className="rounded-xl border border-secondary-200/60 bg-secondary-100/40 p-4 dark:border-secondary-500/30 dark:bg-secondary-500/10">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -575,7 +642,9 @@ export default function VariedadesEditor({
                         Sin Ciclos de Producción
                       </p>
                       <p className="mt-0.5 text-xs text-body-color dark:text-body-color-dark">
-                        Genera la distribución bell-curve a partir del ciclo y la semana de inicio de corte.
+                        Calcula automáticamente el % de corte por semana: más cosecha cuando el cultivo está en
+                        plena producción (mitad del ciclo) y menos al arranque y al cierre, según el ciclo en
+                        semanas y la semana en que empiezas a cortar.
                       </p>
                     </div>
                     <button

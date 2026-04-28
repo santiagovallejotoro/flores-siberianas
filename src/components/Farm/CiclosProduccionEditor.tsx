@@ -70,6 +70,7 @@ export default function CiclosProduccionEditor({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [, startTransition] = useTransition();
 
   const variedad = useMemo(
@@ -84,6 +85,7 @@ export default function CiclosProduccionEditor({
     );
   }, [rows]);
   const pctOk = Math.abs(totalPct - 100) < 0.1;
+  const maxPct = useMemo(() => Math.max(...rows.map(r => parseFloat(r.porcentaje_produccion) || 0), 0), [rows]);
 
   function showBanner(b: Banner) {
     setBanner(b);
@@ -209,7 +211,7 @@ export default function CiclosProduccionEditor({
     const ok = await confirm({
       title: opts.regenerate ? "Regenerar ciclos" : "Generar ciclos",
       description: opts.regenerate
-        ? "Se eliminarán los ciclos actuales y se reemplazarán por una nueva distribución bell-curve. Esta acción no se puede deshacer."
+        ? "Se eliminarán los ciclos actuales y se reemplazarán por una nueva distribución automática (más corte en el pico del ciclo, menos al inicio y al final). Esta acción no se puede deshacer."
         : "Se generarán automáticamente los ciclos a partir del Ciclo en Semanas y la Semana Inicio Corte de la variedad.",
       confirmLabel: opts.regenerate ? "Regenerar" : "Generar",
       tone: opts.regenerate ? "danger" : "info",
@@ -388,8 +390,9 @@ export default function CiclosProduccionEditor({
             Sin ciclos de producción
           </h3>
           <p className="mt-1 text-sm text-amber-700/90 dark:text-amber-300/80">
-            Esta variedad aún no tiene ciclos definidos. Genera la distribución
-            bell-curve a partir del ciclo y la semana de inicio de corte.
+            Esta variedad aún no tiene ciclos definidos. Pulsa generar para repartir el corte semana a semana:
+            más cosecha en las semanas de plena producción y menos al arranque y al cierre, según el ciclo y la
+            semana de inicio de corte de la variedad.
           </p>
           {!canGenerate && variedad && (
             <p className="mt-2 text-xs text-amber-700/80 dark:text-amber-300/70">
@@ -409,31 +412,76 @@ export default function CiclosProduccionEditor({
         </div>
       ) : (
         <>
-          {/* Total pct + save bar */}
+          {/* Sticky Progress Bar */}
           <div
             className={[
-              "flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between",
+              "flex flex-col gap-3 rounded-xl border p-4 shadow-sm backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center sm:justify-between",
               pctOk
-                ? "border-primary-100 bg-primary-100/40 dark:border-primary-500/30 dark:bg-primary-500/10"
-                : "border-red-200 bg-red-50 dark:border-red-500/30 dark:bg-red-500/10",
+                ? "border-primary-100 bg-primary-100/90 dark:border-primary-500/30 dark:bg-primary-500/10"
+                : totalPct > 100
+                  ? "border-red-200 bg-red-50/90 dark:border-red-500/30 dark:bg-red-500/10"
+                  : "border-amber-200 bg-amber-50/90 dark:border-amber-500/30 dark:bg-amber-500/10",
             ].join(" ")}
           >
-            <div className="flex items-center gap-3 text-sm">
-              <span className="font-medium text-black dark:text-white">
-                Total etapas: {rows.length}
-              </span>
-              <span
-                className={[
-                  "tabular-nums font-semibold",
-                  pctOk
-                    ? "text-primary-600 dark:text-primary-300"
-                    : "text-red-700 dark:text-red-300",
-                ].join(" ")}
-              >
-                Suma: {totalPct.toFixed(1)}%
-              </span>
+            <div className="flex w-full flex-col gap-2 sm:w-1/2">
+               <div className="flex items-center justify-between text-sm">
+                 <span className="font-semibold text-black dark:text-white">
+                   Progreso Total (100%)
+                 </span>
+                 <span
+                   className={[
+                     "tabular-nums font-bold",
+                     pctOk
+                       ? "text-primary-600 dark:text-primary-300"
+                       : totalPct > 100
+                         ? "text-red-700 dark:text-red-300"
+                         : "text-amber-700 dark:text-amber-300",
+                   ].join(" ")}
+                 >
+                   {totalPct.toFixed(1)}%
+                 </span>
+               </div>
+               <div className="h-2 w-full overflow-hidden rounded-full bg-stroke dark:bg-strokedark">
+                 <div
+                   className={`h-full rounded-full transition-all duration-500 ${
+                     pctOk
+                       ? "bg-primary"
+                       : totalPct > 100
+                         ? "bg-red-500"
+                         : "bg-amber-500"
+                   }`}
+                   style={{ width: `${Math.min(100, Math.max(0, totalPct))}%` }}
+                 ></div>
+               </div>
             </div>
-            <div className="flex items-center gap-2">
+            
+            <div className="mt-2 flex items-center gap-2 sm:mt-0">
+               {/* VIEW TOGGLE */}
+               <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex mr-2">
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("table")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "table"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tabla
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("card")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "card"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tarjetas
+                 </button>
+               </div>
+               
               <button
                 type="button"
                 onClick={handleDeleteAll}
@@ -445,7 +493,7 @@ export default function CiclosProduccionEditor({
                   <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
                   <path d="M10 11v6M14 11v6M9 6V4h6v2" />
                 </svg>
-                Eliminar todos
+                Vaciar
               </button>
               <button
                 type="button"
@@ -464,18 +512,17 @@ export default function CiclosProduccionEditor({
             </div>
           </div>
 
-          {/* Table */}
-          <div className="rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
+          {/* Table View (Desktop Only) */}
+          <div className={`mt-6 ${viewMode === "table" ? "hidden md:block" : "hidden"} rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
             <div className="scrollbar-thin overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="min-w-[600px] w-full text-sm">
                 <thead>
                   <tr className="border-b border-stroke bg-gray-50/60 text-left text-xs uppercase tracking-wide text-body-color dark:border-strokedark dark:bg-white/5 dark:text-body-color-dark">
-                    <th className="px-3 py-2 font-medium">Nombre</th>
-                    <th className="px-3 py-2 font-medium">Semana</th>
-                    <th className="px-3 py-2 font-medium">% Producción</th>
-                    <th className="px-3 py-2 font-medium">Descripción</th>
-                    <th className="px-3 py-2 font-medium">Actividades</th>
-                    <th className="px-3 py-2 font-medium" aria-label="Acciones" />
+                    <th className="px-3 py-2 font-medium min-w-[150px]">Nombre</th>
+                    <th className="px-3 py-2 font-medium min-w-[100px]">Semana</th>
+                    <th className="px-3 py-2 font-medium min-w-[120px]">% Producción</th>
+                    <th className="px-3 py-2 font-medium min-w-[200px]">Descripción</th>
+                    <th className="w-14 px-3 py-2 font-medium" aria-label="Acciones" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stroke dark:divide-strokedark">
@@ -485,9 +532,7 @@ export default function CiclosProduccionEditor({
                         <input
                           type="text"
                           value={r.nombre_ciclo}
-                          onChange={(e) =>
-                            setRowField(idx, "nombre_ciclo", e.target.value)
-                          }
+                          onChange={(e) => setRowField(idx, "nombre_ciclo", e.target.value)}
                           className={inputCls}
                         />
                       </td>
@@ -497,9 +542,7 @@ export default function CiclosProduccionEditor({
                           min={1}
                           step={1}
                           value={r.nro_semana}
-                          onChange={(e) =>
-                            setRowField(idx, "nro_semana", e.target.value)
-                          }
+                          onChange={(e) => setRowField(idx, "nro_semana", e.target.value)}
                           className={`${inputCls} tabular-nums`}
                         />
                       </td>
@@ -510,13 +553,7 @@ export default function CiclosProduccionEditor({
                           max={100}
                           step={0.1}
                           value={r.porcentaje_produccion}
-                          onChange={(e) =>
-                            setRowField(
-                              idx,
-                              "porcentaje_produccion",
-                              e.target.value,
-                            )
-                          }
+                          onChange={(e) => setRowField(idx, "porcentaje_produccion", e.target.value)}
                           className={`${inputCls} tabular-nums`}
                         />
                       </td>
@@ -524,23 +561,7 @@ export default function CiclosProduccionEditor({
                         <input
                           type="text"
                           value={r.descripcion}
-                          onChange={(e) =>
-                            setRowField(idx, "descripcion", e.target.value)
-                          }
-                          className={inputCls}
-                        />
-                      </td>
-                      <td className="px-3 py-2 align-top">
-                        <input
-                          type="text"
-                          value={r.actividades_semana}
-                          onChange={(e) =>
-                            setRowField(
-                              idx,
-                              "actividades_semana",
-                              e.target.value,
-                            )
-                          }
+                          onChange={(e) => setRowField(idx, "descripcion", e.target.value)}
                           className={inputCls}
                         />
                       </td>
@@ -551,21 +572,7 @@ export default function CiclosProduccionEditor({
                           aria-label={`Eliminar ${r.nombre_ciclo}`}
                           className="rounded-lg border border-red-200 px-2 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
                         >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                          </svg>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>
                         </button>
                       </td>
                     </tr>
@@ -573,12 +580,98 @@ export default function CiclosProduccionEditor({
                 </tbody>
               </table>
             </div>
-            <p className="border-t border-stroke px-4 py-3 text-xs text-body-color/80 dark:border-strokedark dark:text-body-color-dark/70">
-              Edita los valores en la tabla y pulsa <strong>Guardar cambios</strong>.
-              Las semanas deben quedar en orden ascendente y la suma de
-              porcentajes debe ser 100%.
-            </p>
           </div>
+
+          {/* Card Grid / Timeline */}
+          <div className={`mt-6 ${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+            {rows.map((r, idx) => {
+              const val = parseFloat(r.porcentaje_produccion) || 0;
+              const barWidth = maxPct > 0 ? (val / maxPct) * 100 : 0;
+              
+              return (
+                <div
+                  key={r.id}
+                  className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark"
+                >
+                  {/* Background progress indicator (subtle) */}
+                  <div 
+                    className="absolute bottom-0 left-0 h-1 bg-primary/20 transition-all duration-700 dark:bg-primary/40" 
+                    style={{ width: `${barWidth}%` }}
+                  ></div>
+
+                  <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                    <input
+                      type="text"
+                      value={r.nombre_ciclo}
+                      onChange={(e) => setRowField(idx, "nombre_ciclo", e.target.value)}
+                      className="w-full max-w-[120px] bg-transparent text-sm font-semibold text-black placeholder-body-color/50 outline-none focus:border-b focus:border-primary dark:text-white dark:placeholder-body-color-dark/50"
+                      placeholder="Nombre (ej. V1)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteRow(idx)}
+                      aria-label={`Eliminar ${r.nombre_ciclo}`}
+                      className="rounded-full bg-red-50 p-1.5 text-red-500 transition-colors hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Semana</label>
+                      <input
+                        type="number"
+                        min={1}
+                        step={1}
+                        inputMode="numeric"
+                        value={r.nro_semana}
+                        onChange={(e) => setRowField(idx, "nro_semana", e.target.value)}
+                        className="tabular-nums w-full rounded-lg border border-stroke bg-gray-50 px-2.5 py-1.5 text-sm font-medium text-black outline-none transition-colors focus:border-primary focus:bg-white dark:border-strokedark dark:bg-white/5 dark:text-white dark:focus:bg-dark"
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">% Prod</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={0.1}
+                          inputMode="decimal"
+                          value={r.porcentaje_produccion}
+                          onChange={(e) => setRowField(idx, "porcentaje_produccion", e.target.value)}
+                          className="tabular-nums w-full rounded-lg border border-stroke bg-gray-50 py-1.5 pl-2.5 pr-7 text-sm font-bold text-primary outline-none transition-colors focus:border-primary focus:bg-white dark:border-strokedark dark:bg-white/5 dark:text-primary-300 dark:focus:bg-dark"
+                        />
+                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-body-color/50 dark:text-body-color-dark/50">%</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      value={r.descripcion}
+                      onChange={(e) => setRowField(idx, "descripcion", e.target.value)}
+                      className="w-full rounded-lg border border-transparent bg-gray-50/50 px-2.5 py-1.5 text-xs text-black outline-none transition-colors focus:border-stroke focus:bg-white dark:bg-white/5 dark:text-white dark:focus:border-strokedark dark:focus:bg-dark"
+                      placeholder="Nota opcional..."
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-4 px-2 text-xs text-body-color/80 dark:text-body-color-dark/70">
+            Edita los valores en las tarjetas y pulsa <strong>Guardar cambios</strong>.
+            Las semanas deben quedar en orden ascendente y la suma de
+            porcentajes debe ser 100%.
+          </p>
         </>
       )}
     </div>

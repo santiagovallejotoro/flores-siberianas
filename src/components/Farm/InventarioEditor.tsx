@@ -161,6 +161,7 @@ export default function InventarioEditor({
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<Tab>("stock");
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [banner, setBanner] = useState<Banner>(null);
 
   // ── Live insumos (stock_actual updated on movements) ────────────────────────
@@ -537,122 +538,198 @@ export default function InventarioEditor({
       {/* ── TAB: STOCK ── */}
       {activeTab === "stock" && (
         <div>
-          <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
-            <div className="flex-1 min-w-[200px]">
-              <label className={labelCls}>Buscar insumo</label>
-              <input
-                type="text"
-                value={stockSearch}
-                onChange={(e) => setStockSearch(e.target.value)}
-                placeholder="Nombre del insumo…"
-                className={inputCls}
-              />
+          <div className="mb-4 flex flex-col gap-4 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1 w-full">
+                <label className={labelCls}>Buscar insumo</label>
+                <input
+                  type="text"
+                  value={stockSearch}
+                  onChange={(e) => setStockSearch(e.target.value)}
+                  placeholder="Nombre del insumo…"
+                  className={inputCls}
+                />
+              </div>
+              <div className="flex items-end pb-2">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-body-color dark:text-body-color-dark">
+                  <input
+                    type="checkbox"
+                    checked={showOnlyAlerts}
+                    onChange={(e) => setShowOnlyAlerts(e.target.checked)}
+                    className="h-4 w-4 rounded border-stroke accent-primary"
+                  />
+                  Solo alertas
+                </label>
+              </div>
             </div>
-            <label className="flex cursor-pointer items-center gap-2 pb-2 text-sm text-body-color dark:text-body-color-dark">
-              <input
-                type="checkbox"
-                checked={showOnlyAlerts}
-                onChange={(e) => setShowOnlyAlerts(e.target.checked)}
-                className="h-4 w-4 rounded border-stroke accent-primary"
-              />
-              Solo alertas
-            </label>
-            <div className="ml-auto">
-              <button
-                type="button"
-                onClick={() => openNewMovimiento(undefined, "ENTRADA")}
-                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
-              >
-                <IconPlus />
-                Nuevo Movimiento
-              </button>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+               <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("table")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "table"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tabla
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("card")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "card"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tarjetas
+                 </button>
+               </div>
+               
+               <button
+                 type="button"
+                 onClick={() => openNewMovimiento(undefined, "ENTRADA")}
+                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto sm:ml-auto"
+               >
+                 <IconPlus />
+                 Nuevo Movimiento
+               </button>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Insumo</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Categoría</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Actual</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Mínimo</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Precio Prom.</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Estado</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stroke dark:divide-strokedark">
-                  {filteredStock.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
-                        No hay insumos en el catálogo.
-                      </td>
+          <div className="w-full">
+            {/* Table View (Desktop Only) */}
+            <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Insumo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Categoría</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Actual</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Mínimo</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Precio Prom.</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Estado</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Acciones</th>
                     </tr>
-                  ) : (
-                    filteredStock.map((ins) => {
-                      const bajominimo =
-                        ins.stock_minimo != null && ins.stock_actual <= ins.stock_minimo;
-                      return (
-                        <tr
-                          key={ins.id}
-                          className={`transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3 ${bajominimo ? "bg-red-50/40 dark:bg-red-500/5" : ""}`}
-                        >
-                          <td className="px-4 py-3 font-medium text-black dark:text-white">{ins.nombre}</td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{ins.categoria ?? "-"}</td>
-                          <td className={`px-4 py-3 text-right font-semibold ${bajominimo ? "text-red-600 dark:text-red-400" : "text-black dark:text-white"}`}>
-                            {ins.stock_actual} {ins.unidad_medida ?? ""}
-                          </td>
-                          <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">
-                            {ins.stock_minimo != null
-                              ? `${ins.stock_minimo} ${ins.unidad_medida ?? ""}`
-                              : "-"}
-                          </td>
-                          <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">
-                            {ins.valor_unitario != null
-                              ? ins.valor_unitario.toLocaleString("es-CO", {
-                                  style: "currency",
-                                  currency: "COP",
-                                  maximumFractionDigits: 0,
-                                })
-                              : "—"}
-                          </td>
-                          <td className="px-4 py-3 text-center">
-                            {bajominimo ? (
-                              <span className="inline-block rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">
-                                Bajo mínimo
-                              </span>
-                            ) : (
-                              <span className="inline-block rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary dark:bg-primary-500/15 dark:text-primary-300">
-                                OK
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center justify-center gap-1">
-                              <button
-                                type="button"
-                                onClick={() => openNewMovimiento(ins.id, "ENTRADA")}
-                                className="rounded px-2 py-1 text-xs text-primary transition-colors hover:bg-primary-100 dark:hover:bg-primary-500/15"
-                              >
-                                + Entrada
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => openNewMovimiento(ins.id, "SALIDA")}
-                                className="rounded px-2 py-1 text-xs text-red-600 transition-colors hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-500/15"
-                              >
-                                – Salida
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                    {filteredStock.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
+                          No hay insumos en el catálogo.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStock.map((ins) => {
+                        const bajominimo =
+                          ins.stock_minimo != null && ins.stock_actual <= ins.stock_minimo;
+                        return (
+                          <tr
+                            key={ins.id}
+                            className={`transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3 ${bajominimo ? "bg-red-50/40 dark:bg-red-500/5" : ""}`}
+                          >
+                            <td className="px-4 py-3 font-medium text-black dark:text-white">{ins.nombre}</td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{ins.categoria ?? "-"}</td>
+                            <td className={`px-4 py-3 text-right font-semibold ${bajominimo ? "text-red-600 dark:text-red-400" : "text-black dark:text-white"}`}>
+                              {ins.stock_actual} {ins.unidad_medida ?? ""}
+                            </td>
+                            <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">
+                              {ins.stock_minimo != null
+                                ? `${ins.stock_minimo} ${ins.unidad_medida ?? ""}`
+                                : "-"}
+                            </td>
+                            <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">
+                              {ins.valor_unitario != null
+                                ? ins.valor_unitario.toLocaleString("es-CO", {
+                                    style: "currency",
+                                    currency: "COP",
+                                    maximumFractionDigits: 0,
+                                  })
+                                : "—"}
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              {bajominimo ? (
+                                <span className="inline-block rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">
+                                  Bajo mínimo
+                                </span>
+                              ) : (
+                                <span className="inline-block rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary dark:bg-primary-500/15 dark:text-primary-300">
+                                  OK
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center justify-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => openNewMovimiento(ins.id, "ENTRADA")}
+                                  className="rounded px-2 py-1 text-xs text-primary transition-colors hover:bg-primary-100 dark:hover:bg-primary-500/15"
+                                >
+                                  + Entrada
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => openNewMovimiento(ins.id, "SALIDA")}
+                                  className="rounded px-2 py-1 text-xs text-red-600 transition-colors hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-500/15"
+                                >
+                                  – Salida
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Card View */}
+            <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+               {filteredStock.length === 0 ? (
+                 <div className="col-span-full rounded-xl border border-stroke bg-white px-4 py-10 text-center text-sm text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark">
+                   No hay insumos.
+                 </div>
+               ) : (
+                 filteredStock.map((ins) => {
+                   const bajominimo = ins.stock_minimo != null && ins.stock_actual <= ins.stock_minimo;
+                   return (
+                     <div key={ins.id} className={`group relative flex flex-col gap-3 overflow-hidden rounded-xl border ${bajominimo ? "border-red-300 bg-red-50/40 dark:border-red-500/30 dark:bg-red-500/5 hover:border-red-400" : "border-stroke bg-white dark:border-strokedark dark:bg-dark hover:border-primary/50"} p-3.5 shadow-sm transition-all hover:shadow-md`}>
+                       <div className="flex items-center justify-between border-b border-stroke/50 pb-2 dark:border-strokedark/50">
+                          <div className="flex items-center gap-2">
+                             <span className="text-sm font-bold text-black dark:text-white truncate">{ins.nombre}</span>
+                          </div>
+                          {bajominimo && <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-red-600 dark:bg-red-500/15 dark:text-red-400">Bajo Mín.</span>}
+                       </div>
+                       <div className="grid grid-cols-2 gap-3">
+                         <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Stock Actual</span>
+                           <span className={`text-sm font-bold ${bajominimo ? "text-red-600 dark:text-red-400" : "text-black dark:text-white"}`}>{ins.stock_actual} <span className="text-[10px] font-normal uppercase text-body-color dark:text-body-color-dark">{ins.unidad_medida ?? ""}</span></span>
+                         </div>
+                         <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Mínimo</span>
+                           <span className="text-sm font-semibold text-body-color dark:text-body-color-dark">{ins.stock_minimo != null ? ins.stock_minimo : "-"} <span className="text-[10px] font-normal uppercase">{ins.unidad_medida ?? ""}</span></span>
+                         </div>
+                       </div>
+                       <div className="mt-1 flex items-center justify-between border-t border-stroke/50 pt-2 dark:border-strokedark/50">
+                         <div className="flex flex-col gap-0.5">
+                           <span className="text-[9px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Categoría / Precio Prom.</span>
+                           <span className="text-[11px] font-medium text-black dark:text-white">{ins.categoria ?? "-"} <span className="text-body-color dark:text-body-color-dark">·</span> {ins.valor_unitario != null ? ins.valor_unitario.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }) : "—"}</span>
+                         </div>
+                         <div className="flex shrink-0 items-center justify-end gap-1.5 ml-2">
+                           <button type="button" onClick={() => openNewMovimiento(ins.id, "SALIDA")} className="rounded-md border border-red-200 bg-red-50/80 px-2 py-1 text-[10px] font-semibold text-red-600 transition-colors hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20">Salida</button>
+                           <button type="button" onClick={() => openNewMovimiento(ins.id, "ENTRADA")} className="rounded-md border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-semibold text-primary transition-colors hover:bg-primary/20 dark:border-primary-500/20 dark:bg-primary-500/10 dark:hover:bg-primary-500/20">Entrada</button>
+                         </div>
+                       </div>
+                     </div>
+                   );
+                 })
+               )}
             </div>
           </div>
         </div>
@@ -661,144 +738,252 @@ export default function InventarioEditor({
       {/* ── TAB: MOVIMIENTOS ── */}
       {activeTab === "movimientos" && (
         <div>
-          <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
-            <div>
-              <label className={labelCls}>Desde</label>
-              <input
-                type="date"
-                value={movFechaInicio}
-                onChange={(e) => setMovFechaInicio(e.target.value)}
-                className={`${inputCls} w-38`}
-              />
+          <div className="mb-4 flex flex-col gap-4 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
+            <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end sm:justify-start">
+              <div className="col-span-1">
+                <label className={labelCls}>Desde</label>
+                <input
+                  type="date"
+                  value={movFechaInicio}
+                  onChange={(e) => setMovFechaInicio(e.target.value)}
+                  className={`${inputCls} w-full sm:w-[130px]`}
+                />
+              </div>
+              <div className="col-span-1">
+                <label className={labelCls}>Hasta</label>
+                <input
+                  type="date"
+                  value={movFechaFin}
+                  onChange={(e) => setMovFechaFin(e.target.value)}
+                  className={`${inputCls} w-full sm:w-[130px]`}
+                />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Select
+                  label="Tipo"
+                  value={movTipoFilter}
+                  onChange={(e) => setMovTipoFilter(e.target.value)}
+                  wrapperClassName="w-full sm:w-[140px]"
+                >
+                  <option value="">Todos</option>
+                  {TIPOS_MOVIMIENTO.map((t) => (
+                    <option key={t} value={t}>{tipoLabel(t)}</option>
+                  ))}
+                </Select>
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Select
+                  label="Insumo"
+                  value={movInsumoFilter}
+                  onChange={(e) => setMovInsumoFilter(e.target.value)}
+                  wrapperClassName="w-full sm:w-[160px]"
+                >
+                  <option value="">Todos</option>
+                  {insumosList.map((i) => (
+                    <option key={i.id} value={i.id}>{i.nombre}</option>
+                  ))}
+                </Select>
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Select
+                  label="Finca"
+                  value={movUbicacionFilter}
+                  onChange={(e) => setMovUbicacionFilter(e.target.value)}
+                  wrapperClassName="w-full sm:w-[160px]"
+                >
+                  <option value="">Todas</option>
+                  {ubicaciones.map((u) => (
+                    <option key={u.id} value={u.id}>{ubicacionLabel(u)}</option>
+                  ))}
+                </Select>
+              </div>
+              <div className="col-span-2 sm:col-span-1 sm:self-end">
+                <button
+                  type="button"
+                  onClick={clearMovFilters}
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5 sm:w-auto"
+                >
+                  <IconX />
+                  Limpiar
+                </button>
+              </div>
             </div>
-            <div>
-              <label className={labelCls}>Hasta</label>
-              <input
-                type="date"
-                value={movFechaFin}
-                onChange={(e) => setMovFechaFin(e.target.value)}
-                className={`${inputCls} w-38`}
-              />
-            </div>
-            <Select
-              label="Tipo"
-              value={movTipoFilter}
-              onChange={(e) => setMovTipoFilter(e.target.value)}
-              wrapperClassName="w-36"
-            >
-              <option value="">Todos</option>
-              {TIPOS_MOVIMIENTO.map((t) => (
-                <option key={t} value={t}>{tipoLabel(t)}</option>
-              ))}
-            </Select>
-            <Select
-              label="Insumo"
-              value={movInsumoFilter}
-              onChange={(e) => setMovInsumoFilter(e.target.value)}
-              wrapperClassName="w-44"
-            >
-              <option value="">Todos</option>
-              {insumosList.map((i) => (
-                <option key={i.id} value={i.id}>{i.nombre}</option>
-              ))}
-            </Select>
-            <Select
-              label="Finca"
-              value={movUbicacionFilter}
-              onChange={(e) => setMovUbicacionFilter(e.target.value)}
-              wrapperClassName="w-44"
-            >
-              <option value="">Todas</option>
-              {ubicaciones.map((u) => (
-                <option key={u.id} value={u.id}>{ubicacionLabel(u)}</option>
-              ))}
-            </Select>
-            <button
-              type="button"
-              onClick={clearMovFilters}
-              className="flex items-center gap-1.5 self-end rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
-            >
-              <IconX />
-              Limpiar
-            </button>
-            <div className="ml-auto self-end">
-              <button
-                type="button"
-                onClick={() => openNewMovimiento()}
-                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
-              >
-                <IconPlus />
-                Nuevo Movimiento
-              </button>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+               {/* VIEW TOGGLE */}
+               <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("table")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "table"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tabla
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("card")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "card"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tarjetas
+                 </button>
+               </div>
+               
+               <button
+                 type="button"
+                 onClick={() => openNewMovimiento()}
+                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto sm:ml-auto"
+               >
+                 <IconPlus />
+                 Nuevo Movimiento
+               </button>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Fecha</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Tipo</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Insumo</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Finca</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Cultivo</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Cantidad</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Descripción</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Referencia</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Eliminar</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stroke dark:divide-strokedark">
-                  {filteredMov.length === 0 ? (
-                    <tr>
-                      <td colSpan={9} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
-                        No hay movimientos en el período seleccionado.
-                      </td>
+          <div className="w-full">
+            {/* Table View */}
+            <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Fecha</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Tipo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Insumo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Finca</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Cultivo</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Cantidad</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Descripción</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Referencia</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Eliminar</th>
                     </tr>
-                  ) : (
-                    filteredMov.map((m) => {
-                      const ins = insumoById.get(m.id_insumo);
-                      const ub = ubicacionById.get(m.id_ubicacion);
-                      const cu = m.id_cultivo ? cultivoById.get(m.id_cultivo) : null;
-                      return (
-                        <tr key={m.id} className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3">
-                          <td className="whitespace-nowrap px-4 py-3 text-black dark:text-white">{m.fecha}</td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${TIPO_CHIP[m.tipo]}`}>
-                              {tipoLabel(m.tipo)}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{ins?.nombre ?? "-"}</td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                            {ub ? ubicacionLabel(ub) : "-"}
-                          </td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                            {cu ? cultivoLabel(cu, variedadById) : "-"}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-black dark:text-white">
-                            {m.tipo === "AJUSTE" && m.cantidad > 0 ? "+" : ""}
-                            {m.cantidad} {m.unidad}
-                          </td>
-                          <td className="max-w-[160px] truncate px-4 py-3 text-body-color dark:text-body-color-dark">
-                            {m.descripcion ?? "-"}
-                          </td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{m.referencia ?? "-"}</td>
-                          <td className="px-4 py-3 text-center">
-                            <button
-                              type="button"
-                              onClick={() => handleMovDelete(m)}
-                              className="rounded p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
-                            >
-                              <IconTrash />
+                  </thead>
+                  <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                    {filteredMov.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
+                          No hay movimientos en el período seleccionado.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredMov.map((m) => {
+                        const ins = insumoById.get(m.id_insumo);
+                        const ub = ubicacionById.get(m.id_ubicacion);
+                        const cu = m.id_cultivo ? cultivoById.get(m.id_cultivo) : null;
+                        return (
+                          <tr key={m.id} className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3">
+                            <td className="whitespace-nowrap px-4 py-3 text-black dark:text-white">{m.fecha}</td>
+                            <td className="px-4 py-3">
+                              <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${TIPO_CHIP[m.tipo]}`}>
+                                {tipoLabel(m.tipo)}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{ins?.nombre ?? "-"}</td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                              {ub ? ubicacionLabel(ub) : "-"}
+                            </td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                              {cu ? cultivoLabel(cu, variedadById) : "-"}
+                            </td>
+                            <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-black dark:text-white">
+                              {m.tipo === "AJUSTE" && m.cantidad > 0 ? "+" : ""}
+                              {m.cantidad} {m.unidad}
+                            </td>
+                            <td className="max-w-[160px] truncate px-4 py-3 text-body-color dark:text-body-color-dark">
+                              {m.descripcion ?? "-"}
+                            </td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{m.referencia ?? "-"}</td>
+                            <td className="px-4 py-3 text-center">
+                              <button
+                                type="button"
+                                onClick={() => handleMovDelete(m)}
+                                className="rounded p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
+                              >
+                                <IconTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Card View */}
+            <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+               {filteredMov.length === 0 ? (
+                 <div className="col-span-full rounded-xl border border-stroke bg-white px-4 py-10 text-center text-sm text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark">
+                   No hay movimientos en el período seleccionado.
+                 </div>
+               ) : (
+                 filteredMov.map((m) => {
+                   const ins = insumoById.get(m.id_insumo);
+                   const ub = ubicacionById.get(m.id_ubicacion);
+                   const cu = m.id_cultivo ? cultivoById.get(m.id_cultivo) : null;
+                   return (
+                     <div key={m.id} className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark">
+                       {/* Header: Fecha y Tipo */}
+                       <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                          <div className="flex items-center gap-2">
+                             <span className="text-sm font-bold text-black dark:text-white">{m.fecha}</span>
+                             <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${TIPO_CHIP[m.tipo]}`}>
+                               {tipoLabel(m.tipo)}
+                             </span>
+                          </div>
+                          
+                          <div className="flex flex-shrink-0 items-center pl-2 gap-1">
+                            <button type="button" onClick={() => handleMovDelete(m)} className="rounded-full bg-red-500/10 p-1.5 text-red-500 transition-colors hover:bg-red-500/20">
+                               <IconTrash />
                             </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+                          </div>
+                       </div>
+                       
+                       {/* Body details */}
+                       <div className="grid grid-cols-2 gap-3">
+                         <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Insumo</span>
+                           <span className="truncate text-xs font-semibold text-black dark:text-white" title={ins?.nombre ?? undefined}>
+                             {ins?.nombre ?? "-"}
+                           </span>
+                           <span className="truncate text-[10px] text-body-color dark:text-body-color-dark" title={m.descripcion ?? undefined}>
+                             {m.descripcion ?? "-"}
+                           </span>
+                         </div>
+                         
+                         <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cultivo / Finca</span>
+                           <span className="truncate text-xs font-semibold text-black dark:text-white" title={cu ? cultivoLabel(cu, variedadById) : undefined}>
+                             {cu ? cultivoLabel(cu, variedadById) : "-"}
+                           </span>
+                           <span className="truncate text-[10px] text-body-color dark:text-body-color-dark" title={ub ? ubicacionLabel(ub) : undefined}>
+                             {ub ? ubicacionLabel(ub) : "-"}
+                           </span>
+                         </div>
+                       </div>
+                       
+                       {/* Footer Cost */}
+                       <div className="mt-1 grid grid-cols-2 items-center gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+                         <div className="col-span-2 flex flex-col gap-0.5 text-right">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cantidad Movi.</span>
+                           <span className="tabular-nums text-[13px] font-bold text-black dark:text-white">
+                             {m.tipo === "AJUSTE" && m.cantidad > 0 ? "+" : ""}
+                             {m.cantidad} {m.unidad}
+                           </span>
+                         </div>
+                       </div>
+                     </div>
+                   );
+                 })
+               )}
             </div>
           </div>
         </div>
@@ -807,108 +992,200 @@ export default function InventarioEditor({
       {/* ── TAB: REPORTE DE COMPRAS ── */}
       {activeTab === "compras" && (
         <div>
-          <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
-            <div>
-              <label className={labelCls}>Desde (fecha planeada)</label>
-              <input
-                type="date"
-                value={comprasFechaInicio}
-                onChange={(e) => setComprasFechaInicio(e.target.value)}
-                className={`${inputCls} w-38`}
-              />
+          <div className="mb-4 flex flex-col gap-4 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
+            <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end sm:justify-start">
+              <div className="col-span-1">
+                <label className={labelCls}>Desde (planeada)</label>
+                <input
+                  type="date"
+                  value={comprasFechaInicio}
+                  onChange={(e) => setComprasFechaInicio(e.target.value)}
+                  className={`${inputCls} w-full sm:w-[130px]`}
+                />
+              </div>
+              <div className="col-span-1">
+                <label className={labelCls}>Hasta (planeada)</label>
+                <input
+                  type="date"
+                  value={comprasFechaFin}
+                  onChange={(e) => setComprasFechaFin(e.target.value)}
+                  className={`${inputCls} w-full sm:w-[130px]`}
+                />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Select
+                  label="Cultivos a considerar"
+                  value={estadoCultivoFilter}
+                  onChange={(e) => setEstadoCultivoFilter(e.target.value)}
+                  wrapperClassName="w-full sm:w-[220px]"
+                >
+                  <option value="todos">Activos y Planificados</option>
+                  <option value="activo">Solo Activos</option>
+                  <option value="planificado">Solo Planificados</option>
+                </Select>
+              </div>
             </div>
-            <div>
-              <label className={labelCls}>Hasta (fecha planeada)</label>
-              <input
-                type="date"
-                value={comprasFechaFin}
-                onChange={(e) => setComprasFechaFin(e.target.value)}
-                className={`${inputCls} w-38`}
-              />
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+               {/* VIEW TOGGLE */}
+               <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("table")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "table"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tabla
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => setViewMode("card")}
+                   className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                     viewMode === "card"
+                       ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                       : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+                   }`}
+                 >
+                   Tarjetas
+                 </button>
+               </div>
+               
+               <button
+                 type="button"
+                 onClick={refreshNecesidad}
+                 disabled={loadingNecesidad}
+                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-60 dark:bg-white/10 dark:hover:bg-white/20 sm:w-auto sm:ml-auto"
+               >
+                 <IconRefresh size={14} />
+                 {loadingNecesidad ? "Calculando…" : "Recalcular"}
+               </button>
             </div>
-            <Select
-              label="Cultivos a considerar"
-              value={estadoCultivoFilter}
-              onChange={(e) => setEstadoCultivoFilter(e.target.value)}
-              wrapperClassName="w-52"
-            >
-              <option value="todos">Activos y Planificados</option>
-              <option value="activo">Solo Activos</option>
-              <option value="planificado">Solo Planificados</option>
-            </Select>
-            <button
-              type="button"
-              onClick={refreshNecesidad}
-              disabled={loadingNecesidad}
-              className="flex items-center gap-2 self-end rounded-lg border border-stroke px-3 py-2 text-sm text-body-color transition-colors hover:bg-gray-50 disabled:opacity-60 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
-            >
-              <IconRefresh size={14} />
-              {loadingNecesidad ? "Calculando…" : "Recalcular"}
-            </button>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Insumo</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Unidad</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Actual</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Requerido</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Déficit</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Mínimo</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Alerta</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stroke dark:divide-strokedark">
-                  {necesidad.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
-                          {loadingNecesidad
-                          ? "Calculando necesidades…"
-                          : (comprasFechaInicio || comprasFechaFin)
-                            ? "No hay déficits en el período seleccionado."
-                            : "No hay déficits en los cultivos activos y planificados."}
-                      </td>
+          <div className="w-full">
+            {/* Table View */}
+            <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Insumo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Unidad</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Actual</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Requerido</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Déficit</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Stock Mínimo</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Alerta</th>
                     </tr>
-                  ) : (
-                    necesidad.map((n) => {
-                      const bajominimo =
-                        n.stock_minimo != null && n.stock_actual <= n.stock_minimo;
-                      return (
-                        <tr key={n.id_insumo} className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3">
-                          <td className="px-4 py-3 font-medium text-black dark:text-white">{n.nombre}</td>
-                          <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{n.unidad_medida ?? "-"}</td>
-                          <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.stock_actual}</td>
-                          <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.requerido_total.toFixed(2)}</td>
-                          <td className={`px-4 py-3 text-right font-bold ${n.deficit > 0 ? "text-red-600 dark:text-red-400" : "text-primary dark:text-primary-300"}`}>
-                            {n.deficit > 0 ? n.deficit.toFixed(2) : "OK"}
-                          </td>
-                          <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.stock_minimo ?? "-"}</td>
-                          <td className="px-4 py-3 text-center">
-                            {bajominimo ? (
-                              <span className="inline-block rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">
-                                Bajo mínimo
-                              </span>
-                            ) : (
-                              <span className="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
-                                Normal
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {necesidad.length > 0 && (
-              <div className="border-t border-stroke px-4 py-3 text-xs text-body-color dark:border-strokedark dark:text-body-color-dark">
-                {necesidad.length} insumo{necesidad.length !== 1 ? "s" : ""} requieren atención
+                  </thead>
+                  <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                    {necesidad.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
+                            {loadingNecesidad
+                            ? "Calculando necesidades…"
+                            : (comprasFechaInicio || comprasFechaFin)
+                              ? "No hay déficits en el período seleccionado."
+                              : "No hay déficits en los cultivos activos y planificados."}
+                        </td>
+                      </tr>
+                    ) : (
+                      necesidad.map((n) => {
+                        const bajominimo =
+                          n.stock_minimo != null && n.stock_actual <= n.stock_minimo;
+                        return (
+                          <tr key={n.id_insumo} className={`transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3 ${n.deficit > 0 ? "bg-red-50/30 dark:bg-red-500/5" : ""}`}>
+                            <td className="px-4 py-3 font-medium text-black dark:text-white">{n.nombre}</td>
+                            <td className="px-4 py-3 text-body-color dark:text-body-color-dark">{n.unidad_medida ?? "-"}</td>
+                            <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.stock_actual}</td>
+                            <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.requerido_total.toFixed(2)}</td>
+                            <td className={`px-4 py-3 text-right font-bold ${n.deficit > 0 ? "text-red-600 dark:text-red-400" : "text-primary dark:text-primary-300"}`}>
+                              {n.deficit > 0 ? n.deficit.toFixed(2) : "OK"}
+                            </td>
+                            <td className="px-4 py-3 text-right text-body-color dark:text-body-color-dark">{n.stock_minimo ?? "-"}</td>
+                            <td className="px-4 py-3 text-center">
+                              {bajominimo ? (
+                                <span className="inline-block rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">
+                                  Bajo mínimo
+                                </span>
+                              ) : (
+                                <span className="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                                  Normal
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
-            )}
+              {necesidad.length > 0 && (
+                <div className="border-t border-stroke px-4 py-3 text-xs text-body-color dark:border-strokedark dark:text-body-color-dark">
+                  {necesidad.length} insumo{necesidad.length !== 1 ? "s" : ""} requieren atención
+                </div>
+              )}
+            </div>
+
+            {/* Card View */}
+            <div className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`}>
+               {necesidad.length === 0 ? (
+                 <div className="col-span-full rounded-xl border border-stroke bg-white px-4 py-10 text-center text-sm text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark">
+                     {loadingNecesidad
+                     ? "Calculando necesidades…"
+                     : (comprasFechaInicio || comprasFechaFin)
+                       ? "No hay déficits en el período seleccionado."
+                       : "No hay déficits en los cultivos activos y planificados."}
+                 </div>
+               ) : (
+                 necesidad.map((n) => {
+                   const bajominimo = n.stock_minimo != null && n.stock_actual <= n.stock_minimo;
+                   const requiresPurchase = n.deficit > 0;
+                   return (
+                     <div key={n.id_insumo} className={`group relative flex flex-col gap-3 overflow-hidden rounded-xl border ${requiresPurchase ? "border-red-300 bg-red-50/40 dark:border-red-500/30 dark:bg-red-500/5 hover:border-red-400" : "border-stroke bg-white dark:border-strokedark dark:bg-dark hover:border-primary/50"} p-3.5 shadow-sm transition-all hover:shadow-md`}>
+                       {/* Header */}
+                       <div className="flex items-center justify-between border-b border-stroke/50 pb-2 dark:border-strokedark/50">
+                          <div className="flex items-center gap-2">
+                             <span className="text-sm font-bold text-black dark:text-white truncate" title={n.nombre}>{n.nombre}</span>
+                          </div>
+                          {bajominimo && <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-red-600 dark:bg-red-500/15 dark:text-red-400">Bajo Mín.</span>}
+                          {!bajominimo && <span className="inline-block rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gray-600 dark:bg-white/10 dark:text-gray-300">Normal</span>}
+                       </div>
+                       
+                       {/* Body calculations */}
+                       <div className="grid grid-cols-2 gap-3">
+                         <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Stock Actual</span>
+                           <span className="text-sm font-bold text-black dark:text-white">{n.stock_actual} <span className="text-[10px] font-normal uppercase text-body-color dark:text-body-color-dark">{n.unidad_medida ?? ""}</span></span>
+                         </div>
+                         <div className="flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                           <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Requerido</span>
+                           <span className="text-sm font-semibold text-body-color dark:text-body-color-dark">{n.requerido_total.toFixed(2)} <span className="text-[10px] font-normal uppercase">{n.unidad_medida ?? ""}</span></span>
+                         </div>
+                       </div>
+                       
+                       {/* Footer Deficit */}
+                       <div className="mt-1 flex items-center justify-between border-t border-stroke/50 pt-2 dark:border-strokedark/50">
+                         <div className="flex flex-col gap-0.5">
+                           <span className="text-[9px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Stock Mínimo</span>
+                           <span className="text-[11px] font-medium text-body-color dark:text-body-color-dark">{n.stock_minimo != null ? `${n.stock_minimo} ${n.unidad_medida ?? ""}` : "-"}</span>
+                         </div>
+                         <div className="flex flex-col gap-0.5 text-right">
+                           <span className="text-[9px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Déficit</span>
+                           <span className={`tabular-nums text-[13px] font-bold ${requiresPurchase ? "text-red-600 dark:text-red-400" : "text-primary dark:text-primary-300"}`}>
+                             {requiresPurchase ? n.deficit.toFixed(2) : "OK"} <span className="text-[9px] font-normal uppercase">{n.unidad_medida ?? ""}</span>
+                           </span>
+                         </div>
+                       </div>
+                     </div>
+                   );
+                 })
+               )}
+            </div>
           </div>
         </div>
       )}

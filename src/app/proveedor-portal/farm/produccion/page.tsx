@@ -34,7 +34,7 @@ export default async function ProduccionPage() {
     ]);
 
   const config = toConfigMap(configVars);
-  const tasaCambio = parseFloat(config["TASA_CAMBIO"] ?? "4200") || 4200;
+  const tasaCambio = parseFloat(config["TASA_CAMBIO"] ?? "3600") || 3600;
 
   return (
     <div>

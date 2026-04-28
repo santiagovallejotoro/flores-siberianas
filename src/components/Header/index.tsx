@@ -84,7 +84,7 @@ const Header = () => {
       >
         <div className="container">
           <div className="relative -mx-4 flex items-center justify-between">
-            <div className="w-72 max-w-full px-4 xl:mr-12">
+            <div className="w-72 max-w-full px-4 lg:w-48 xl:w-56 xl:mr-12">
               <Link
                 href="/"
                 className={`header-logo block w-full transition-transform duration-300 ease-out hover:scale-110 ${
@@ -107,8 +107,8 @@ const Header = () => {
                 />
               </Link>
             </div>
-            <div className="flex w-full min-w-0 items-center justify-between gap-x-6 px-4 lg:gap-x-10 xl:gap-x-14">
-              <div className="min-w-0 flex-1">
+            <div className="flex w-full min-w-0 items-center justify-between px-4">
+              <div className="min-w-0">
                 <button
                   onClick={navbarToggleHandler}
                   id="navbarToggler"
@@ -139,7 +139,7 @@ const Header = () => {
                       : "invisible top-[120%] opacity-0"
                   }`}
                 >
-                  <ul className="block lg:flex lg:space-x-12">
+                  <ul className="block lg:flex lg:space-x-4 xl:space-x-10">
                     {menuData.map((menuItem, index) => (
                       <li key={index} className="group relative">
                         <Link
@@ -204,7 +204,7 @@ const Header = () => {
                   </div>
                 </nav>
               </div>
-              <div className="flex shrink-0 items-center justify-end gap-3 pr-16 lg:pr-0">
+              <div className="flex shrink-0 items-center justify-end gap-3 pr-16 lg:ml-8 lg:pr-0 xl:ml-12">
                 {/* LOGIN DROPDOWN (Desktop only) */}
                 <div className="relative hidden md:block" ref={dropdownRef}>
                   <button
@@ -243,14 +243,14 @@ const Header = () => {
                 {isProveedoresPage || isProveedorPortalPage ? (
                    <Link
                     href="/proveedores#registro-proveedor"
-                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 md:block"
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 xl:block"
                    >
                      Vender
                    </Link>
                 ) : (
                     <Link
                     href="/contact"
-                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 md:block"
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary-600 hidden rounded-lg px-6 py-2.5 text-[15px] font-semibold text-white transition duration-300 xl:block"
                     >
                     {t?.common?.getQuote || "Obtener cotización"}
                     </Link>

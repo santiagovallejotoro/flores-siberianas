@@ -187,6 +187,7 @@ export default function CostosEditor({
   const [tipoFilter, setTipoFilter] = useState("");
   const [ubicacionFilter, setUbicacionFilter] = useState("");
   const [cultivoFilter, setCultivoFilter] = useState("");
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   // ── Modal state ─────────────────────────────────────────────────────────────
   const [modalOpen, setModalOpen] = useState(false);
@@ -408,9 +409,51 @@ export default function CostosEditor({
   }
 
   // ── Submit ──────────────────────────────────────────────────────────────────
+  function validateCostoForm(): string | null {
+    if (!form.id_ubicacion?.trim()) {
+      return "Selecciona una finca (ubicación).";
+    }
+    if (!form.fecha?.trim()) {
+      return "Indica la fecha del costo.";
+    }
+    if (form.id_cultivo && loadingPickers) {
+      return "Espera a que termine de cargar la información del cultivo.";
+    }
+    if (form.tipo_costo === "INSUMO") {
+      if (!form.id_insumo?.trim()) {
+        return "Selecciona un insumo: planificado del cultivo o desde el catálogo.";
+      }
+    }
+    if (form.tipo_costo === "MANO_OBRA") {
+      if (actividadesCultivo.length > 0 && !form.id_actividad?.trim()) {
+        return "Selecciona la actividad planificada del cultivo.";
+      }
+      if (actividadesCultivo.length === 0 && !form.descripcion?.trim()) {
+        return "Describe el trabajo de mano de obra (no hay actividades planificadas para este cultivo).";
+      }
+    }
+    const cant = form.cantidad;
+    if (cant == null || Number.isNaN(cant) || cant <= 0) {
+      return "La cantidad debe ser mayor que 0.";
+    }
+    const cu = form.costo_unitario;
+    if (cu == null || Number.isNaN(cu) || cu < 0) {
+      return "Indica un costo unitario válido (número ≥ 0).";
+    }
+    if (!form.unidad?.trim()) {
+      return "Indica la unidad (ej. minutos, kg, litros).";
+    }
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (saving) return;
+    const validationError = validateCostoForm();
+    if (validationError) {
+      showBanner({ kind: "error", text: validationError });
+      return;
+    }
     setSaving(true);
 
     const payload: CostoInput = { ...form, costo_total: computedTotal || null };
@@ -551,174 +594,293 @@ export default function CostosEditor({
       )}
 
       {/* Filter bar */}
-      <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
-        <div>
-          <label className={labelCls}>Desde</label>
-          <input
-            type="date"
-            value={fechaInicio}
-            onChange={(e) => setFechaInicio(e.target.value)}
-            className={`${inputCls} w-38`}
-          />
+      <div className="mb-4 flex flex-col gap-4 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end sm:justify-start">
+          <div className="col-span-1">
+            <label className={labelCls}>Desde</label>
+            <input
+              type="date"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className={`${inputCls} w-full sm:w-[130px]`}
+            />
+          </div>
+          <div className="col-span-1">
+            <label className={labelCls}>Hasta</label>
+            <input
+              type="date"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
+              className={`${inputCls} w-full sm:w-[130px]`}
+            />
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Tipo"
+              value={tipoFilter}
+              onChange={(e) => setTipoFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[150px]"
+            >
+              <option value="">Todos los tipos</option>
+              {TIPOS_COSTO.map((t) => (
+                <option key={t} value={t}>{tipoCostoLabel(t)}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Finca"
+              value={ubicacionFilter}
+              onChange={(e) => setUbicacionFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[160px]"
+            >
+              <option value="">Todas</option>
+              {ubicaciones.map((u) => (
+                <option key={u.id} value={u.id}>{ubicacionLabel(u)}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Select
+              label="Cultivo"
+              value={cultivoFilter}
+              onChange={(e) => setCultivoFilter(e.target.value)}
+              wrapperClassName="w-full sm:w-[180px]"
+            >
+              <option value="">Todos</option>
+              {cultivos.map((c) => (
+                <option key={c.id} value={c.id}>{cultivoLabel(c, variedadById)}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="col-span-2 sm:col-span-1 sm:self-end">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5 sm:w-auto"
+            >
+              <IconX />
+              Limpiar
+            </button>
+          </div>
         </div>
-        <div>
-          <label className={labelCls}>Hasta</label>
-          <input
-            type="date"
-            value={fechaFin}
-            onChange={(e) => setFechaFin(e.target.value)}
-            className={`${inputCls} w-38`}
-          />
-        </div>
-        <Select
-          label="Tipo"
-          value={tipoFilter}
-          onChange={(e) => setTipoFilter(e.target.value)}
-          wrapperClassName="w-40"
-        >
-          <option value="">Todos los tipos</option>
-          {TIPOS_COSTO.map((t) => (
-            <option key={t} value={t}>{tipoCostoLabel(t)}</option>
-          ))}
-        </Select>
-        <Select
-          label="Finca"
-          value={ubicacionFilter}
-          onChange={(e) => setUbicacionFilter(e.target.value)}
-          wrapperClassName="w-44"
-        >
-          <option value="">Todas</option>
-          {ubicaciones.map((u) => (
-            <option key={u.id} value={u.id}>{ubicacionLabel(u)}</option>
-          ))}
-        </Select>
-        <Select
-          label="Cultivo"
-          value={cultivoFilter}
-          onChange={(e) => setCultivoFilter(e.target.value)}
-          wrapperClassName="w-44"
-        >
-          <option value="">Todos</option>
-          {cultivos.map((c) => (
-            <option key={c.id} value={c.id}>{cultivoLabel(c, variedadById)}</option>
-          ))}
-        </Select>
-        <button
-          type="button"
-          onClick={clearFilters}
-          className="flex items-center gap-1.5 self-end rounded-lg border border-stroke px-3 py-2 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:text-body-color-dark dark:hover:bg-white/5"
-        >
-          <IconX />
-          Limpiar
-        </button>
-        <div className="ml-auto self-end">
-          <button
-            type="button"
-            onClick={openCreate}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
-          >
-            <IconPlus />
-            Registrar Costo
-          </button>
+
+        {/* Actions Row */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+           {/* VIEW TOGGLE */}
+           <div className="hidden items-center rounded-lg border border-stroke bg-gray-50/50 p-1 dark:border-strokedark dark:bg-dark md:flex">
+             <button
+               type="button"
+               onClick={() => setViewMode("table")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "table"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tabla
+             </button>
+             <button
+               type="button"
+               onClick={() => setViewMode("card")}
+               className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                 viewMode === "card"
+                   ? "bg-white text-black shadow-sm dark:bg-white/10 dark:text-white"
+                   : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white"
+               }`}
+             >
+               Tarjetas
+             </button>
+           </div>
+           
+           <button
+             type="button"
+             onClick={openCreate}
+             className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 sm:w-auto sm:ml-auto"
+           >
+             <IconPlus />
+             Registrar Costo
+           </button>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Fecha</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Finca</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Cultivo</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Tipo</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Descripción</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Cantidad</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Costo Unit.</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Total</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase text-body-color dark:text-body-color-dark">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stroke dark:divide-strokedark">
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
-                    No hay costos en el período seleccionado.
-                  </td>
+      {/* Views */}
+      <div className="w-full">
+        {/* Table View (Desktop Only) */}
+        <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-hidden rounded-xl border border-stroke bg-white dark:border-strokedark dark:bg-dark`}>
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="min-w-full w-full text-sm">
+              <thead>
+                <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-white/5">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Fecha</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Finca</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Cultivo</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Tipo</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Descripción</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Cantidad</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Costo Unit.</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Total</th>
+                  <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-body-color dark:text-body-color-dark">Acciones</th>
                 </tr>
-              ) : (
-                filtered.map((c) => (
-                  <tr
-                    key={c.id}
-                    className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3"
-                  >
-                    <td className="whitespace-nowrap px-4 py-3 text-black dark:text-white">
-                      {c.fecha ?? "-"}
-                    </td>
-                    <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                      {getUbicacionLabel(c.id_ubicacion)}
-                    </td>
-                    <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
-                      {getCultivoLabel(c.id_cultivo)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${TIPO_CHIP[c.tipo_costo]}`}>
-                        {tipoCostoLabel(c.tipo_costo)}
-                      </span>
-                    </td>
-                    <td className="max-w-[180px] truncate px-4 py-3 text-body-color dark:text-body-color-dark">
-                      {c.descripcion ?? "-"}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right text-body-color dark:text-body-color-dark">
-                      {c.cantidad != null ? `${c.cantidad} ${c.unidad ?? ""}`.trim() : "-"}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right text-body-color dark:text-body-color-dark">
-                      {c.costo_unitario != null
-                        ? c.costo_unitario.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })
-                        : "-"}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-red-600 dark:text-red-400">
-                      {c.costo_total != null
-                        ? c.costo_total.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })
-                        : "-"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(c)}
-                          className="rounded p-1.5 text-body-color transition-colors hover:bg-primary-100 hover:text-primary dark:text-body-color-dark dark:hover:bg-primary-500/15 dark:hover:text-primary-300"
-                          title="Editar"
-                        >
-                          <IconEdit />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(c)}
-                          className="rounded p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
-                          title="Eliminar"
-                        >
-                          <IconTrash />
-                        </button>
-                      </div>
+              </thead>
+              <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-4 py-10 text-center text-sm text-body-color dark:text-body-color-dark">
+                      No hay costos en el período seleccionado.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        {filtered.length > 0 && (
-          <div className="border-t border-stroke px-4 py-3 text-xs text-body-color dark:border-strokedark dark:text-body-color-dark">
-            {filtered.length} registro{filtered.length !== 1 ? "s" : ""} · Total:{" "}
-            <span className="font-semibold text-red-600 dark:text-red-400">
-              {filtered
-                .reduce((sum, c) => sum + (c.costo_total ?? 0), 0)
-                .toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })}
-            </span>
+                ) : (
+                  filtered.map((c) => (
+                    <tr
+                      key={c.id}
+                      className="transition-colors hover:bg-gray-50/60 dark:hover:bg-white/3"
+                    >
+                      <td className="whitespace-nowrap px-4 py-3 text-black dark:text-white">
+                        {c.fecha ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                        {getUbicacionLabel(c.id_ubicacion)}
+                      </td>
+                      <td className="px-4 py-3 text-body-color dark:text-body-color-dark">
+                        {getCultivoLabel(c.id_cultivo)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${TIPO_CHIP[c.tipo_costo]}`}>
+                          {tipoCostoLabel(c.tipo_costo)}
+                        </span>
+                      </td>
+                      <td className="max-w-[180px] truncate px-4 py-3 text-body-color dark:text-body-color-dark">
+                        {c.descripcion ?? "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-body-color dark:text-body-color-dark">
+                        {c.cantidad != null ? `${c.cantidad} ${c.unidad ?? ""}`.trim() : "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-body-color dark:text-body-color-dark">
+                        {c.costo_unitario != null
+                          ? c.costo_unitario.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })
+                          : "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-red-600 dark:text-red-400">
+                        {c.costo_total != null
+                          ? c.costo_total.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openEdit(c)}
+                            className="rounded p-1.5 text-body-color transition-colors hover:bg-primary-100 hover:text-primary dark:text-body-color-dark dark:hover:bg-primary-500/15 dark:hover:text-primary-300"
+                            title="Editar"
+                          >
+                            <IconEdit />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(c)}
+                            className="rounded p-1.5 text-body-color transition-colors hover:bg-red-100 hover:text-red-600 dark:text-body-color-dark dark:hover:bg-red-500/15 dark:hover:text-red-400"
+                            title="Eliminar"
+                          >
+                            <IconTrash />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+          {filtered.length > 0 && (
+            <div className="border-t border-stroke px-4 py-3 text-xs text-body-color dark:border-strokedark dark:text-body-color-dark">
+              {filtered.length} registro{filtered.length !== 1 ? "s" : ""} · Total:{" "}
+              <span className="font-semibold text-red-600 dark:text-red-400">
+                {filtered
+                  .reduce((sum, c) => sum + (c.costo_total ?? 0), 0)
+                  .toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Card View (Mobile always, Desktop if selected) */}
+        <div
+          className={`${viewMode === "table" ? "grid md:hidden" : "grid"} grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4`}
+        >
+          {filtered.length === 0 ? (
+            <div className="col-span-full rounded-xl border border-stroke bg-white px-4 py-10 text-center text-sm text-body-color dark:border-strokedark dark:bg-dark dark:text-body-color-dark">
+              No hay costos en el período seleccionado.
+            </div>
+          ) : (
+            filtered.map((c) => (
+              <div key={c.id} className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-strokedark dark:bg-dark">
+                 {/* Header: Fecha y Acciones */}
+                 <div className="flex items-center justify-between border-b border-stroke pb-2 dark:border-strokedark">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-black dark:text-white">{c.fecha ?? "-"}</span>
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${TIPO_CHIP[c.tipo_costo]}`}>
+                        {tipoCostoLabel(c.tipo_costo)}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-shrink-0 items-center pl-2 gap-1">
+                      <button type="button" onClick={() => openEdit(c)} className="rounded-full bg-primary/10 p-1.5 text-primary transition-colors hover:bg-primary/20 dark:bg-primary-500/10 dark:hover:bg-primary-500/20">
+                         <IconEdit />
+                      </button>
+                      <button type="button" onClick={() => handleDelete(c)} className="rounded-full bg-red-500/10 p-1.5 text-red-500 transition-colors hover:bg-red-500/20">
+                         <IconTrash />
+                      </button>
+                    </div>
+                 </div>
+
+                 {/* Body details */}
+                 <div className="grid grid-cols-2 gap-3">
+                   <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                     <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Descripción</span>
+                     <span className="truncate text-xs font-semibold text-black dark:text-white" title={c.descripcion ?? undefined}>
+                       {c.descripcion ?? "-"}
+                     </span>
+                   </div>
+                   
+                   <div className="col-span-2 flex flex-col gap-1 rounded-lg bg-gray-50/70 p-2 dark:bg-white/5">
+                     <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cultivo / Finca</span>
+                     <span className="truncate text-xs font-semibold text-black dark:text-white" title={getCultivoLabel(c.id_cultivo)}>
+                       {getCultivoLabel(c.id_cultivo)}
+                     </span>
+                     <span className="truncate text-[10px] text-body-color dark:text-body-color-dark" title={getUbicacionLabel(c.id_ubicacion)}>
+                       {getUbicacionLabel(c.id_ubicacion)}
+                     </span>
+                   </div>
+                 </div>
+
+                 {/* Footer Cost */}
+                 <div className="mt-1 grid grid-cols-2 items-center gap-3 border-t border-stroke/50 pt-3 dark:border-strokedark/50">
+                   <div className="flex flex-col gap-0.5">
+                     <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Cantidad vs Unit.</span>
+                     <span className="text-[10px] text-black dark:text-white line-clamp-1">
+                        {c.cantidad != null ? `${c.cantidad} ${c.unidad ?? ""}`.trim() : "-"} a {c.costo_unitario != null ? c.costo_unitario.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }) : "-"}
+                     </span>
+                   </div>
+                   <div className="flex flex-col gap-0.5 text-right">
+                     <span className="text-[10px] font-medium uppercase tracking-wider text-body-color dark:text-body-color-dark">Total</span>
+                     <span className="tabular-nums text-[13px] font-bold text-red-600 dark:text-red-400">
+                        {c.costo_total != null ? c.costo_total.toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }) : "-"}
+                     </span>
+                   </div>
+                 </div>
+              </div>
+            ))
+          )}
+          {filtered.length > 0 && (
+            <div className="col-span-full border-t border-stroke pt-1 pb-3 text-xs text-body-color dark:border-strokedark dark:text-body-color-dark">
+              {filtered.length} registro{filtered.length !== 1 ? "s" : ""} · Total:{" "}
+              <span className="font-semibold text-red-600 dark:text-red-400">
+                {filtered.reduce((sum, c) => sum + (c.costo_total ?? 0), 0).toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
@@ -753,6 +915,7 @@ export default function CostosEditor({
             <div>
               <label className={labelCls}>Finca *</label>
               <Select
+                required
                 value={form.id_ubicacion ?? ""}
                 onChange={(e) => setField("id_ubicacion", e.target.value || null)}
               >
@@ -863,7 +1026,10 @@ export default function CostosEditor({
             {/* Actividad planificada (MANO_OBRA only) */}
             {showActividadPicker && (
               <div className="sm:col-span-2">
-                <label className={labelCls}>Actividad planificada del cultivo</label>
+                <label className={labelCls}>
+                  Actividad planificada del cultivo
+                  {!loadingPickers && actividadesCultivo.length > 0 ? " *" : ""}
+                </label>
                 {loadingPickers ? (
                   <p className="text-xs text-body-color dark:text-body-color-dark">Cargando…</p>
                 ) : actividadesCultivo.length === 0 ? (
@@ -874,6 +1040,7 @@ export default function CostosEditor({
                   </p>
                 ) : (
                   <Select
+                    required
                     value={selectedActividadCultivoId}
                     onChange={(e) => onActividadChange(e.target.value)}
                   >
@@ -899,9 +1066,21 @@ export default function CostosEditor({
 
             {/* Descripción */}
             <div className="sm:col-span-2">
-              <label className={labelCls}>Descripción</label>
+              <label className={labelCls}>
+                Descripción
+                {showActividadPicker &&
+                !loadingPickers &&
+                actividadesCultivo.length === 0
+                  ? " *"
+                  : ""}
+              </label>
               <input
                 type="text"
+                required={
+                  showActividadPicker &&
+                  !loadingPickers &&
+                  actividadesCultivo.length === 0
+                }
                 value={form.descripcion ?? ""}
                 onChange={(e) => setField("descripcion", e.target.value || null)}
                 placeholder="Descripción del costo"
@@ -911,10 +1090,11 @@ export default function CostosEditor({
 
             {/* Cantidad */}
             <div>
-              <label className={labelCls}>Cantidad</label>
+              <label className={labelCls}>Cantidad *</label>
               <input
                 type="number"
-                min="0"
+                required
+                min="0.000001"
                 step="any"
                 value={form.cantidad ?? ""}
                 onChange={(e) =>
@@ -933,9 +1113,10 @@ export default function CostosEditor({
 
             {/* Unidad */}
             <div>
-              <label className={labelCls}>Unidad</label>
+              <label className={labelCls}>Unidad *</label>
               <input
                 type="text"
+                required
                 value={form.unidad ?? ""}
                 onChange={(e) => setField("unidad", e.target.value || null)}
                 placeholder={tipo === "MANO_OBRA" ? "minutos" : "kg, L, unid…"}
@@ -946,13 +1127,14 @@ export default function CostosEditor({
             {/* Costo unitario */}
             <div>
               <label className={labelCls}>
-                Costo unitario
+                Costo unitario *
                 {tipo === "MANO_OBRA" && (
                   <span className="ml-1 text-body-color/60">($/min)</span>
                 )}
               </label>
               <input
                 type="number"
+                required
                 min="0"
                 step="any"
                 value={form.costo_unitario ?? ""}
