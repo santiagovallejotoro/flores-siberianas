@@ -107,8 +107,8 @@ const Header = () => {
                 />
               </Link>
             </div>
-            <div className="flex w-full items-center justify-between px-4">
-              <div>
+            <div className="flex w-full min-w-0 items-center justify-between gap-x-6 px-4 lg:gap-x-10 xl:gap-x-14">
+              <div className="min-w-0 flex-1">
                 <button
                   onClick={navbarToggleHandler}
                   id="navbarToggler"
@@ -204,7 +204,7 @@ const Header = () => {
                   </div>
                 </nav>
               </div>
-              <div className="flex items-center justify-end gap-3 pr-16 lg:pr-0">
+              <div className="flex shrink-0 items-center justify-end gap-3 pr-16 lg:pr-0">
                 {/* LOGIN DROPDOWN (Desktop only) */}
                 <div className="relative hidden md:block" ref={dropdownRef}>
                   <button
