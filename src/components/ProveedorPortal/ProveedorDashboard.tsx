@@ -173,27 +173,27 @@ export default function ProveedorDashboard({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-8">
+        <div className="min-w-0 shrink-0">
           <h1 className="text-2xl font-bold text-black dark:text-white">Dashboard</h1>
           <p className="mt-1 text-sm text-body-color dark:text-body-color-dark">
-            Resumen de tu finca: costos, producción e inventario
+            Cifras y gráficos de tu finca; ajusta fechas y año de ejercicio a la derecha.
           </p>
         </div>
-        <div className="max-w-full rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark sm:max-w-none">
-          <div className="flex flex-wrap items-end gap-3">
+        <div className="min-w-0 w-full max-w-full rounded-xl border border-stroke bg-white p-3 dark:border-strokedark dark:bg-dark sm:max-w-md sm:shrink-0 sm:p-4">
+          <div className="flex flex-wrap items-end gap-2 sm:gap-3">
             <div>
               <label className={`${labelCls} mb-1 block normal-case`}>Desde</label>
-              <input type="date" className={`${inputCls} w-40`} value={from} onChange={(e) => setFrom(e.target.value)} />
+              <input type="date" className={`${inputCls} w-[9.5rem] sm:w-36`} value={from} onChange={(e) => setFrom(e.target.value)} />
             </div>
             <div>
               <label className={`${labelCls} mb-1 block normal-case`}>Hasta</label>
-              <input type="date" className={`${inputCls} w-40`} value={to} onChange={(e) => setTo(e.target.value)} />
+              <input type="date" className={`${inputCls} w-[9.5rem] sm:w-36`} value={to} onChange={(e) => setTo(e.target.value)} />
             </div>
             <div>
               <label className={`${labelCls} mb-1 block normal-case`}>Año (ejercicio)</label>
               <select
-                className={`${inputCls} w-32`}
+                className={`${inputCls} w-28`}
                 value={financialYear}
                 onChange={(e) => setFinancialYear(Number(e.target.value))}
               >
@@ -208,15 +208,15 @@ export default function ProveedorDashboard({
               type="button"
               onClick={applyFilters}
               disabled={pending}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary-600 disabled:opacity-60 dark:hover:bg-primary-400"
+              className="rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary-600 disabled:opacity-60 sm:px-4 dark:hover:bg-primary-400"
             >
               {pending ? "Actualizando…" : "Aplicar"}
             </button>
           </div>
-          <p className="mt-3 max-w-3xl text-[11px] leading-snug text-body-color/80 dark:text-body-color-dark/70">
+          <p className="mt-2.5 text-[11px] leading-snug text-body-color/80 dark:text-body-color-dark/70">
             <span className="font-medium text-body-color/90 dark:text-body-color-dark/80">Desde / Hasta:</span>{" "}
-            afecta los KPIs, la producción por mes y <span className="font-medium">ambos</span> gráficos del recuadro
-            (semanas de producción programada; costos e ingresos recortados al cruce con el año de ejercicio).
+            afecta las cifras del resumen, la producción por mes y <span className="font-medium">ambos</span> gráficos
+            del recuadro (semanas programadas; costos e ingresos según el cruce con el año de ejercicio).
           </p>
         </div>
       </div>
