@@ -286,7 +286,7 @@ export default function UbicacionesEditor({
                 onChange={(e) =>
                   setNewForm((f) => ({ ...f, observaciones: e.target.value }))
                 }
-                placeholder="Detalles del lote, acceso, condiciones del suelo…"
+                placeholder="Detalles del predio, acceso, condiciones del suelo…"
                 className={inputCls}
               />
             </div>
@@ -300,7 +300,8 @@ export default function UbicacionesEditor({
             </button>
           </div>
           <p className="text-xs text-body-color/70 dark:text-body-color-dark/60">
-            Una ubicación puede albergar varios cultivos a lo largo del tiempo.
+            Suele ser una finca o predio junto: ahí caben varias variedades o
+            turnos y rotan cultivos.
           </p>
         </form>
       </section>

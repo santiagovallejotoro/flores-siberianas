@@ -36,7 +36,7 @@ export default async function CostosPage() {
     ]);
 
   const config = toConfigMap(configVars);
-  const jornalDia = parseFloat(config["JORNAL_DIA"] ?? "65000") || 65000;
+  const jornalDia = parseFloat(config["JORNAL_DIA"] ?? "116000") || 116000;
   const horasJornal = parseFloat(config["HORAS_JORNAL"] ?? "8") || 8;
 
   return (

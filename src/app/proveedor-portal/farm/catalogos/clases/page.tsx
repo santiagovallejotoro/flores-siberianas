@@ -20,14 +20,13 @@ export default async function ClasesPage() {
           Clases de Cultivo
         </h1>
         <p className="mt-1 text-sm text-body-color dark:text-body-color-dark">
-          Categorías raíz para variedades y actividades — por ejemplo HORTENSIA, ROSA,
-          CLAVEL.
+          Familias de cultivo (HORTENSIA, ROSA, CLAVEL) para agrupar variedades.
         </p>
       </div>
 
       <CatalogHelp
-        why="Las clases son las familias de flores que cultivas — HORTENSIA, ROSA, CLAVEL. Cada variedad pertenece a una clase, y muchas actividades pueden definirse a nivel de clase para que apliquen automáticamente a todas sus variedades."
-        example="Si cultivas tres variedades de hortensia (Limelight, Pink Lady, Bobo), todas pertenecen a la clase HORTENSIA y comparten las actividades base."
+        why="Agrupa variedades. Actividades a nivel de clase ahorran trabajo; lo que sea distinto en campo lo detallas por variedad."
+        example="Hortensias blanca, azul o limón: misma clase HORTENSIA, misma base de actividades."
       />
 
       <ClasesEditor initialClases={initialClases} />

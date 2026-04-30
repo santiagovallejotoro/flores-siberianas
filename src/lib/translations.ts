@@ -446,7 +446,14 @@ export const translations = {
       products: 'Products',
       company: 'Company',
       support: 'Support',
-      copyright: '© 2026 Flores Siberianas. All rights reserved.'
+      copyright: '© 2026 Flores Siberianas. All rights reserved.',
+      termsLink: 'Terms of Service',
+      privacyLink: 'Privacy Policy'
+    },
+    legal: {
+      eyebrow: 'Legal',
+      lastUpdated: 'Last updated',
+      backToHome: 'Back to home'
     },
     common: {
       getQuote: 'Get a Quote',
@@ -884,7 +891,14 @@ export const translations = {
       products: 'Продукция',
       company: 'Компания',
       support: 'Поддержка',
-      copyright: '© 2026 Flores Siberianas. Все права защищены.'
+      copyright: '© 2026 Flores Siberianas. Все права защищены.',
+      termsLink: 'Условия использования',
+      privacyLink: 'Политика конфиденциальности'
+    },
+    legal: {
+      eyebrow: 'Правовая информация',
+      lastUpdated: 'Последнее обновление',
+      backToHome: 'На главную'
     },
     common: {
       getQuote: 'Получить цену',
@@ -1322,7 +1336,14 @@ export const translations = {
       products: 'Productos',
       company: 'Empresa',
       support: 'Soporte',
-      copyright: '© 2026 Flores Siberianas. Todos los derechos reservados.'
+      copyright: '© 2026 Flores Siberianas. Todos los derechos reservados.',
+      termsLink: 'Términos del servicio',
+      privacyLink: 'Política de privacidad'
+    },
+    legal: {
+      eyebrow: 'Legal',
+      lastUpdated: 'Última actualización',
+      backToHome: 'Volver al inicio'
     },
     common: {
       getQuote: 'Obtener cotización',
@@ -1760,7 +1781,14 @@ export const translations = {
       products: '产品',
       company: '公司',
       support: '支持',
-      copyright: '© 2026 Flores Siberianas. 版权所有。'
+      copyright: '© 2026 Flores Siberianas. 版权所有。',
+      termsLink: '服务条款',
+      privacyLink: '隐私政策'
+    },
+    legal: {
+      eyebrow: '法律信息',
+      lastUpdated: '最后更新',
+      backToHome: '返回首页'
     },
     common: {
       getQuote: '获取报价',

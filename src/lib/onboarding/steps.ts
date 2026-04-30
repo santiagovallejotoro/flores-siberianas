@@ -4,7 +4,8 @@ export type StepSlug =
   | "ubicaciones"
   | "variedades"
   | "insumos"
-  | "actividades";
+  | "actividades"
+  | "ciclos";
 
 export type StepMeta = {
   slug: StepSlug;
@@ -27,15 +28,15 @@ export const STEPS: StepMeta[] = [
     number: 1,
     label: "Configuración económica",
     short: "Configuración",
-    why: "Estos números le dicen al sistema cuánto cuesta un día de trabajo y cómo convertir pesos a dólares. Los usamos para calcular costos, mano de obra y reportes en toda la finca.",
+    why: "Define el costo del jornal y la tasa de cambio. Con esto el sistema calcula tus costos de mano de obra, insumos y reportes en pesos y dólares.",
     next: "clases",
   },
   {
     slug: "clases",
     number: 2,
-    label: "Clases de Cultivo",
+    label: "Clases de cultivo",
     short: "Clases",
-    why: "Las familias de flores que cultivas — por ejemplo HORTENSIA, ROSA, CLAVEL. Cada variedad pertenece a una clase, así que es lo primero que necesitamos.",
+    why: "Las familias de flores que cultivas (Hortensia, Rosa, Clavel). Agrupar tus variedades en clases te permite definir actividades comunes una sola vez por clase, en lugar de repetirlas variedad por variedad.",
     prev: "configuracion",
     next: "ubicaciones",
   },
@@ -44,7 +45,7 @@ export const STEPS: StepMeta[] = [
     number: 3,
     label: "Ubicaciones",
     short: "Ubicaciones",
-    why: "Si tienes varias fincas o lotes, regístralos por separado. Separas costos y producción por ubicación y defines actividades, ciclos y rendimientos específicos para cada una.",
+    why: "Tus fincas o lotes de producción. Cada ubicación puede tener varias clases y variedades. Sirve para separar costos, cosechas y rendimientos por predio.",
     prev: "clases",
     next: "variedades",
   },
@@ -53,7 +54,7 @@ export const STEPS: StepMeta[] = [
     number: 4,
     label: "Variedades",
     short: "Variedades",
-    why: "Cada variedad tiene su tiempo de cosecha en semanas y cuánto rinde por planta: el sistema arma los ciclos y estima la cosecha. También te sirve para definir actividades distintas y los insumos por actividad.",
+    why: "El ciclo y rendimiento por planta de cada variedad. Es la base para planear tu cosecha (cuánta y cuándo), tus insumos y tu mano de obra.",
     prev: "ubicaciones",
     next: "insumos",
   },
@@ -62,7 +63,7 @@ export const STEPS: StepMeta[] = [
     number: 5,
     label: "Insumos (opcional)",
     short: "Insumos",
-    why: "Fertilizantes, sustratos, pesticidas — lo que usas en tu finca. Al definirlos aquí alimentas inventarios y costos con datos más precisos. Puedes saltar este paso y completarlo después.",
+    why: "Fertilizantes, sustratos y pesticidas con su costo unitario. Definirlos aquí te permite proyectar gastos y controlar inventario. Puedes saltar este paso y completarlo después.",
     optional: true,
     prev: "variedades",
     next: "actividades",
@@ -72,9 +73,18 @@ export const STEPS: StepMeta[] = [
     number: 6,
     label: "Actividades (opcional)",
     short: "Actividades",
-    why: "Riego, fertilización, poda, cosecha — el catálogo de tareas que el sistema repite por cada cultivo. Puedes saltar este paso y configurarlo después.",
+    why: "Las tareas del campo (siembra, poda, abonada, corte semana 1, corte semana 2). Las defines una vez, a nivel de clase o variedad, y al programarlas el sistema calcula las fechas. Si añades tiempo por planta e insumos, también proyecta tu personal y consumo según las plantas programadas.",
     optional: true,
     prev: "insumos",
+    next: "ciclos",
+  },
+  {
+    slug: "ciclos",
+    number: 7,
+    label: "Ciclos de producción",
+    short: "Ciclos",
+    why: "Plantillas semanales de corte por variedad. Genera los ciclos con un clic y ajusta los porcentajes si tu campo se comporta distinto. Es la base para que el sistema proyecte tu cosecha semana a semana.",
+    prev: "actividades",
     next: "finalizar",
   },
 ];

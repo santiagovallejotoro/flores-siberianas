@@ -108,7 +108,7 @@ const Header = () => {
               </Link>
             </div>
             <div className="flex w-full min-w-0 items-center justify-between px-4">
-              <div className="min-w-0">
+              <div>
                 <button
                   onClick={navbarToggleHandler}
                   id="navbarToggler"
@@ -139,7 +139,7 @@ const Header = () => {
                       : "invisible top-[120%] opacity-0"
                   }`}
                 >
-                  <ul className="block lg:flex lg:space-x-4 xl:space-x-10">
+                  <ul className="block lg:flex lg:space-x-4 xl:space-x-6">
                     {menuData.map((menuItem, index) => (
                       <li key={index} className="group relative">
                         <Link

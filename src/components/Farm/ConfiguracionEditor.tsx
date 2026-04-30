@@ -28,10 +28,9 @@ function buildForm(rows: ConfigVar[]): FormValues {
 const inputCls =
   "w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-strokedark dark:bg-dark dark:text-white dark:focus:ring-primary/15";
 
-/** Jornal diario (COP) desde salario mensual, referencia 42 h/semana (Colombia). */
-function jornalDesdeSalarioMensual(salarioMensual: number, horasJornal: number): number {
-  const h = horasJornal > 0 ? horasJornal : 8;
-  return Math.round((salarioMensual * 12 * h) / (42 * 52));
+/** Jornal diario (COP): salario mensual ÷ 24 (sin usar horas por jornal). */
+function jornalDesdeSalarioMensual(salarioMensual: number): number {
+  return Math.round(salarioMensual / 24);
 }
 
 export default function ConfiguracionEditor({
@@ -157,7 +156,6 @@ export default function ConfiguracionEditor({
                         type="button"
                         onClick={() => {
                           const sal = Number(form.SMMLV);
-                          const hj = Number(form.HORAS_JORNAL);
                           if (!sal || sal <= 0) {
                             showBanner({
                               kind: "error",
@@ -167,7 +165,7 @@ export default function ConfiguracionEditor({
                           }
                           setField(
                             "JORNAL_DIA",
-                            String(jornalDesdeSalarioMensual(sal, hj)),
+                            String(jornalDesdeSalarioMensual(sal)),
                           );
                         }}
                         className="w-full rounded-md border border-stroke bg-gray-50 px-2 py-1.5 text-xs font-medium text-body-color transition-colors hover:bg-gray-100 dark:border-strokedark dark:bg-white/5 dark:text-body-color-dark dark:hover:bg-white/10"
@@ -175,7 +173,7 @@ export default function ConfiguracionEditor({
                         Calcular desde salario mensual
                       </button>
                       <p className="text-[10px] leading-snug text-body-color/70 dark:text-body-color-dark/60">
-                        Usa el salario mensual de arriba, 42 h/semana y las horas por jornal. Puedes ajustar el valor a mano.
+                        Divide el salario mensual entre 24 (no usa horas por jornal). Puedes ajustar el valor a mano.
                       </p>
                     </>
                   )}

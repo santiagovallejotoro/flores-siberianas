@@ -3,6 +3,11 @@ import { listCostos, type TipoCosto } from "@/lib/farm/costos";
 import { listCultivos } from "@/lib/farm/cultivos";
 import { listInsumos } from "@/lib/farm/insumos";
 import { listProducciones } from "@/lib/farm/produccion";
+import {
+  fetchReportCiclos,
+  listIsoWeekSlotsInDateRange,
+  type CicloReportRow,
+} from "@/lib/farm/reportes";
 
 export type DashboardKpis = {
   cultivosActivos: number;
@@ -58,6 +63,12 @@ export type DashboardPayload = {
   produccionMonthly: ProduccionMonthRow[];
   inventarioRisk: InventarioRiskRow[];
   financialYear: number;
+  ciclosProgramados: CicloReportRow[];
+  /** Eje del gráfico de producción programada = semanas que cruzan [from, to]. */
+  ciclosChartWeeks: { isoYear: number; week: number }[];
+  /** Rango de fechas con el que se armó el payload (normalizado: puede intercambiar Desde/Hasta). */
+  filterFrom: string;
+  filterTo: string;
 };
 
 function emptyFinancialRow(monthIndex: number, label: string): FinancialMonthRow {
@@ -78,6 +89,20 @@ function emptyFinancialRow(monthIndex: number, label: string): FinancialMonthRow
 function monthLabelEs(year: number, month0: number): string {
   const d = new Date(year, month0, 1);
   return d.toLocaleDateString("es-CO", { month: "short", year: "numeric" });
+}
+
+/** `month1_12` en `year` se solapa con [rangeStart, rangeEnd] (YYYY-MM-DD) por orden lexicográfico. */
+function monthOverlapsDateRange(
+  year: number,
+  month1: number,
+  rangeStart: string,
+  rangeEnd: string,
+): boolean {
+  const p = (n: number) => String(n).padStart(2, "0");
+  const a = `${year}-${p(month1)}-01`;
+  const lastD = new Date(year, month1, 0).getDate();
+  const b = `${year}-${p(month1)}-${p(lastD)}`;
+  return a <= rangeEnd && b >= rangeStart;
 }
 
 function ymFromFecha(fecha: string | null): string | null {
@@ -129,26 +154,51 @@ export async function buildDashboardPayload(
   client: SupabaseClient,
   input: { from: string; to: string; financialYear: number },
 ): Promise<DashboardPayload> {
-  const { from, to, financialYear } = input;
+  const { financialYear } = input;
+  const dStart = input.from <= input.to ? input.from : input.to;
+  const dEnd = input.from <= input.to ? input.to : input.from;
   const yStart = `${financialYear}-01-01`;
   const yEnd = `${financialYear}-12-31`;
+  const finRangeStart = dStart < yStart ? yStart : dStart;
+  const finRangeEnd = dEnd > yEnd ? yEnd : dEnd;
+  const hasFinRange = finRangeStart <= finRangeEnd;
+
+  const ciclosChartWeeks = listIsoWeekSlotsInDateRange(dStart, dEnd);
 
   const [
     cultivos,
     costosKpi,
     produccionKpi,
-    costosYear,
-    produccionYear,
     insumos,
     actividadesPlanificadas,
+    ciclosProgramados,
+    costosInFin,
+    produccionInFin,
   ] = await Promise.all([
     listCultivos(client),
-    listCostos(client, from, to),
-    listProducciones(client, from, to),
-    listCostos(client, yStart, yEnd),
-    listProducciones(client, yStart, yEnd),
+    listCostos(client, dStart, dEnd),
+    listProducciones(client, dStart, dEnd),
     listInsumos(client),
-    countActividadesPlanificadas(client, from, to),
+    countActividadesPlanificadas(client, dStart, dEnd),
+    fetchReportCiclos(client, {
+      year: financialYear,
+      weekStart: 1,
+      weekEnd: 53,
+      ubicaciones: ["ALL"],
+      variedades: ["ALL"],
+      fechaDesde: dStart,
+      fechaHasta: dEnd,
+    }),
+    hasFinRange
+      ? listCostos(client, finRangeStart, finRangeEnd)
+      : Promise.resolve(
+          [] as Awaited<ReturnType<typeof listCostos>>,
+        ),
+    hasFinRange
+      ? listProducciones(client, finRangeStart, finRangeEnd)
+      : Promise.resolve(
+          [] as Awaited<ReturnType<typeof listProducciones>>,
+        ),
   ]);
 
   const cultivosActivos = cultivos.filter((c) => c.estado === "Activo").length;
@@ -183,7 +233,7 @@ export async function buildDashboardPayload(
     financialByMonth.set(m + 1, emptyFinancialRow(m + 1, monthLabelEs(financialYear, m)));
   }
 
-  for (const c of costosYear) {
+  for (const c of costosInFin) {
     const f = c.fecha;
     if (!f) continue;
     const month = parseInt(f.slice(5, 7), 10);
@@ -192,7 +242,7 @@ export async function buildDashboardPayload(
     addCostoToMonthRow(row, c.tipo_costo, c.costo_total ?? 0);
   }
 
-  for (const p of produccionYear) {
+  for (const p of produccionInFin) {
     const key = ymFromFecha(p.fecha);
     if (!key || !key.startsWith(String(financialYear))) continue;
     const month = parseInt(key.slice(5, 7), 10);
@@ -208,6 +258,10 @@ export async function buildDashboardPayload(
     row.neto = row.ingresos - costosMes;
     financialMonthly.push(row);
   }
+
+  const financialInFilterRange = financialMonthly.filter((row) =>
+    monthOverlapsDateRange(financialYear, row.monthIndex, dStart, dEnd),
+  );
 
   const prodMap = new Map<string, number>();
   for (const p of produccionKpi) {
@@ -240,9 +294,13 @@ export async function buildDashboardPayload(
 
   return {
     kpis,
-    financialMonthly,
+    financialMonthly: financialInFilterRange,
     produccionMonthly,
     inventarioRisk,
     financialYear,
+    ciclosProgramados,
+    ciclosChartWeeks,
+    filterFrom: dStart,
+    filterTo: dEnd,
   };
 }

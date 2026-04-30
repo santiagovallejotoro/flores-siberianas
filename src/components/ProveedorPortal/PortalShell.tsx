@@ -18,6 +18,7 @@ interface PortalShellProps {
     correo?: string | null;
   } | null;
   cultivosCount: number;
+  onboardingComplete: boolean;
   children: React.ReactNode;
 }
 
@@ -27,6 +28,7 @@ export default function PortalShell({
   memberDays,
   proveedor,
   cultivosCount,
+  onboardingComplete,
   children,
 }: PortalShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,6 +60,7 @@ export default function PortalShell({
           displayName={displayName}
           email={email}
           cultivosCount={cultivosCount}
+          onboardingComplete={onboardingComplete}
         />
 
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">

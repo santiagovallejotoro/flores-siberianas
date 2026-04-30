@@ -198,7 +198,10 @@ interface NavSection {
   entries: NavEntry[];
 }
 
-function buildSections(cultivosCount: number): NavSection[] {
+function buildSections(
+  cultivosCount: number,
+  onboardingComplete: boolean,
+): NavSection[] {
   return [
     {
       title: "Principal",
@@ -212,7 +215,7 @@ function buildSections(cultivosCount: number): NavSection[] {
     {
       title: "Planificación de Cultivo",
       entries: [
-        ...(cultivosCount === 0
+        ...(!onboardingComplete
           ? [
               {
                 kind: "link" as const,
@@ -466,6 +469,7 @@ interface SidebarProps {
   displayName: string;
   email: string;
   cultivosCount: number;
+  onboardingComplete: boolean;
 }
 
 export default function Sidebar({
@@ -474,6 +478,7 @@ export default function Sidebar({
   displayName,
   email,
   cultivosCount,
+  onboardingComplete,
 }: SidebarProps) {
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
@@ -498,7 +503,7 @@ export default function Sidebar({
   const logo =
     resolvedTheme === "dark" ? "/images/logo/logo.svg" : "/images/logo/logo-2.svg";
 
-  const sections = buildSections(cultivosCount);
+  const sections = buildSections(cultivosCount, onboardingComplete);
 
   return (
     <aside

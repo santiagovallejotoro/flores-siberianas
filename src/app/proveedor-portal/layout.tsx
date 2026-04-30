@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSSRSassClient, getAuthUser } from "@/lib/supabase/server";
 import PortalShell from "@/components/ProveedorPortal/PortalShell";
+import { getOnboardingStatus } from "@/lib/farm/onboarding";
 
 export const metadata = {
   robots: { index: false, follow: false },
@@ -22,7 +23,7 @@ export default async function ProveedorPortalLayout({
 
   const client = supabase.getSupabaseClient();
 
-  const [{ data: proveedor }, { count: cultivosCount }] = await Promise.all([
+  const [{ data: proveedor }, { count: cultivosCount }, onboardingStatus] = await Promise.all([
     client
       .from("proveedores")
       .select(
@@ -31,6 +32,7 @@ export default async function ProveedorPortalLayout({
       .eq("id", user.id)
       .single(),
     client.from("cultivos").select("*", { count: "exact", head: true }),
+    getOnboardingStatus(client),
   ]);
 
   // Gate: require all mandatory profile fields before portal access
@@ -61,6 +63,7 @@ export default async function ProveedorPortalLayout({
       memberDays={memberDays}
       proveedor={proveedor}
       cultivosCount={cultivosCount ?? 0}
+      onboardingComplete={onboardingStatus.isComplete}
     >
       {children}
     </PortalShell>

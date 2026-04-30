@@ -11,8 +11,10 @@ import {
   fetchReportCiclos,
   fetchReportActividades,
   fetchReportInsumos,
-  formatWeekRange,
+  listIsoWeekSlotsInDateRange,
+  weekRangeToDateRange,
 } from "@/lib/farm/reportes";
+import ProduccionProgramadaChart from "@/components/Farm/ProduccionProgramadaChart";
 import type { Ubicacion } from "@/lib/farm/ubicaciones";
 import type { Variedad } from "@/lib/farm/variedades";
 
@@ -239,6 +241,11 @@ export default function ReportesViewer({
   const [loadingActividades, setLoadingActividades] = useState(false);
   const [loadingInsumos, setLoadingInsumos] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const ciclosWeekSlots = useMemo(() => {
+    const { start, end } = weekRangeToDateRange(year, weekStart, weekEnd);
+    return listIsoWeekSlotsInDateRange(start, end);
+  }, [year, weekStart, weekEnd]);
 
   // ── Fetch ────────────────────────────────────────────────────────────────
 
@@ -609,6 +616,16 @@ export default function ReportesViewer({
               <EmptyState tab="ciclos" year={year} weekStart={weekStart} weekEnd={weekEnd} />
             ) : (
               <>
+                {/* Gráfico: producción programada por semana */}
+                <div className="border-b border-stroke px-4 py-5 dark:border-strokedark">
+                  <ProduccionProgramadaChart
+                    ciclos={ciclos}
+                    weekSlots={ciclosWeekSlots}
+                    showIntro
+                    chartClassName="h-[min(360px,50vh)]"
+                  />
+                </div>
+
                 <div className={`${viewMode === "table" ? "hidden md:block" : "hidden"} overflow-x-auto`}>
                   <table className="w-full text-sm">
                     <thead>

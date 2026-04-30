@@ -98,6 +98,22 @@ const Footer = () => {
                       {t.nav.contact}
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      href="/terminos"
+                      className="mb-4 inline-block text-base text-white/70 duration-300 hover:text-primary-300"
+                    >
+                      {t.footer.termsLink}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/privacidad"
+                      className="mb-4 inline-block text-base text-white/70 duration-300 hover:text-primary-300"
+                    >
+                      {t.footer.privacyLink}
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>

@@ -7,11 +7,16 @@ export type ReportFilters = {
   weekStart: number;
   weekEnd: number;
   ubicaciones: string[]; // ['ALL'] means all
-  variedades: string[];  // ['ALL'] means all
+  variedades: string[]; // ['ALL'] means all
+  /** Si ambas existen, filtra por rango de fechas en lugar de año + semanas ISO. */
+  fechaDesde?: string;
+  fechaHasta?: string;
 };
 
 export type CicloReportRow = {
   weekNum: number;
+  /** Año de la semana ISO (puede no coincidir con el año del calendario de la fila cerca de enero) */
+  isoYear: number;
   dateRange: string;
   ubicacionCultivo: string;
   variedad: string;
@@ -53,6 +58,13 @@ export function getISOWeekStart(year: number, week: number): Date {
   return result;
 }
 
+/** Año al que pertenece el número de semana ISO (W en ISO 8601). */
+export function getISOWeekYear(d: Date): number {
+  const t = new Date(d.valueOf());
+  t.setUTCDate(t.getUTCDate() + 3 - (t.getUTCDay() + 6) % 7);
+  return t.getUTCFullYear();
+}
+
 /** Returns the ISO week number (1–53) for a given date. */
 export function getISOWeek(date: Date): number {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -88,6 +100,29 @@ export function formatWeekRange(year: number, week: number): string {
   return `${fmt(mon)} – ${fmt(sun)}`;
 }
 
+/** Cada (año ISO, nº semana) que toca al menos un día de [desde, hasta] (inclusive, fechas YYYY-MM-DD). */
+export function listIsoWeekSlotsInDateRange(
+  fechaDesde: string,
+  fechaHasta: string,
+): { isoYear: number; week: number }[] {
+  if (!fechaDesde || !fechaHasta || fechaDesde > fechaHasta) return [];
+  const seen = new Set<string>();
+  const out: { isoYear: number; week: number }[] = [];
+  const d0 = new Date(fechaDesde + "T12:00:00.000Z");
+  const d1 = new Date(fechaHasta + "T12:00:00.000Z");
+  for (let t = d0.getTime(); t <= d1.getTime(); t += 86400000) {
+    const d = new Date(t);
+    const w = getISOWeek(d);
+    const iy = getISOWeekYear(d);
+    const k = `${iy}|${w}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push({ isoYear: iy, week: w });
+  }
+  out.sort((a, b) => a.isoYear - b.isoYear || a.week - b.week);
+  return out;
+}
+
 // ── Month → approximate week range (from FarmPanel) ──────────────────────────
 
 export const MONTH_WEEK_RANGES: Record<number, [number, number]> = {
@@ -106,7 +141,10 @@ export async function fetchReportCiclos(
   client: SupabaseClient,
   filters: ReportFilters,
 ): Promise<CicloReportRow[]> {
-  const { start, end } = weekRangeToDateRange(filters.year, filters.weekStart, filters.weekEnd);
+  const { start, end } =
+    filters.fechaDesde && filters.fechaHasta
+      ? { start: filters.fechaDesde, end: filters.fechaHasta }
+      : weekRangeToDateRange(filters.year, filters.weekStart, filters.weekEnd);
 
   const { data, error } = await client
     .from("ciclos_cultivo")
@@ -146,6 +184,7 @@ export async function fetchReportCiclos(
 
     const fecha = new Date(r.fecha_planeada);
     const weekNum = getISOWeek(fecha);
+    const isoYear = getISOWeekYear(fecha);
     const cultivo = r.cultivos;
 
     // Client-side ubicacion/variedad filter
@@ -168,7 +207,8 @@ export async function fetchReportCiclos(
 
     rows.push({
       weekNum,
-      dateRange: formatWeekRange(filters.year, weekNum),
+      isoYear,
+      dateRange: formatWeekRange(isoYear, weekNum),
       ubicacionCultivo: `${ubicacionName} – ${cultivo?.numero_cultivo ?? "—"}`,
       variedad,
       observaciones:
@@ -177,7 +217,9 @@ export async function fetchReportCiclos(
     });
   }
 
-  return rows.sort((a, b) => a.weekNum - b.weekNum);
+  return rows.sort(
+    (a, b) => a.isoYear - b.isoYear || a.weekNum - b.weekNum,
+  );
 }
 
 /**

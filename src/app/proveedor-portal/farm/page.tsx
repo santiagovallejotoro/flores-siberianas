@@ -32,35 +32,38 @@ const SETUP_ROWS: SetupRow[] = [
     number: 1,
     title: "Configuración económica",
     description:
-      "Tasa de cambio, jornal y SMMLV — base para todos los cálculos de costos.",
+      "Tasa de cambio y costo del jornal. Base de los cálculos de costos y reportes.",
     href: "/proveedor-portal/farm/catalogos/configuracion",
   },
   {
     key: "clases",
     number: 2,
     title: "Clases de cultivo",
-    description: "Las familias de flores que cultivas (HORTENSIA, ROSA, CLAVEL).",
+    description:
+      "Familias de flores (Hortensia, Rosa, Clavel). Agrupan variedades para definir actividades comunes una sola vez.",
     href: "/proveedor-portal/farm/catalogos/clases",
   },
   {
     key: "ubicaciones",
     number: 3,
     title: "Ubicaciones",
-    description: "Lotes, camas e invernaderos donde siembras.",
+    description:
+      "Tus fincas o lotes. Cada ubicación maneja sus propias clases, variedades y resultados.",
     href: "/proveedor-portal/farm/catalogos/ubicaciones",
   },
   {
     key: "variedades",
     number: 4,
     title: "Variedades",
-    description: "Ciclo en semanas, rendimiento por planta y semana de inicio de corte.",
+    description:
+      "Ciclo y rendimiento por planta. Base para planear cosecha, insumos y mano de obra.",
     href: "/proveedor-portal/farm/catalogos/variedades",
   },
   {
     key: "insumos",
     number: 5,
     title: "Insumos",
-    description: "Fertilizantes, sustratos y materiales con su costo unitario.",
+    description: "Fertilizantes, sustratos y pesticidas con su costo unitario.",
     href: "/proveedor-portal/farm/catalogos/insumos",
     optional: true,
   },
@@ -68,7 +71,8 @@ const SETUP_ROWS: SetupRow[] = [
     key: "actividades",
     number: 6,
     title: "Actividades",
-    description: "Catálogo de tareas: riego, fertilización, poda, cosecha, empaque.",
+    description:
+      "Tareas del campo (siembra, poda, abonada, corte semana 1, corte semana 2). A nivel de clase o variedad.",
     href: "/proveedor-portal/farm/catalogos/actividades",
     optional: true,
   },
@@ -77,7 +81,7 @@ const SETUP_ROWS: SetupRow[] = [
     number: 7,
     title: "Ciclos de producción",
     description:
-      "Plantillas semanales de corte por variedad. Se generan al guardar la variedad.",
+      "Plantillas semanales de corte por variedad. Genera con un clic y ajusta los porcentajes si lo necesitas.",
     href: "/proveedor-portal/farm/catalogos/ciclos",
   },
 ];
@@ -148,8 +152,11 @@ function getRowStatus(row: SetupRow, s: OnboardingStatus): RowStatus {
         ? { kind: "done", label: `${s.actividadesCount} registrada${s.actividadesCount === 1 ? "" : "s"}` }
         : { kind: "empty", label: "Opcional" };
     case "ciclos":
+      if (s.ciclosCount > 0) {
+        return { kind: "done", label: "Generados" };
+      }
       return s.variedadesCount > 0
-        ? { kind: "info", label: "Listo para revisar" }
+        ? { kind: "info", label: "Sin generar" }
         : { kind: "empty", label: "Necesita variedades" };
   }
 }

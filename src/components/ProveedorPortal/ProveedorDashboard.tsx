@@ -15,6 +15,7 @@ import {
   YAxis,
 } from "recharts";
 import { reloadProveedorDashboard } from "@/app/proveedor-portal/actions";
+import ProduccionProgramadaChart from "@/components/Farm/ProduccionProgramadaChart";
 import { COST_STACK_KEYS, type CostStackKey, type DashboardPayload } from "@/lib/farm/dashboard";
 
 function fmtCOP(n: number): string {
@@ -84,6 +85,7 @@ type Props = {
   defaultFrom: string;
   defaultTo: string;
   defaultFinancialYear: number;
+  onboardingComplete: boolean;
 };
 
 export default function ProveedorDashboard({
@@ -91,6 +93,7 @@ export default function ProveedorDashboard({
   defaultFrom,
   defaultTo,
   defaultFinancialYear,
+  onboardingComplete,
 }: Props) {
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(defaultTo);
@@ -98,6 +101,7 @@ export default function ProveedorDashboard({
   const [data, setData] = useState<DashboardPayload>(initial);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [mainChart, setMainChart] = useState<"financiero" | "programada">("programada");
 
   const yearOptions = useMemo(() => {
     const cy = new Date().getFullYear();
@@ -119,8 +123,24 @@ export default function ProveedorDashboard({
   }, [from, to, financialYear]);
 
   const { kpis } = data;
+  const filterRangeLabel = `${data.filterFrom} → ${data.filterTo}`;
 
-  const quickActions = [
+  const quickActions: {
+    href: string;
+    title: string;
+    subtitle: string;
+    icon: string;
+    ring: string;
+    badge?: string;
+  }[] = [
+    {
+      href: "/proveedor-portal/farm",
+      title: "Mi Finca",
+      subtitle: "Configurar y revisar",
+      icon: "🏡",
+      ring: "from-primary-500/20 to-emerald-500/10",
+      badge: onboardingComplete ? undefined : "Sin terminar",
+    },
     {
       href: "/proveedor-portal/farm/cultivos",
       title: "Cultivos",
@@ -160,37 +180,44 @@ export default function ProveedorDashboard({
             Resumen de tu finca: costos, producción e inventario
           </p>
         </div>
-        <div className="flex flex-wrap items-end gap-3 rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark">
-          <div>
-            <label className={`${labelCls} mb-1 block normal-case`}>Desde</label>
-            <input type="date" className={`${inputCls} w-40`} value={from} onChange={(e) => setFrom(e.target.value)} />
-          </div>
-          <div>
-            <label className={`${labelCls} mb-1 block normal-case`}>Hasta</label>
-            <input type="date" className={`${inputCls} w-40`} value={to} onChange={(e) => setTo(e.target.value)} />
-          </div>
-          <div>
-            <label className={`${labelCls} mb-1 block normal-case`}>Año (flujo financiero)</label>
-            <select
-              className={`${inputCls} w-32`}
-              value={financialYear}
-              onChange={(e) => setFinancialYear(Number(e.target.value))}
+        <div className="max-w-full rounded-xl border border-stroke bg-white p-4 dark:border-strokedark dark:bg-dark sm:max-w-none">
+          <div className="flex flex-wrap items-end gap-3">
+            <div>
+              <label className={`${labelCls} mb-1 block normal-case`}>Desde</label>
+              <input type="date" className={`${inputCls} w-40`} value={from} onChange={(e) => setFrom(e.target.value)} />
+            </div>
+            <div>
+              <label className={`${labelCls} mb-1 block normal-case`}>Hasta</label>
+              <input type="date" className={`${inputCls} w-40`} value={to} onChange={(e) => setTo(e.target.value)} />
+            </div>
+            <div>
+              <label className={`${labelCls} mb-1 block normal-case`}>Año (ejercicio)</label>
+              <select
+                className={`${inputCls} w-32`}
+                value={financialYear}
+                onChange={(e) => setFinancialYear(Number(e.target.value))}
+              >
+                {yearOptions.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="button"
+              onClick={applyFilters}
+              disabled={pending}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary-600 disabled:opacity-60 dark:hover:bg-primary-400"
             >
-              {yearOptions.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
+              {pending ? "Actualizando…" : "Aplicar"}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={applyFilters}
-            disabled={pending}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary-600 disabled:opacity-60 dark:hover:bg-primary-400"
-          >
-            {pending ? "Actualizando…" : "Aplicar"}
-          </button>
+          <p className="mt-3 max-w-3xl text-[11px] leading-snug text-body-color/80 dark:text-body-color-dark/70">
+            <span className="font-medium text-body-color/90 dark:text-body-color-dark/80">Desde / Hasta:</span>{" "}
+            afecta los KPIs, la producción por mes y <span className="font-medium">ambos</span> gráficos del recuadro
+            (semanas de producción programada; costos e ingresos recortados al cruce con el año de ejercicio).
+          </p>
         </div>
       </div>
 
@@ -235,13 +262,18 @@ export default function ProveedorDashboard({
       {/* Quick actions */}
       <div>
         <h2 className="mb-3 text-sm font-semibold text-black dark:text-white">Acciones rápidas</h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {quickActions.map((a) => (
             <Link
               key={a.href}
               href={a.href}
               className={`group relative overflow-hidden rounded-xl border border-stroke bg-gradient-to-br p-4 transition hover:border-primary/40 hover:shadow-md dark:border-strokedark dark:bg-dark ${a.ring}`}
             >
+              {a.badge && (
+                <span className="absolute right-2 top-2 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-500/20 dark:text-amber-300">
+                  {a.badge}
+                </span>
+              )}
               <div className="flex items-start gap-3">
                 <span className="text-2xl" aria-hidden>
                   {a.icon}
@@ -256,43 +288,101 @@ export default function ProveedorDashboard({
         </div>
       </div>
 
-      {/* Financial chart */}
+      {/* Flujo financiero o producción programada (mismo recuadro) */}
       <div className={cardCls}>
-        <h2 className="mb-1 text-base font-semibold text-black dark:text-white">
-          Flujo financiero — {data.financialYear}
-        </h2>
-        <p className="mb-4 text-xs text-body-color dark:text-body-color-dark">
-          Costos por tipo (barras apiladas), ingresos y neto por mes (líneas).
-        </p>
-        <div className="h-[360px] w-full min-w-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={data.financialMonthly} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-stroke dark:stroke-strokedark" />
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} className="fill-body-color" />
-              <YAxis tickFormatter={(v) => fmtCompact(Number(v))} tick={{ fontSize: 11 }} width={44} />
-              <Tooltip content={<FinancialTooltip />} />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              {COST_STACK_KEYS.map((key) => (
-                <Bar
-                  key={key}
-                  dataKey={key}
-                  stackId="costos"
-                  fill={FINANCIAL_COLORS[key]}
-                  name={COST_BAR_NAMES[key]}
-                />
-              ))}
-              <Line
-                type="monotone"
-                dataKey="ingresos"
-                name="Ingresos"
-                stroke="#10b981"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line type="monotone" dataKey="neto" name="Neto" stroke="#3b82f6" strokeWidth={2} dot={false} />
-            </ComposedChart>
-          </ResponsiveContainer>
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="mb-1 text-base font-semibold text-black dark:text-white">
+              {mainChart === "financiero"
+                ? `Flujo financiero — ${data.financialYear} (${filterRangeLabel})`
+                : `Producción programada — ${filterRangeLabel}`}
+            </h2>
+            {mainChart === "financiero" && (
+              <p className="text-xs text-body-color dark:text-body-color-dark">
+                Costos, ingresos y neto por mes; meses mostrados = solape entre Desde–Hasta y el año de ejercicio
+                (mismas fechas que el resto del panel).
+              </p>
+            )}
+          </div>
+          <div
+            className="inline-flex shrink-0 rounded-lg border border-stroke p-0.5 dark:border-strokedark"
+            role="tablist"
+            aria-label="Tipo de gráfico principal"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mainChart === "programada"}
+              onClick={() => setMainChart("programada")}
+              className={[
+                "rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                mainChart === "programada"
+                  ? "bg-primary-100 text-primary dark:bg-primary-500/20 dark:text-primary-300"
+                  : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white",
+              ].join(" ")}
+            >
+              Prod. programada
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mainChart === "financiero"}
+              onClick={() => setMainChart("financiero")}
+              className={[
+                "rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                mainChart === "financiero"
+                  ? "bg-primary-100 text-primary dark:bg-primary-500/20 dark:text-primary-300"
+                  : "text-body-color hover:text-black dark:text-body-color-dark dark:hover:text-white",
+              ].join(" ")}
+            >
+              Flujo financiero
+            </button>
+          </div>
         </div>
+        {mainChart === "financiero" ? (
+          data.financialMonthly.length === 0 ? (
+            <p className="py-10 text-center text-sm text-body-color dark:text-body-color-dark">
+              Ningún mes del año de ejercicio se solapa con Desde–Hasta. Ajusta el rango o el año.
+            </p>
+          ) : (
+          <div className="h-[360px] w-full min-w-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={data.financialMonthly} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-stroke dark:stroke-strokedark" />
+                <XAxis dataKey="label" tick={{ fontSize: 11 }} className="fill-body-color" />
+                <YAxis tickFormatter={(v) => fmtCompact(Number(v))} tick={{ fontSize: 11 }} width={44} />
+                <Tooltip content={<FinancialTooltip />} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                {COST_STACK_KEYS.map((key) => (
+                  <Bar
+                    key={key}
+                    dataKey={key}
+                    stackId="costos"
+                    fill={FINANCIAL_COLORS[key]}
+                    name={COST_BAR_NAMES[key]}
+                  />
+                ))}
+                <Line
+                  type="monotone"
+                  dataKey="ingresos"
+                  name="Ingresos"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line type="monotone" dataKey="neto" name="Neto" stroke="#3b82f6" strokeWidth={2} dot={false} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          )
+        ) : (
+          <ProduccionProgramadaChart
+            ciclos={data.ciclosProgramados}
+            weekSlots={data.ciclosChartWeeks}
+            showIntro={false}
+            chartClassName="h-[360px]"
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

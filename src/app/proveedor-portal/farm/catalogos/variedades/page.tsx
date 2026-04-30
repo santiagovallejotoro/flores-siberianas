@@ -33,7 +33,7 @@ export default async function VariedadesPage() {
 
       <CatalogHelp
         why="Cada variedad tiene su tiempo de cosecha en semanas, su rendimiento por planta y la semana en que comienzas a cortar. Con esto el sistema arma automáticamente los ciclos de producción y proyecta tus cosechas."
-        example="Hortensia Limelight: ciclo de 12 semanas, comienzas a cortar en la semana 8, rinde 6 tallos por planta."
+        example="Hortensia limegreen: ciclo de 12 semanas, comienzas a cortar en la semana 8, rinde 6 tallos por planta."
       />
 
       <VariedadesEditor

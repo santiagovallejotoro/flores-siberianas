@@ -20,14 +20,14 @@ export default async function UbicacionesPage() {
           Ubicaciones
         </h1>
         <p className="mt-1 text-sm text-body-color dark:text-body-color-dark">
-          Lotes, camas e invernaderos de tu finca. Una ubicación puede albergar
-          varios cultivos a lo largo del tiempo.
+          Finca o predio contiguo. Varias variedades y calendarios; costos
+          separados por finca.
         </p>
       </div>
 
       <CatalogHelp
-        why="Una ubicación es un lote, cama o invernadero físico de tu finca. Una misma ubicación puede albergar varios cultivos a lo largo del tiempo. Sirve para separar costos, producción y rendimientos por área."
-        example="Lote 1 — vereda La Esperanza, 1.200 m² — donde alternas hortensias y rosas según la temporada."
+        why="Cada registro = una finca o un predio de producción junto, sin detallar cada cama. Otra finca o predio distinto = otra fila. Costos y cosechas por finca."
+        example="Finca A y finca B: dos ubicaciones. En una sola finca pueden mezclarse varias variedades."
       />
 
       <UbicacionesEditor initialUbicaciones={initialUbicaciones} />

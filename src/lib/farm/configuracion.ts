@@ -38,7 +38,8 @@ export const CONFIG_FIELDS: {
   {
     variable: "SMMLV",
     label: "Salario mínimo mensual legal vigente (COP)",
-    descripcion: "SMMLV vigente en pesos colombianos",
+    descripcion:
+      "SMMLV vigente en pesos colombianos, con prestaciones sociales incluidas, o lo que te cuesta realmente",
     type: "integer",
     placeholder: "2800000",
     default: "2800000",
@@ -48,8 +49,8 @@ export const CONFIG_FIELDS: {
     label: "Valor jornal por día (COP)",
     descripcion: "Costo de un jornal de trabajo por día",
     type: "integer",
-    placeholder: "65000",
-    default: "65000",
+    placeholder: "116000",
+    default: "116000",
   },
   {
     variable: "HORAS_JORNAL",

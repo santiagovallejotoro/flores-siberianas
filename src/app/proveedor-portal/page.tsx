@@ -19,14 +19,20 @@ function isoDateLocal(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+/** Último día del mes, `n` meses después del 1.º de `d` (n=0: fin de ese mes; n=4: fin de mes, 4 meses después, p. ej. 1 ene–31 may). */
+function lastDayOfMonthAfter(d: Date, n: number): Date {
+  return new Date(d.getFullYear(), d.getMonth() + n + 1, 0);
+}
+
 export default async function ProveedorPortalDashboard() {
   const supabase = await createSSRSassClient();
   const client = supabase.getSupabaseClient();
 
   const now = new Date();
-  const defaultTo = isoDateLocal(now);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const defaultFrom = isoDateLocal(startOfMonth);
+  /** Hasta: último día del mes, 4 meses después del inicio (p. ej. 1 abr–31 ago). */
+  const defaultTo = isoDateLocal(lastDayOfMonthAfter(startOfMonth, 4));
   const defaultFinancialYear = now.getFullYear();
 
   const [initial, onboardingStatus] = await Promise.all([
@@ -46,6 +52,7 @@ export default async function ProveedorPortalDashboard() {
         defaultFrom={defaultFrom}
         defaultTo={defaultTo}
         defaultFinancialYear={defaultFinancialYear}
+        onboardingComplete={onboardingStatus.isComplete}
       />
     </div>
   );

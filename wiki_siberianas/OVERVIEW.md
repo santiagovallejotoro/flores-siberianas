@@ -134,7 +134,7 @@ Custom implementation — **no external i18n library**.
 
 For the full grouped route table, see [[ARCHITECTURE]].
 
-**Public:** `/`, `/about`, `/products`, `/exports`, `/markets`, `/technology`, `/contact`, `/blog`
+**Public:** `/`, `/about`, `/products`, `/exports`, `/markets`, `/technology`, `/contact`, `/blog`, `/terminos` (Terms of Service), `/privacidad` (Privacy Policy)
 
 **Auth:** `/auth/login`, `/auth/clientes/login`, `/auth/clientes/register`, `/auth/proveedores/login`, `/auth/proveedores/register`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/verify-email`, `/signin`, `/signup`
 

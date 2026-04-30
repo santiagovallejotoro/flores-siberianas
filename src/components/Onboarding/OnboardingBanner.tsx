@@ -45,7 +45,8 @@ export default function OnboardingBanner({
     Number(!status.configuracionDone) +
     Number(status.clasesCount === 0) +
     Number(status.ubicacionesCount === 0) +
-    Number(status.variedadesCount === 0);
+    Number(status.variedadesCount === 0) +
+    Number(status.ciclosCount === 0);
 
   const headline =
     remaining === 1
@@ -68,8 +69,8 @@ export default function OnboardingBanner({
             {headline}
           </p>
           <p className="mt-0.5 text-sm text-body-color dark:text-body-color-dark">
-            Te guiamos en orden: configuración económica, clases de cultivo,
-            ubicaciones y variedades.
+            Te guiamos en orden: configuración económica, clases, ubicaciones,
+            variedades y ciclos de producción.
           </p>
         </div>
         <div className="flex shrink-0 flex-col-reverse gap-2 sm:flex-row sm:items-center">

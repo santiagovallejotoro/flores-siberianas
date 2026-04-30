@@ -18,5 +18,11 @@ export default async function PrimerosPasosIndex() {
   if (status.variedadesCount === 0) {
     redirect("/proveedor-portal/primeros-pasos/variedades");
   }
+  if (status.insumosCount === 0) {
+    redirect("/proveedor-portal/primeros-pasos/insumos");
+  }
+  if (status.actividadesCount === 0) {
+    redirect("/proveedor-portal/primeros-pasos/actividades");
+  }
   redirect("/proveedor-portal/farm/cultivos");
 }

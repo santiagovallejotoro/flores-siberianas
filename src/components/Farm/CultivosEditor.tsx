@@ -158,6 +158,10 @@ export default function CultivosEditor({
   const [genStatus, setGenStatus] = useState<Map<string, GenStatus>>(new Map());
   const [generating, setGenerating] = useState<Generating>(null);
   const [sourcePicker, setSourcePicker] = useState<SourcePicker | null>(null);
+  const [actividadesSources, setActividadesSources] = useState<SourceOption[] | null>(null);
+  /** User-picked actividades/insumos source for new-cultivo auto-generation.
+   *  null = "no generar"; SourceOption = use that source. Reset on modal open. */
+  const [selectedSource, setSelectedSource] = useState<SourceOption | null>(null);
 
   // ── Load generation status ─────────────────────────────────────────────────
 
@@ -183,6 +187,46 @@ export default function CultivosEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Load actividades sources whenever the form's variedad changes ─────────
+  useEffect(() => {
+    if (!modalOpen) {
+      setActividadesSources(null);
+      return;
+    }
+    if (!form.id_variedad) {
+      setActividadesSources([]);
+      setSelectedSource(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const client = createSPASassClient().getSupabaseClient();
+        const sources = await getActividadesSources(
+          client,
+          { id_variedad: form.id_variedad } as Cultivo,
+          variedades,
+          clases,
+        );
+        if (cancelled) return;
+        setActividadesSources(sources);
+        // For new cultivos, default-select the first source (variedad-preferred).
+        // For edit, leave selectedSource alone — only the manual buttons drive it.
+        if (!editing) {
+          setSelectedSource(sources[0] ?? null);
+        }
+      } catch {
+        if (!cancelled) {
+          setActividadesSources([]);
+          if (!editing) setSelectedSource(null);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [modalOpen, form.id_variedad, variedades, clases, editing]);
+
   // ── Lookups ────────────────────────────────────────────────────────────────
 
   const variedadById = useMemo(() => {
@@ -204,15 +248,16 @@ export default function CultivosEditor({
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
-  function showBanner(b: Banner) {
+  function showBanner(b: Banner, durationMs = 3500) {
     setBanner(b);
-    if (b) setTimeout(() => setBanner(null), 3500);
+    if (b) setTimeout(() => setBanner(null), durationMs);
   }
 
   function openCreate() {
     setEditing(null);
     setForm({ ...EMPTY_FORM, numero_cultivo: nextNumeroCultivo(cultivos) });
     setSourcePicker(null);
+    setSelectedSource(null);
     setModalOpen(true);
   }
 
@@ -232,6 +277,7 @@ export default function CultivosEditor({
       observaciones: c.observaciones,
     });
     setSourcePicker(null);
+    setSelectedSource(null);
     setModalOpen(true);
   }
 
@@ -268,10 +314,55 @@ export default function CultivosEditor({
 
   // ── CRUD handlers ──────────────────────────────────────────────────────────
 
+  /**
+   * Best-effort generation right after a cultivo is created. Ciclos always try
+   * (skip silently if the variedad lacks a plantilla). Actividades + insumos
+   * only run if the user picked a source in the form. Errors never bubble up.
+   */
+  async function autoGenerateForNewCultivo(
+    cultivo: Cultivo,
+    source: SourceOption | null,
+  ): Promise<{ ciclos: number; actividades: number; insumos: number }> {
+    const client = createSPASassClient().getSupabaseClient();
+    const out = { ciclos: 0, actividades: 0, insumos: 0 };
+
+    try {
+      const r = await generarCiclosCultivo(client, cultivo);
+      out.ciclos = r.count;
+    } catch {
+      /* skip silently — variedad has no ciclos plantilla */
+    }
+
+    if (source) {
+      try {
+        const r = await generarActividadesCultivo(client, cultivo, source);
+        out.actividades = r.count;
+      } catch {
+        /* skip silently */
+      }
+      try {
+        const r = await generarInsumosCultivo(client, cultivo, source);
+        out.insumos = r.count;
+      } catch {
+        /* common: actividades may have no insumos — silent skip */
+      }
+    }
+
+    return out;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.numero_cultivo.trim()) {
       showBanner({ kind: "error", text: "El número de cultivo es obligatorio." });
+      return;
+    }
+    if (form.total_plantas == null || form.total_plantas <= 0) {
+      showBanner({ kind: "error", text: "El número de plantas es obligatorio." });
+      return;
+    }
+    if (!form.fecha_inicio) {
+      showBanner({ kind: "error", text: "La fecha de inicio es obligatoria." });
       return;
     }
 
@@ -282,13 +373,27 @@ export default function CultivosEditor({
         const updated = await updateCultivo(client, editing.id, form);
         setCultivos((prev) => prev.map((c) => (c.id === editing.id ? updated : c)));
         showBanner({ kind: "success", text: `Cultivo "${updated.numero_cultivo}" actualizado.` });
+        setModalOpen(false);
       } else {
         const created = await createCultivo(client, form);
         setCultivos((prev) => [created, ...prev]);
-        void loadGenStatus([created.id]);
-        showBanner({ kind: "success", text: `Cultivo "${created.numero_cultivo}" creado.` });
+        setModalOpen(false);
+
+        const auto = await autoGenerateForNewCultivo(created, selectedSource);
+        await loadGenStatus([created.id]);
+
+        const generated: string[] = [];
+        if (auto.ciclos > 0) generated.push(`${auto.ciclos} ciclo${auto.ciclos === 1 ? "" : "s"}`);
+        if (auto.actividades > 0)
+          generated.push(`${auto.actividades} actividad${auto.actividades === 1 ? "" : "es"}`);
+        if (auto.insumos > 0) generated.push(`${auto.insumos} insumo${auto.insumos === 1 ? "" : "s"}`);
+
+        const text =
+          generated.length > 0
+            ? `Cultivo "${created.numero_cultivo}" creado. Generados: ${generated.join(", ")}.`
+            : `Cultivo "${created.numero_cultivo}" creado.`;
+        showBanner({ kind: "success", text }, generated.length > 0 ? 6000 : 3500);
       }
-      setModalOpen(false);
       startTransition(() => router.refresh());
     } catch (err) {
       showBanner({
@@ -486,6 +591,31 @@ export default function CultivosEditor({
           {banner.text}
         </div>
       )}
+
+      {/* Intro / purpose */}
+      <div className="rounded-xl border border-primary-100 bg-primary-100/30 p-4 dark:border-primary-500/30 dark:bg-primary-500/10">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary dark:text-primary-300">
+          Cultivos
+        </p>
+        <p className="mt-1 text-sm leading-relaxed text-body-color dark:text-body-color-dark">
+          Cada cultivo es un lote en producción (variedad + ubicación + plantas + fecha de siembra).
+          Al crearlo, el sistema genera automáticamente sus <strong>ciclos de corte</strong> semanales,
+          sus <strong>actividades</strong> programadas y los <strong>insumos</strong> requeridos a partir
+          de la variedad. Si algo no se generó, abre el cultivo y usa los botones "Generar" para hacerlo
+          manualmente.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3 text-xs text-body-color dark:text-body-color-dark">
+          <span className="inline-flex items-center gap-1.5">
+            <IconRotateCw size={13} /> Ciclos de corte
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <IconListChecks size={13} /> Actividades
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <IconPackage size={13} /> Insumos
+          </span>
+        </div>
+      </div>
 
       {/* Header bar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -773,12 +903,74 @@ export default function CultivosEditor({
             </Select>
           </div>
 
+          {/* Fuente de actividades / insumos — create mode only */}
+          {!editing && form.id_variedad && (
+            <div className="rounded-lg border border-stroke bg-gray-50/70 p-3 dark:border-strokedark dark:bg-white/5">
+              <p className="text-sm font-medium text-black dark:text-white">
+                Fuente de actividades e insumos
+              </p>
+              <p className="mt-0.5 text-xs text-body-color dark:text-body-color-dark">
+                Al guardar, se generan automáticamente desde la fuente que elijas.
+                Si saltas este paso, podrás generarlas después desde el cultivo.
+              </p>
+              {actividadesSources === null ? (
+                <p className="mt-2 text-xs text-body-color dark:text-body-color-dark">
+                  Cargando opciones…
+                </p>
+              ) : actividadesSources.length === 0 ? (
+                <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
+                  Esta variedad y su clase aún no tienen actividades definidas.
+                  Podrás generarlas después manualmente.
+                </p>
+              ) : (
+                <div className="mt-2 space-y-1.5">
+                  {actividadesSources.map((src, i) => (
+                    <label
+                      key={i}
+                      className="flex cursor-pointer items-center gap-2 rounded-md border border-stroke bg-white px-2.5 py-2 text-sm transition-colors hover:border-primary dark:border-strokedark dark:bg-dark dark:hover:border-primary"
+                    >
+                      <input
+                        type="radio"
+                        name="newCultivoSource"
+                        checked={
+                          selectedSource?.type === src.type &&
+                          selectedSource?.label === src.label
+                        }
+                        onChange={() => setSelectedSource(src)}
+                        className="accent-primary"
+                      />
+                      <span className="flex-1 text-black dark:text-white">{src.label}</span>
+                      <span className="text-xs text-body-color dark:text-body-color-dark">
+                        {src.count} actividad{src.count !== 1 ? "es" : ""}
+                      </span>
+                    </label>
+                  ))}
+                  <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-stroke bg-white px-2.5 py-2 text-sm transition-colors hover:border-primary dark:border-strokedark dark:bg-dark dark:hover:border-primary">
+                    <input
+                      type="radio"
+                      name="newCultivoSource"
+                      checked={selectedSource === null}
+                      onChange={() => setSelectedSource(null)}
+                      className="accent-primary"
+                    />
+                    <span className="flex-1 text-body-color dark:text-body-color-dark">
+                      No generar ahora — lo hago manualmente después
+                    </span>
+                  </label>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Fechas */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-black dark:text-white">Fecha inicio</label>
+              <label className="block text-sm font-medium text-black dark:text-white">
+                Fecha inicio <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
+                required
                 value={form.fecha_inicio ?? ""}
                 onChange={(e) => setField("fecha_inicio", e.target.value || null)}
                 className={inputCls}
@@ -801,8 +993,18 @@ export default function CultivosEditor({
           {/* Plantas + Área + Camas */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-black dark:text-white">Total plantas</label>
-              <input type="number" min="0" placeholder="0" value={form.total_plantas ?? ""} onChange={(e) => setNumField("total_plantas", e.target.value)} className={inputCls} />
+              <label className="block text-sm font-medium text-black dark:text-white">
+                Total plantas <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                required
+                min="1"
+                placeholder="0"
+                value={form.total_plantas ?? ""}
+                onChange={(e) => setNumField("total_plantas", e.target.value)}
+                className={inputCls}
+              />
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-medium text-black dark:text-white">Área (m²)</label>
@@ -842,7 +1044,23 @@ export default function CultivosEditor({
           </div>
 
           {/* ── Generación de Datos — edit mode only ── */}
-          {editing && (
+          {editing && (() => {
+            const editingVariedad = editing.id_variedad
+              ? variedadById.get(editing.id_variedad) ?? null
+              : null;
+            const cicloDisabledReason = !editing.id_variedad
+              ? "Asigna una variedad al cultivo primero."
+              : !editingVariedad?.tiene_ciclos_produccion
+                ? "Esta variedad aún no tiene ciclos de producción. Genéralos en el catálogo de Variedades o de Ciclos."
+                : null;
+            const actDisabledReason = !editing.id_variedad
+              ? "Asigna una variedad al cultivo primero."
+              : actividadesSources === null
+                ? null
+                : actividadesSources.length === 0
+                  ? "No hay actividades definidas para esta variedad ni su clase."
+                  : null;
+            return (
             <div className="space-y-3 border-t border-stroke pt-4 dark:border-strokedark">
               <div>
                 <p className="text-sm font-semibold text-black dark:text-white">
@@ -852,6 +1070,21 @@ export default function CultivosEditor({
                   Genera ciclos de producción, actividades y requerimientos de insumos basados en la variedad seleccionada.
                 </p>
               </div>
+
+              {/* In-modal banner so errors are visible above the modal layer */}
+              {banner && (
+                <div
+                  role="status"
+                  className={[
+                    "rounded-lg border px-3 py-2 text-sm",
+                    banner.kind === "success"
+                      ? "border-primary-100 bg-primary-100/50 text-primary-600 dark:border-primary-500/30 dark:bg-primary-500/10 dark:text-primary-300"
+                      : "border-red-200 bg-red-50 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300",
+                  ].join(" ")}
+                >
+                  {banner.text}
+                </div>
+              )}
 
               {/* Source picker (shown when multiple sources available) */}
               {sourcePicker ? (
@@ -901,35 +1134,50 @@ export default function CultivosEditor({
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    disabled={!!generating}
-                    onClick={handleGenerarCiclos}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:opacity-60"
-                  >
-                    <IconRotateCw size={15} />
-                    {generating === "ciclos" ? "Generando…" : "Generar Ciclos"}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!!generating}
-                    onClick={() => handleGenerarActividadesOrInsumos("actividades")}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:opacity-60"
-                  >
-                    <IconListChecks size={15} />
-                    {generating === "actividades" ? "Generando…" : "Generar Actividades"}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!!generating}
-                    onClick={() => handleGenerarActividadesOrInsumos("insumos")}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:opacity-60"
-                  >
-                    <IconPackage size={15} />
-                    {generating === "insumos" ? "Generando…" : "Generar Insumos"}
-                  </button>
-                </div>
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      disabled={!!generating || !!cicloDisabledReason}
+                      title={cicloDisabledReason ?? undefined}
+                      onClick={handleGenerarCiclos}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 dark:disabled:bg-white/10 dark:disabled:text-body-color-dark"
+                    >
+                      <IconRotateCw size={15} />
+                      {generating === "ciclos" ? "Generando…" : "Generar Ciclos"}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!!generating || !!actDisabledReason}
+                      title={actDisabledReason ?? undefined}
+                      onClick={() => handleGenerarActividadesOrInsumos("actividades")}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 dark:disabled:bg-white/10 dark:disabled:text-body-color-dark"
+                    >
+                      <IconListChecks size={15} />
+                      {generating === "actividades" ? "Generando…" : "Generar Actividades"}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!!generating || !!actDisabledReason}
+                      title={actDisabledReason ?? undefined}
+                      onClick={() => handleGenerarActividadesOrInsumos("insumos")}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 dark:disabled:bg-white/10 dark:disabled:text-body-color-dark"
+                    >
+                      <IconPackage size={15} />
+                      {generating === "insumos" ? "Generando…" : "Generar Insumos"}
+                    </button>
+                  </div>
+                  {(cicloDisabledReason || actDisabledReason) && (
+                    <ul className="space-y-1 text-xs text-amber-700 dark:text-amber-400">
+                      {cicloDisabledReason && (
+                        <li>• Ciclos: {cicloDisabledReason}</li>
+                      )}
+                      {actDisabledReason && cicloDisabledReason !== actDisabledReason && (
+                        <li>• Actividades / Insumos: {actDisabledReason}</li>
+                      )}
+                    </ul>
+                  )}
+                </>
               )}
 
               {/* Live status row */}
@@ -954,7 +1202,8 @@ export default function CultivosEditor({
                 </div>
               )}
             </div>
-          )}
+            );
+          })()}
 
           {/* Footer */}
           <div className="flex items-center justify-between gap-3 border-t border-stroke pt-4 dark:border-strokedark">
