@@ -110,14 +110,11 @@ function ymFromFecha(fecha: string | null): string | null {
   return fecha.slice(0, 7);
 }
 
-function ingresoRow(p: {
-  cantidad_cosechada: number | null;
-  precio_venta: number | null;
-}): number {
-  if (p.precio_venta == null || Number.isNaN(p.precio_venta)) return 0;
-  const q = p.cantidad_cosechada ?? 0;
-  if (Number.isNaN(q)) return 0;
-  return q * p.precio_venta;
+/** Ingresos = sum of `produccion.costo_total` per row (period / month buckets). */
+function ingresoRow(p: { costo_total: number | null }): number {
+  const v = p.costo_total;
+  if (v == null || Number.isNaN(v)) return 0;
+  return v;
 }
 
 export async function countActividadesPlanificadas(
