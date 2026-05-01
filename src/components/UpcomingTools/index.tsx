@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const icons = [
@@ -27,8 +28,8 @@ const UpcomingTools = () => {
   const { eyebrow, title, titleHighlight, subtitle, tools } = t.upcomingTools;
 
   const badgeStyles = [
-    "bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-300", // Coming Soon
-    "bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-300", // In Development
+    "bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200", // In Development
+    "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300", // Available / live
     "bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300", // Planned
   ];
 
@@ -68,6 +69,14 @@ const UpcomingTools = () => {
               <p className="text-base font-medium leading-relaxed text-body-color dark:text-body-color-dark">
                 {tool.description}
               </p>
+              {"cta" in tool && tool.cta ? (
+                <Link
+                  href={tool.cta.href}
+                  className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 dark:bg-primary-600 dark:hover:bg-primary-500"
+                >
+                  {tool.cta.label}
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>

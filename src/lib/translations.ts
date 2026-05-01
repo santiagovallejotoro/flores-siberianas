@@ -257,8 +257,13 @@ export const translations = {
       titleHighlight: 'Tools',
       subtitle: 'Designed to increase transparency, efficiency, and collaboration across our global network.',
       tools: [
-        { badge: 'Coming Soon', title: 'Customer Portal', description: 'Order tracking, shipment status, and historical data; real-time availability and real-time connection with suppliers.' },
-        { badge: 'In Development', title: 'Supplier Dashboards', description: 'Purchase history and quality inspections. Forecasts, production planning, and performance metrics. Cultivation administration and cost tools.' },
+        { badge: 'In Development', title: 'Customer Portal', description: 'Order tracking, shipment status, and historical data; real-time availability and real-time connection with suppliers.' },
+        {
+          badge: 'Available',
+          title: 'Supplier Portal',
+          description: 'Purchase history and quality inspections. Forecasts, production planning, and performance metrics. Cultivation administration and cost tools.',
+          cta: { label: 'Supplier Portal', href: '/auth/proveedores/register' },
+        },
         { badge: 'Planned', title: 'Market Intelligence', description: 'Real-time market information and planning tools for clients and suppliers.' }
       ]
     },
@@ -751,8 +756,13 @@ export const translations = {
       titleHighlight: 'инструменты',
       subtitle: 'Повышение прозрачности, эффективности и совместной работы в нашей глобальной сети.',
       tools: [
-        { badge: 'Скоро', title: 'Портал клиентов', description: 'Отслеживание заказов, статус поставок и история данных; наличие в реальном времени и связь с поставщиками в реальном времени.' },
-        { badge: 'В разработке', title: 'Панели поставщиков', description: 'История закупок и проверки качества. Прогнозы, планирование производства и показатели эффективности. Инструменты администрирования и учёта затрат на выращивание.' },
+        { badge: 'В разработке', title: 'Портал клиентов', description: 'Отслеживание заказов, статус поставок и история данных; наличие в реальном времени и связь с поставщиками в реальном времени.' },
+        {
+          badge: 'Доступно',
+          title: 'Портал поставщика',
+          description: 'История закупок и проверки качества. Прогнозы, планирование производства и показатели эффективности. Инструменты администрирования и учёта затрат на выращивание.',
+          cta: { label: 'Портал поставщика', href: '/auth/proveedores/register' },
+        },
         { badge: 'Планируется', title: 'Рыночная аналитика', description: 'Информация о рынках в реальном времени и инструменты планирования для клиентов и поставщиков.' }
       ]
     },
@@ -1227,8 +1237,13 @@ export const translations = {
       titleHighlight: 'próximas',
       subtitle: 'Diseñadas para aumentar la transparencia, eficiencia y colaboración en nuestra red global.',
       tools: [
-        { badge: 'Próximamente', title: 'Portal de clientes', description: 'Seguimiento de pedidos, estado de envíos e historial de datos, disponibilidades en tiempo real, conexión en tiempo real con proveedores.' },
-        { badge: 'En desarrollo', title: 'Paneles de proveedores', description: 'Historial de compra e inspecciones de calidad. Pronósticos, planificación de producción y métricas de rendimiento. Herramienta de administración y costos de cultivo.' },
+        { badge: 'En desarrollo', title: 'Portal de clientes', description: 'Seguimiento de pedidos, estado de envíos e historial de datos, disponibilidades en tiempo real, conexión en tiempo real con proveedores.' },
+        {
+          badge: 'Disponible',
+          title: 'Portal de proveedores',
+          description: 'Historial de compra e inspecciones de calidad. Pronósticos, planificación de producción y métricas de rendimiento. Herramienta de administración y costos de cultivo.',
+          cta: { label: 'Portal Proveedor', href: '/auth/proveedores/register' },
+        },
         { badge: 'Planificado', title: 'Inteligencia de mercados', description: 'Información de mercados en tiempo real y herramientas de planificación para clientes y proveedores.' }
       ]
     },
@@ -1702,8 +1717,13 @@ export const translations = {
       titleHighlight: '工具',
       subtitle: '旨在提高我们全球网络的透明度、效率与协作。',
       tools: [
-        { badge: '即将推出', title: '客户门户', description: '订单跟踪、发货状态与历史数据；实时供应情况与供应商实时对接。' },
-        { badge: '开发中', title: '供应商仪表板', description: '采购记录与质量检验。预测、生产计划与绩效指标。种植管理与成本工具。' },
+        { badge: '开发中', title: '客户门户', description: '订单跟踪、发货状态与历史数据；实时供应情况与供应商实时对接。' },
+        {
+          badge: '已上线',
+          title: '供应商门户',
+          description: '采购记录与质量检验。预测、生产计划与绩效指标。种植管理与成本工具。',
+          cta: { label: '供应商门户', href: '/auth/proveedores/register' },
+        },
         { badge: '计划中', title: '市场情报', description: '实时市场信息及面向客户与供应商的规划工具。' }
       ]
     },

@@ -1,11 +1,30 @@
 "use client";
 
+import Link from "next/link";
+import type { ReactNode } from "react";
 import { useState } from "react";
 
-const faqs = [
+const linkClassName =
+  "font-semibold text-primary-600 underline decoration-primary-600/40 underline-offset-2 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300";
+
+const faqs: { q: string; a: ReactNode }[] = [
   {
     q: "¿Para qué sirve el portal de proveedores?",
-    a: "Proveedor: Herramienta tecnológica para ayudarle a planear y administrar su cultivo. Historial de compra, inspecciones de calidad, pagos. Pronósticos, planificación de producción por programación y métricas de rendimiento de su cultivo. Herramienta de administración y control de gastos y costos de cultivo. Portal de uso EXCLUSIVO para nuestros principales proveedores y aliados estratégicos",
+    a: (
+      <>
+        Proveedor: Herramienta tecnológica para ayudarle a planear y administrar su cultivo. Historial de compra,
+        inspecciones de calidad, pagos. Pronósticos, planificación de producción por programación y métricas de
+        rendimiento de su cultivo. Herramienta de administración y control de gastos y costos de cultivo. Portal de uso
+        EXCLUSIVO para nuestros principales proveedores y aliados estratégicos.{" "}
+        <Link href="/proveedor-portal" className={linkClassName}>
+          Ir al portal de proveedores
+        </Link>
+        {" · "}
+        <Link href="/auth/proveedores/register" className={linkClassName}>
+          Registrarse como proveedor
+        </Link>
+      </>
+    ),
   },
   {
     q: "¿Recepción de la flor y horarios?",
@@ -81,12 +100,12 @@ const ProveedoresFAQ = () => {
                   role="region"
                   aria-labelledby={`faq-trigger-${index}`}
                   className={`overflow-hidden transition-all duration-200 ${
-                    isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                    isOpen ? "max-h-[min(90vh,900px)] opacity-100" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <p className="px-6 pb-6 text-base leading-relaxed text-body-color dark:text-body-color-dark">
+                  <div className="px-6 pb-6 text-base leading-relaxed text-body-color dark:text-body-color-dark">
                     {item.a}
-                  </p>
+                  </div>
                 </div>
               </div>
             );

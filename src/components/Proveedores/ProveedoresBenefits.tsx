@@ -46,12 +46,33 @@ const benefits = [
   },
 ];
 
-const extraBenefits = [
+import Link from "next/link";
+
+type ExtraBenefit =
+  | string
+  | {
+      badge: string;
+      line: string;
+      ctaBefore: string;
+      linkHref: string;
+      linkLabel: string;
+    };
+
+const portalBenefitLinkClass =
+  "font-medium text-primary-600 no-underline decoration-primary-600/35 underline-offset-[5px] transition-colors hover:text-primary-700 hover:underline dark:text-primary-400 dark:hover:text-primary-300";
+
+const extraBenefits: ExtraBenefit[] = [
   "Precio justo durante todo el año",
   "Pago mensual puntual",
   "Descuentos en insumos (fertilizantes y mallas)",
   "Herramientas de costeo gratis",
-  "Herramienta de programación y planificación de cultivo gratis",
+  {
+    badge: "Nuevo",
+    line: "Herramienta de programación y planificación de cultivo gratis.",
+    ctaBefore: "Acceda al ",
+    linkHref: "/proveedor-portal",
+    linkLabel: "portal de proveedores",
+  },
   "Prioridad en nuevas órdenes",
   "Información en tiempo real sobre sus ventas y pagos",
   "La oportunidad de trabajar con una empresa en expansión que quiere crecer junto a sus aliados.",
@@ -94,22 +115,51 @@ const ProveedoresBenefits = () => {
             Lo que recibe al trabajar con nosotros
           </h3>
           <ul className="grid gap-3 sm:grid-cols-2">
-            {extraBenefits.map((text, idx) => (
+            {extraBenefits.map((text, idx) => {
+              const isPortalHighlight = typeof text === "object" && "badge" in text;
+              return (
               <li
                 key={idx}
-                className="flex items-center gap-2 text-base text-body-color dark:text-body-color-dark"
+                className={`flex gap-3 text-body-color dark:text-body-color-dark ${
+                  isPortalHighlight
+                    ? "items-start sm:col-span-2"
+                    : "items-center"
+                }`}
               >
                 <svg
-                  className="h-5 w-5 shrink-0 text-primary"
+                  className={`h-5 w-5 shrink-0 text-primary ${isPortalHighlight ? "mt-0.5" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                {text}
+                {typeof text === "string" ? (
+                  <span className="text-base leading-snug">{text}</span>
+                ) : (
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <span
+                        className="inline-flex shrink-0 items-center rounded-full border border-black/[0.06] bg-white/70 px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.14em] text-black/55 shadow-[0_1px_0_rgba(0,0,0,0.04)] dark:border-white/10 dark:bg-white/[0.06] dark:text-white/55"
+                        aria-label={`${text.badge}: función destacada`}
+                      >
+                        {text.badge}
+                      </span>
+                      <span className="text-[15px] font-medium leading-snug tracking-tight text-black/85 dark:text-white/88">
+                        {text.line}
+                      </span>
+                    </p>
+                    <p className="text-sm leading-relaxed text-black/55 dark:text-white/60">
+                      {text.ctaBefore}
+                      <Link href={text.linkHref} className={portalBenefitLinkClass}>
+                        {text.linkLabel}
+                      </Link>
+                    </p>
+                  </div>
+                )}
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       </div>
