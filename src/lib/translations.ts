@@ -187,6 +187,37 @@ export const translations = {
           { name: 'Green', hex: '#22C55E' },
           { name: 'Antique', hex: '#C4B5FD' }
         ]
+      },
+      exportQualityGallery: {
+        title: 'Our flower specifications',
+        intro:
+          "We meet all export standards and offer a wide range of varieties to suit your customers' preferences.",
+        cards: [
+          { title: 'Expected quality — export standard' },
+          { title: 'Expected quality — heads and stems' }
+        ],
+        aria: {
+          prev: 'Previous image',
+          next: 'Next image',
+          slideLabel: '{{title}} — image {{current}} of {{total}}',
+          unavailable: 'Unavailable',
+          placeholder: 'Add quality photo'
+        }
+      }
+    },
+    supplierQualityGallery: {
+      title: 'Quality we look for',
+      intro: 'This is how your hydrangea should look to meet export standards:',
+      cards: [
+        { title: 'Expected quality — export standard' },
+        { title: 'Expected quality — heads and stems' }
+      ],
+      aria: {
+        prev: 'Previous image',
+        next: 'Next image',
+        slideLabel: '{{title}} — image {{current}} of {{total}}',
+        unavailable: 'Unavailable',
+        placeholder: 'Add quality photo'
       }
     },
     // Technology
@@ -650,6 +681,37 @@ export const translations = {
           { name: 'Зелёный', hex: '#22C55E' },
           { name: 'Антик', hex: '#C4B5FD' }
         ]
+      },
+      exportQualityGallery: {
+        title: 'Спецификации наших цветов',
+        intro:
+          'Мы соблюдаем все стандарты экспорта и предлагаем широкий выбор сортов под предпочтения ваших клиентов.',
+        cards: [
+          { title: 'Ожидаемое качество — экспортный стандарт' },
+          { title: 'Ожидаемое качество — соцветия и стебли' }
+        ],
+        aria: {
+          prev: 'Предыдущее изображение',
+          next: 'Следующее изображение',
+          slideLabel: '{{title}} — изображение {{current}} из {{total}}',
+          unavailable: 'недоступно',
+          placeholder: 'Добавить фото качества'
+        }
+      }
+    },
+    supplierQualityGallery: {
+      title: 'Какое качество мы ищем',
+      intro: 'Так должна выглядеть ваша гортензия, чтобы соответствовать стандарту экспорта:',
+      cards: [
+        { title: 'Ожидаемое качество — экспортный стандарт' },
+        { title: 'Ожидаемое качество — соцветия и стебли' }
+      ],
+      aria: {
+        prev: 'Предыдущее изображение',
+        next: 'Следующее изображение',
+        slideLabel: '{{title}} — изображение {{current}} из {{total}}',
+        unavailable: 'недоступно',
+        placeholder: 'Добавить фото качества'
       }
     },
     // Technology
@@ -1095,6 +1157,37 @@ export const translations = {
           { name: 'Verde', hex: '#22C55E' },
           { name: 'Antiguo', hex: '#C4B5FD' }
         ]
+      },
+      exportQualityGallery: {
+        title: 'Especificaciones de nuestras flores',
+        intro:
+          'Cumplimos con todos los estándares de exportación y ofrecemos una amplia gama de variedades para adaptarnos a las preferencias de sus clientes.',
+        cards: [
+          { title: 'Calidad esperada — estándar exportación' },
+          { title: 'Calidad esperada — cabezas y tallos' }
+        ],
+        aria: {
+          prev: 'Imagen anterior',
+          next: 'Siguiente imagen',
+          slideLabel: '{{title}} — imagen {{current}} de {{total}}',
+          unavailable: 'no disponible',
+          placeholder: 'Añadir foto de calidad'
+        }
+      }
+    },
+    supplierQualityGallery: {
+      title: 'Calidad que buscamos',
+      intro: 'Así debe verse su hortensia para que cumpla el estándar de exportación:',
+      cards: [
+        { title: 'Calidad esperada — estándar exportación' },
+        { title: 'Calidad esperada — cabezas y tallos' }
+      ],
+      aria: {
+        prev: 'Imagen anterior',
+        next: 'Siguiente imagen',
+        slideLabel: '{{title}} — imagen {{current}} de {{total}}',
+        unavailable: 'no disponible',
+        placeholder: 'Añadir foto de calidad'
       }
     },
     // Technology
@@ -1540,6 +1633,36 @@ export const translations = {
           { name: '绿色', hex: '#22C55E' },
           { name: '复古色', hex: '#C4B5FD' }
         ]
+      },
+      exportQualityGallery: {
+        title: '我们的花卉规格',
+        intro: '我们符合全部出口标准，并提供丰富的品种以满足您客户的偏好。',
+        cards: [
+          { title: '预期品质 — 出口标准' },
+          { title: '预期品质 — 花头与茎秆' }
+        ],
+        aria: {
+          prev: '上一张',
+          next: '下一张',
+          slideLabel: '{{title}} — 第 {{current}} 张，共 {{total}} 张',
+          unavailable: '不可用',
+          placeholder: '添加品质照片'
+        }
+      }
+    },
+    supplierQualityGallery: {
+      title: '我们寻求的品质',
+      intro: '您的绣球花应达到以下外观，以满足出口标准：',
+      cards: [
+        { title: '预期品质 — 出口标准' },
+        { title: '预期品质 — 花头与茎秆' }
+      ],
+      aria: {
+        prev: '上一张',
+        next: '下一张',
+        slideLabel: '{{title}} — 第 {{current}} 张，共 {{total}} 张',
+        unavailable: '不可用',
+        placeholder: '添加品质照片'
       }
     },
     // Technology

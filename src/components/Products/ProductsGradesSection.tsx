@@ -1,4 +1,5 @@
 "use client";
+import ExportQualityGallery from "@/components/Common/ExportQualityGallery";
 import { useLanguage } from "@/contexts/LanguageContext";
 import GradeCard from "./GradeCard";
 import TintedCard from "./TintedCard";
@@ -87,6 +88,8 @@ const ProductsGradesSection = () => {
             ))}
           </div>
         </div>
+
+        <ExportQualityGallery variant="products" embedded />
 
         <div className="rounded-xl border border-primary-200 bg-gradient-to-r from-primary-50 to-secondary-50 p-6 dark:border-primary-500/20 dark:from-primary-500/10 dark:to-secondary-500/10 md:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
