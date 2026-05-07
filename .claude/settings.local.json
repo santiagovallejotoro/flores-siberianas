@@ -18,7 +18,25 @@
       "Bash(grep -v \"^├ ○ /error$\")",
       "Bash(npm install *)",
       "Bash(npm ls *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "mcp__meta-ads__get_ad_accounts",
+      "mcp__meta-ads__get_account_pages",
+      "mcp__meta-ads__search_geo_locations",
+      "mcp__meta-ads__bulk_search_interests",
+      "mcp__meta-ads__estimate_audience_size",
+      "Bash(node *)",
+      "Bash(META_ACCESS_TOKEN='EAALFMGdfPjkBRfTZAbaZBFzuxbMkNADggYbNDJ9UhGGizAlT5FSFdW2PsUuiBLcawpjvWoTCiudB3BZCBsEyiLkZBD7ohgycdAjqK3fMVabPPyu3BS0fPZAgjWyMAu2fD0EJymuRYunBTLiplLRPoOg8CXkolu1M3ms0qZA2EFu9FnhaZC78dHZC3OfXmxiLeJFCg2KdMFaDOVAx' node *)",
+      "mcp__meta-ads__create_campaign",
+      "mcp__meta-ads__create_adset",
+      "mcp__meta-ads__create_ad_creative",
+      "mcp__meta-ads__create_ad",
+      "mcp__meta-ads__get_ad_previews",
+      "mcp__meta-ads__get_ad_details",
+      "mcp__meta-ads__update_ad",
+      "Bash(xargs -I {} ls -lh \"{}\")",
+      "Bash(sort -hk5 -r)",
+      "Bash(grep -E \"First Load|^Route|/$|/products|en\\\\.|es\\\\.|ru\\\\.|zh\\\\.|chunks\")",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\"; head -c 200 \"{}\" 2>/dev/null | head -1')"
     ]
   }
 }

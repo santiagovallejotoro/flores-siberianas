@@ -42,16 +42,13 @@ const Header = () => {
 
   // Sticky Navbar
   const [sticky, setSticky] = useState(false);
-  const handleStickyNavbar = () => {
-    if (window.scrollY >= 80) {
-      setSticky(true);
-    } else {
-      setSticky(false);
-    }
-  };
   useEffect(() => {
-    window.addEventListener("scroll", handleStickyNavbar);
-  });
+    const handleStickyNavbar = () => {
+      setSticky(window.scrollY >= 80);
+    };
+    window.addEventListener("scroll", handleStickyNavbar, { passive: true });
+    return () => window.removeEventListener("scroll", handleStickyNavbar);
+  }, []);
 
   // submenu handler
   const [openIndex, setOpenIndex] = useState(-1);
@@ -96,6 +93,7 @@ const Header = () => {
                   alt="Flores Siberianas"
                   width={200}
                   height={44}
+                  priority
                   className="w-full dark:hidden"
                 />
                 <Image
@@ -103,6 +101,7 @@ const Header = () => {
                   alt="Flores Siberianas"
                   width={200}
                   height={44}
+                  priority
                   className="hidden w-full dark:block"
                 />
               </Link>

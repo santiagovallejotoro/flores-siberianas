@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "optimize-images": "node scripts/optimize-images.mjs",
+    "optimize-images:dry": "node scripts/optimize-images.mjs --dry"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
@@ -32,6 +34,7 @@
     "autoprefixer": "^10.4.17",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "sharp": "^0.34.5",
     "typescript": "^5.3.3"
   },
   "engines": {

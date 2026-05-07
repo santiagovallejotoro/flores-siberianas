@@ -30,3 +30,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# image optimizer backups (originals before npm run optimize-images)
+/public/_originals/
+/scripts/_image_optimized.json

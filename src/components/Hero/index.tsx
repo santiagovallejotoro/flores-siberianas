@@ -1,10 +1,11 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
   const { t } = useLanguage();
-  
+
   return (
     <>
       <section
@@ -12,17 +13,26 @@ const Hero = () => {
         className="relative z-10 overflow-hidden bg-transparent pb-12 pt-[120px] dark:bg-gray-dark md:pb-16 md:pt-[150px] xl:pb-20 xl:pt-[180px] 2xl:pb-24 2xl:pt-[200px]"
       >
         {/* Hero background image - light mode only (white florals on black) */}
-        <div
-          className="absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat dark:opacity-0 dark:pointer-events-none"
-          style={{ backgroundImage: "url('/hero-bg.png')" }}
-          aria-hidden
-        />
+        <div className="absolute inset-0 z-[-2] dark:opacity-0 dark:pointer-events-none" aria-hidden>
+          <Image
+            src="/hero-bg.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
         {/* Hero background image - dark mode only (light purple florals on black) */}
-        <div
-          className="absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat opacity-0 pointer-events-none dark:opacity-100 dark:pointer-events-auto"
-          style={{ backgroundImage: "url('/here-bg-1.png')" }}
-          aria-hidden
-        />
+        <div className="absolute inset-0 z-[-2] opacity-0 pointer-events-none dark:opacity-100 dark:pointer-events-auto" aria-hidden>
+          <Image
+            src="/here-bg-1.png"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
         <div className="container">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
