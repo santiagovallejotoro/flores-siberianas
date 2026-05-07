@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ARCHITECTURE.md",
+                "file": "features/products.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ARCHITECTURE"
+              "title": "products"
             }
           }
         ]
@@ -185,9 +185,12 @@
   },
   "active": "dfef07095118d8fb",
   "lastOpenFiles": [
-    "OVERVIEW.md",
+    "features/products.md",
+    "features/proveedores.md",
     "ARCHITECTURE.md",
     "SCHEMA.md",
+    "OVERVIEW.md",
+    "DATABASE.md",
     "roadmap/index.md",
     "features/credit-application.md",
     "features/auth.md",
@@ -197,8 +200,6 @@
     "features/language-context.md",
     "features/contact.md",
     "features/markets.md",
-    "features/products.md",
-    "features/proveedores.md",
     "features/proveedor-portal.md",
     "features/client-portal.md",
     "features",

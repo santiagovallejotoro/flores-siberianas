@@ -15,7 +15,10 @@
       "Bash(npx tsc *)",
       "Bash(xargs grep *)",
       "Bash(npm run *)",
-      "Bash(grep -v \"^├ ○ /error$\")"
+      "Bash(grep -v \"^├ ○ /error$\")",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "Bash(npx next *)"
     ]
   }
 }

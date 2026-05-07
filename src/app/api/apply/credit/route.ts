@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyCreditApplicationSubmitted } from "@/lib/email/notify-credit-application";
 
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -146,6 +147,50 @@ export async function POST(req: NextRequest) {
       .update(docFields)
       .eq("id", app.id);
   }
+
+  // ── Notify ops team (PDF attached). Failure must not block the response. ──
+  await notifyCreditApplicationSubmitted({
+    applicationId: app.id,
+    data: {
+      contact_name: applicationData.contact_name,
+      company_name: applicationData.company_name,
+      company_registration: applicationData.company_registration ?? "",
+      federal_tax_id: applicationData.federal_tax_id ?? "",
+      date_established: applicationData.date_established ?? "",
+      business_type: applicationData.business_type,
+      company_structure: applicationData.company_structure,
+      address: applicationData.address,
+      city: applicationData.city,
+      state: applicationData.state,
+      zip_code: applicationData.zip_code,
+      phone: applicationData.phone,
+      mobile: applicationData.mobile ?? "",
+      email: applicationData.email,
+      website: applicationData.website ?? "",
+      bank_name: applicationData.bank_name ?? "",
+      bank_branch: applicationData.bank_branch ?? "",
+      bank_account_number: applicationData.bank_account_number ?? "",
+      bank_sort_code: applicationData.bank_sort_code ?? "",
+      bank_address: applicationData.bank_address ?? "",
+      bank_phone: applicationData.bank_phone ?? "",
+      bank_contact: applicationData.bank_contact ?? "",
+      trade_references: (tradeReferences as Array<Record<string, string>>).map((r) => ({
+        company_name: r.company_name ?? "",
+        contact_name: r.contact_name ?? "",
+        address: r.address ?? "",
+        city: r.city ?? "",
+        phone: r.phone ?? "",
+        email: r.email ?? "",
+        trade_since: r.trade_since ?? "",
+      })),
+      authorized_name: applicationData.authorized_name,
+    },
+    docs: {
+      company_reg: docFields.doc_company_reg ?? "",
+      tax_id: docFields.doc_tax_id ?? "",
+      bank_cert: docFields.doc_bank_cert ?? "",
+    },
+  });
 
   return NextResponse.json({ success: true, applicationId: app.id });
 }

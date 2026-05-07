@@ -11,7 +11,7 @@ interface TradeReference {
   trade_since: string;
 }
 
-interface ApplicationData {
+export interface ApplicationData {
   contact_name: string;
   company_name: string;
   company_registration: string;
@@ -38,10 +38,14 @@ interface ApplicationData {
   authorized_name: string;
 }
 
-interface DocFiles {
+export interface DocFiles {
   company_reg: string;
   tax_id: string;
   bank_cert: string;
+}
+
+export function pdfFileName(data: ApplicationData, applicationId: string): string {
+  return `CreditApplication_${data.company_name.replace(/\s+/g, "_")}_${applicationId.slice(0, 8)}.pdf`;
 }
 
 // Teal primary colour (hsl 170 65% 42% ≈ #25A98A)
@@ -55,11 +59,11 @@ function row(label: string, value: string): [string, string] {
   return [label, value || "—"];
 }
 
-export function generateCreditApplicationPDF(
+export function buildCreditApplicationPDF(
   data: ApplicationData,
   applicationId: string,
   docs: DocFiles,
-): void {
+): jsPDF {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
@@ -284,5 +288,14 @@ export function generateCreditApplicationPDF(
     doc.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 5, { align: "right" });
   }
 
-  doc.save(`CreditApplication_${data.company_name.replace(/\s+/g, "_")}_${applicationId.slice(0, 8)}.pdf`);
+  return doc;
+}
+
+export function generateCreditApplicationPDF(
+  data: ApplicationData,
+  applicationId: string,
+  docs: DocFiles,
+): void {
+  const doc = buildCreditApplicationPDF(data, applicationId, docs);
+  doc.save(pdfFileName(data, applicationId));
 }
