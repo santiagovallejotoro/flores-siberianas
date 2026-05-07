@@ -108,18 +108,20 @@ export async function POST(req: NextRequest) {
 
   // ── Upload documents ───────────────────────────────────────────────────────
   const docFields: { doc_company_reg?: string; doc_tax_id?: string; doc_bank_cert?: string } = {};
+  const emailAttachments: Array<{ filename: string; content: Buffer }> = [];
 
   const uploads: Array<{
     formKey: string;
     dbKey: keyof typeof docFields;
     storageName: string;
+    label: string;
   }> = [
-    { formKey: "doc_company_reg_file", dbKey: "doc_company_reg", storageName: "company_reg" },
-    { formKey: "doc_tax_id_file", dbKey: "doc_tax_id", storageName: "tax_id" },
-    { formKey: "doc_bank_cert_file", dbKey: "doc_bank_cert", storageName: "bank_cert" },
+    { formKey: "doc_company_reg_file", dbKey: "doc_company_reg", storageName: "company_reg", label: "Company_Registration" },
+    { formKey: "doc_tax_id_file", dbKey: "doc_tax_id", storageName: "tax_id", label: "Tax_ID_Certificate" },
+    { formKey: "doc_bank_cert_file", dbKey: "doc_bank_cert", storageName: "bank_cert", label: "Bank_Account_Certification" },
   ];
 
-  for (const { formKey, dbKey, storageName } of uploads) {
+  for (const { formKey, dbKey, storageName, label } of uploads) {
     const file = formData.get(formKey) as File | null;
     if (!file || file.size === 0) continue;
 
@@ -128,13 +130,15 @@ export async function POST(req: NextRequest) {
 
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "pdf";
     const storagePath = `${app.id}/${storageName}.${ext}`;
+    const bytes = Buffer.from(await file.arrayBuffer());
 
     const { error: uploadError } = await supabase.storage
       .from("credit-documents")
-      .upload(storagePath, file, { contentType: file.type, upsert: false });
+      .upload(storagePath, bytes, { contentType: file.type, upsert: false });
 
     if (!uploadError) {
       docFields[dbKey] = storagePath;
+      emailAttachments.push({ filename: `${label}.${ext}`, content: bytes });
     } else {
       console.error(`Upload error for ${formKey}:`, uploadError);
     }
@@ -190,6 +194,7 @@ export async function POST(req: NextRequest) {
       tax_id: docFields.doc_tax_id ?? "",
       bank_cert: docFields.doc_bank_cert ?? "",
     },
+    extraAttachments: emailAttachments,
   });
 
   return NextResponse.json({ success: true, applicationId: app.id });

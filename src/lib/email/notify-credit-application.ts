@@ -18,6 +18,7 @@ interface NotifyPayload {
   applicationId: string;
   data: ApplicationData;
   docs: DocFiles;
+  extraAttachments?: Array<{ filename: string; content: Buffer }>;
 }
 
 function escape(s: string | null | undefined): string {
@@ -130,18 +131,21 @@ export async function notifyCreditApplicationSubmitted(
 
     const subject = `New Credit Application — ${payload.data.company_name} (${payload.applicationId.slice(0, 8)})`;
 
+    const attachments: Array<{ filename: string; content: Buffer }> = [
+      {
+        filename: pdfFileName(payload.data, payload.applicationId),
+        content: pdfBytes,
+      },
+      ...(payload.extraAttachments ?? []),
+    ];
+
     const { error } = await resend.emails.send({
       from: FROM,
       to: NOTIFY_TO,
       subject,
       replyTo: payload.data.email || undefined,
       html: buildHtml(payload),
-      attachments: [
-        {
-          filename: pdfFileName(payload.data, payload.applicationId),
-          content: pdfBytes,
-        },
-      ],
+      attachments,
     });
 
     if (error) {
