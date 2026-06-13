@@ -2,6 +2,7 @@ import AppShell from "@/app/AppShell";
 import JsonLd from "@/app/JsonLd";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "../styles/index.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -49,6 +50,7 @@ export default function RootLayout({
       <body className={`bg-background dark:bg-foreground ${inter.className}`}>
         <JsonLd />
         <AppShell>{children}</AppShell>
+        <Analytics />
       </body>
     </html>
   );
