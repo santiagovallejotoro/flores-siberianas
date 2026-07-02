@@ -10,7 +10,7 @@ import {
 // floressiberianas.com is verified in Resend (us-east-1).
 const FROM = "Flores Siberianas <noreply@floressiberianas.com>";
 const NOTIFY_TO = [
-  "flores.siberiana@gmail.com",
+  "flores.siberianas@outlook.com",
   "santiagovallejotoro@gmail.com",
 ];
 

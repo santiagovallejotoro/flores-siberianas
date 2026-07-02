@@ -311,7 +311,7 @@ export const ru = {
       headquarters: {
         title: 'Штаб-квартира',
         location: 'Кармен де Виборал, Антиокия, Колумбия',
-        email: 'flores.siberiana@gmail.com',
+        email: 'flores.siberianas@outlook.com',
         hours: 'Пн - Пт: 8:00 - 18:00',
         timezone: 'Время Колумбии (COT)'
       },
@@ -457,8 +457,8 @@ export const ru = {
   footer: {
     tagline: 'Колумбийские гортензии высшего качества. Из гор Антиокии на лучшие мировые рынки.',
     address: 'Кармен де Виборал, Антиокия, Колумбия',
-    phone: '+57 312 781 0890',
-    email: 'flores.siberiana@gmail.com',
+    phone: '+57 312 780 9601',
+    email: 'flores.siberianas@outlook.com',
     hours: 'Пн–Пт 8:00–18:00 (COT)',
     whatsappPrefilled: 'Здравствуйте, хотел(а) бы получить информацию о Flores Siberianas.',
     products: 'Продукция',

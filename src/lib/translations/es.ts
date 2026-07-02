@@ -311,7 +311,7 @@ export const es = {
       headquarters: {
         title: 'Sede principal',
         location: 'Carmen de Viboral, Antioquia, Colombia',
-        email: 'flores.siberiana@gmail.com',
+        email: 'flores.siberianas@outlook.com',
         hours: 'Lun - Vie: 8:00 AM - 6:00 PM',
         timezone: 'Hora de Colombia (COT)'
       },
@@ -457,8 +457,8 @@ export const es = {
   footer: {
     tagline: 'Hortensias colombianas de alta calidad. De las montañas de Antioquia a los mejores mercados del mundo.',
     address: 'Carmen de Viboral, Antioquia, Colombia',
-    phone: '+57 312 781 0890',
-    email: 'flores.siberiana@gmail.com',
+    phone: '+57 312 780 9601',
+    email: 'flores.siberianas@outlook.com',
     hours: 'Lun–Vie 8:00–18:00 (COT)',
     whatsappPrefilled: 'Hola, me gustaría recibir más información sobre Flores Siberianas.',
     products: 'Productos',
