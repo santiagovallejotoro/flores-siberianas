@@ -310,7 +310,7 @@ export const zh = {
       headquarters: {
         title: '总部',
         location: 'Carmen de Viboral, Antioquia, 哥伦比亚',
-        email: 'flores.siberiana@gmail.com',
+        email: 'flores.siberianas@outlook.com',
         hours: '周一至周五 8:00 - 18:00',
         timezone: '哥伦比亚时间 (COT)'
       },
@@ -457,7 +457,7 @@ export const zh = {
     tagline: '哥伦比亚高品质绣球花。从安蒂奥基亚山脉到世界顶级市场。',
     address: 'Carmen de Viboral, Antioquia, 哥伦比亚',
     phone: '+57 312 780 9601',
-    email: 'flores.siberiana@gmail.com',
+    email: 'flores.siberianas@outlook.com',
     hours: '周一至周五 8:00–18:00 (COT)',
     whatsappPrefilled: '您好，我想了解关于 Flores Siberianas 的更多信息。',
     products: '产品',

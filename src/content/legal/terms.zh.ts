@@ -22,7 +22,7 @@ export const termsZh: LegalDocument = {
       title: "2. 资格与账户",
       paragraphs: [
         "您声明具有订立本条款的法律行为能力；若您代表组织行事，则声明已获授权约束该组织。",
-        "您须提供准确的注册信息并对凭据保密。您对账户下的所有活动负责。若怀疑未经授权访问，请立即通过 flores.siberiana@gmail.com 通知我们。",
+        "您须提供准确的注册信息并对凭据保密。您对账户下的所有活动负责。若怀疑未经授权访问，请立即通过 flores.siberianas@outlook.com 通知我们。",
         "我们可拒绝注册、暂停或终止违反本条款或存在安全或法律风险的账户。",
       ],
     },
@@ -117,7 +117,7 @@ export const termsZh: LegalDocument = {
       title: "14. 一般条款",
       paragraphs: [
         "本条款构成您与本公司之间关于服务的完整协议，并取代先前关于同一主题的协议。若任何条款被认定为不可执行，其余条款仍然有效。未执行某权利不构成放弃。未经我们同意，您不得转让本条款；我们可在合并、收购或资产出售时转让本条款。",
-        "咨询：flores.siberiana@gmail.com。邮寄地址：Carmen de Viboral, Antioquia, Colombia（收件：法务/隐私）。",
+        "咨询：flores.siberianas@outlook.com。邮寄地址：Carmen de Viboral, Antioquia, Colombia（收件：法务/隐私）。",
       ],
     },
   ],

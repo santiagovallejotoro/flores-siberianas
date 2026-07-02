@@ -11,7 +11,7 @@ export const privacyEn: LegalDocument = {
       id: "controller",
       title: "1. Data controller",
       paragraphs: [
-        "The controller of personal data is Flores Sibesianas SAS, with contact at flores.siberiana@gmail.com and postal address: Carmen de Viboral, Antioquia, Colombia.",
+        "The controller of personal data is Flores Sibesianas SAS, with contact at flores.siberianas@outlook.com and postal address: Carmen de Viboral, Antioquia, Colombia.",
       ],
     },
     {
@@ -67,7 +67,7 @@ export const privacyEn: LegalDocument = {
       title: "8. Your rights",
       paragraphs: [
         "Depending on your jurisdiction, you may have rights to access, rectify, delete, restrict processing, object to processing, withdraw consent, or request portability. Colombian data subjects may have rights under Law 1581 of 2012 and implementing regulations, subject to conditions and exceptions.",
-        "To exercise rights, contact flores.siberiana@gmail.com with a description of your request. We may need to verify your identity before responding. You may also lodge a complaint with a competent supervisory authority where applicable law permits.",
+        "To exercise rights, contact flores.siberianas@outlook.com with a description of your request. We may need to verify your identity before responding. You may also lodge a complaint with a competent supervisory authority where applicable law permits.",
       ],
     },
     {
@@ -95,7 +95,7 @@ export const privacyEn: LegalDocument = {
       id: "contact",
       title: "12. Contact",
       paragraphs: [
-        "Questions about this Policy or our data practices: flores.siberiana@gmail.com. Postal address: Carmen de Viboral, Antioquia, Colombia (attention: Privacy).",
+        "Questions about this Policy or our data practices: flores.siberianas@outlook.com. Postal address: Carmen de Viboral, Antioquia, Colombia (attention: Privacy).",
       ],
     },
   ],

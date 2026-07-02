@@ -11,7 +11,7 @@ export const privacyRu: LegalDocument = {
       id: "controller",
       title: "1. Контролёр данных",
       paragraphs: [
-        "Контролёром персональных данных является Flores Sibesianas SAS; связь: flores.siberiana@gmail.com, почтовый адрес: Carmen de Viboral, Antioquia, Colombia.",
+        "Контролёром персональных данных является Flores Sibesianas SAS; связь: flores.siberianas@outlook.com, почтовый адрес: Carmen de Viboral, Antioquia, Colombia.",
       ],
     },
     {
@@ -67,7 +67,7 @@ export const privacyRu: LegalDocument = {
       title: "8. Ваши права",
       paragraphs: [
         "В зависимости от юрисдикции вы можете иметь права на доступ, исправление, удаление, ограничение обработки, возражение, отзыв согласия или переносимость. Субъекты данных в Колумбии могут иметь права в соответствии с Законом 1581 от 2012 года и подзаконными актами, с учётом условий и исключений.",
-        "Для реализации прав направьте запрос на flores.siberiana@gmail.com с описанием. Мы можем запросить подтверждение личности. Вы также можете подать жалобу в компетентный надзорный орган, если это допускается правом.",
+        "Для реализации прав направьте запрос на flores.siberianas@outlook.com с описанием. Мы можем запросить подтверждение личности. Вы также можете подать жалобу в компетентный надзорный орган, если это допускается правом.",
       ],
     },
     {
@@ -95,7 +95,7 @@ export const privacyRu: LegalDocument = {
       id: "contact",
       title: "12. Контакты",
       paragraphs: [
-        "Вопросы по Политике или практике обработки данных: flores.siberiana@gmail.com. Почтовый адрес: Carmen de Viboral, Antioquia, Colombia (для Privacy).",
+        "Вопросы по Политике или практике обработки данных: flores.siberianas@outlook.com. Почтовый адрес: Carmen de Viboral, Antioquia, Colombia (для Privacy).",
       ],
     },
   ],

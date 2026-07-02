@@ -22,7 +22,7 @@ export const termsEn: LegalDocument = {
       title: "2. Eligibility and accounts",
       paragraphs: [
         "You represent that you have the legal capacity to enter into these Terms and, if you act on behalf of an organization, that you are authorized to bind that organization.",
-        "You must provide accurate registration information and keep credentials confidential. You are responsible for all activity under your Account. Notify us promptly at flores.siberiana@gmail.com if you suspect unauthorized access.",
+        "You must provide accurate registration information and keep credentials confidential. You are responsible for all activity under your Account. Notify us promptly at flores.siberianas@outlook.com if you suspect unauthorized access.",
         "We may refuse registration, suspend, or terminate Accounts that violate these Terms or pose security or legal risk.",
       ],
     },
@@ -117,7 +117,7 @@ export const termsEn: LegalDocument = {
       title: "14. General",
       paragraphs: [
         "These Terms constitute the entire agreement between you and Company regarding the Services and supersede prior agreements on the same subject. If any provision is held unenforceable, the remainder remains in effect. Failure to enforce a provision is not a waiver. You may not assign these Terms without our consent; we may assign them in connection with a merger, acquisition, or sale of assets.",
-        "Questions: flores.siberiana@gmail.com. Postal address: Carmen de Viboral, Antioquia, Colombia (attention: Legal / Privacy).",
+        "Questions: flores.siberianas@outlook.com. Postal address: Carmen de Viboral, Antioquia, Colombia (attention: Legal / Privacy).",
       ],
     },
   ],

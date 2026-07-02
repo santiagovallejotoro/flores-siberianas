@@ -311,7 +311,7 @@ export const en = {
       headquarters: {
         title: 'Headquarters',
         location: 'Carmen de Viboral, Antioquia, Colombia',
-        email: 'flores.siberiana@gmail.com',
+        email: 'flores.siberianas@outlook.com',
         hours: 'Mon - Fri: 8:00 AM - 6:00 PM',
         timezone: 'Colombia Time (COT)'
       },
@@ -476,7 +476,7 @@ export const en = {
     tagline: 'High-quality Colombian hydrangeas. From the mountains of Antioquia to the world\'s finest markets.',
     address: 'Carmen de Viboral, Antioquia, Colombia',
     phone: '+57 312 780 9601',
-    email: 'flores.siberiana@gmail.com',
+    email: 'flores.siberianas@outlook.com',
     hours: 'Mon–Fri 8:00–18:00 (COT)',
     whatsappPrefilled: 'Hello, I would like more information about Flores Siberianas.',
     products: 'Products',

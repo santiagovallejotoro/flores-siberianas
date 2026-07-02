@@ -11,7 +11,7 @@ export const privacyEs: LegalDocument = {
       id: "controller",
       title: "1. Responsable del tratamiento",
       paragraphs: [
-        "El responsable del tratamiento de datos personales es Flores Sibesianas SAS, con contacto en flores.siberiana@gmail.com y dirección postal: Carmen de Viboral, Antioquia, Colombia.",
+        "El responsable del tratamiento de datos personales es Flores Sibesianas SAS, con contacto en flores.siberianas@outlook.com y dirección postal: Carmen de Viboral, Antioquia, Colombia.",
       ],
     },
     {
@@ -67,7 +67,7 @@ export const privacyEs: LegalDocument = {
       title: "8. Sus derechos",
       paragraphs: [
         "Según su jurisdicción, puede tener derechos de acceso, rectificación, supresión, limitación del tratamiento, oposición, revocación del consentimiento o portabilidad. Los titulares en Colombia pueden tener derechos bajo la Ley 1581 de 2012 y su reglamentación, sujeto a condiciones y excepciones.",
-        "Para ejercer derechos, escriba a flores.siberiana@gmail.com describiendo su solicitud. Podremos verificar su identidad antes de responder. También puede presentar reclamación ante la autoridad de supervisión competente cuando la ley lo permita.",
+        "Para ejercer derechos, escriba a flores.siberianas@outlook.com describiendo su solicitud. Podremos verificar su identidad antes de responder. También puede presentar reclamación ante la autoridad de supervisión competente cuando la ley lo permita.",
       ],
     },
     {
@@ -95,7 +95,7 @@ export const privacyEs: LegalDocument = {
       id: "contact",
       title: "12. Contacto",
       paragraphs: [
-        "Consultas sobre esta Política o nuestras prácticas de datos: flores.siberiana@gmail.com. Dirección postal: Carmen de Viboral, Antioquia, Colombia (atención: Privacidad).",
+        "Consultas sobre esta Política o nuestras prácticas de datos: flores.siberianas@outlook.com. Dirección postal: Carmen de Viboral, Antioquia, Colombia (atención: Privacidad).",
       ],
     },
   ],

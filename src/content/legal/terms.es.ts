@@ -22,7 +22,7 @@ export const termsEs: LegalDocument = {
       title: "2. Elegibilidad y cuentas",
       paragraphs: [
         "Usted declara tener capacidad legal para celebrar estos Términos y, si actúa en nombre de una organización, que está autorizado a obligarla.",
-        "Debe proporcionar datos de registro exactos y mantener la confidencialidad de sus credenciales. Es responsable de toda actividad bajo su Cuenta. Notifíquenos de inmediato a flores.siberiana@gmail.com si sospecha acceso no autorizado.",
+        "Debe proporcionar datos de registro exactos y mantener la confidencialidad de sus credenciales. Es responsable de toda actividad bajo su Cuenta. Notifíquenos de inmediato a flores.siberianas@outlook.com si sospecha acceso no autorizado.",
         "Podemos rechazar el registro, suspender o terminar Cuentas que violen estos Términos o representen riesgo de seguridad o legal.",
       ],
     },
@@ -117,7 +117,7 @@ export const termsEs: LegalDocument = {
       title: "14. Disposiciones generales",
       paragraphs: [
         "Estos Términos constituyen el acuerdo íntegro entre usted y la Sociedad respecto de los Servicios y sustituyen acuerdos previos sobre el mismo objeto. Si alguna disposición fuere inaplicable, el resto permanece vigente. La falta de exigencia de un derecho no implica renuncia. Usted no podrá ceder estos Términos sin nuestro consentimiento; nosotros podremos cederlos en caso de fusión, adquisición o venta de activos.",
-        "Consultas: flores.siberiana@gmail.com. Dirección postal: Carmen de Viboral, Antioquia, Colombia (atención: Legal / Privacidad).",
+        "Consultas: flores.siberianas@outlook.com. Dirección postal: Carmen de Viboral, Antioquia, Colombia (atención: Legal / Privacidad).",
       ],
     },
   ],

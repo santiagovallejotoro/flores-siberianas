@@ -11,7 +11,7 @@ export const privacyZh: LegalDocument = {
       id: "controller",
       title: "1. 数据控制者",
       paragraphs: [
-        "个人数据的控制者为 Flores Sibesianas SAS，联系方式：flores.siberiana@gmail.com；邮寄地址：Carmen de Viboral, Antioquia, Colombia。",
+        "个人数据的控制者为 Flores Sibesianas SAS，联系方式：flores.siberianas@outlook.com；邮寄地址：Carmen de Viboral, Antioquia, Colombia。",
       ],
     },
     {
@@ -67,7 +67,7 @@ export const privacyZh: LegalDocument = {
       title: "8. 您的权利",
       paragraphs: [
         "根据您所在法域，您可能享有访问、更正、删除、限制处理、反对处理、撤回同意或可携带权等权利。哥伦比亚数据主体可依法享有 2012 年第 1581 号法及配套规则项下的权利，但受条件与例外限制。",
-        "如需行使权利，请发送邮件至 flores.siberiana@gmail.com 并说明请求。我们可能在答复前要求核实您的身份。在法律允许的情况下，您亦可向有管辖权的监管机构投诉。",
+        "如需行使权利，请发送邮件至 flores.siberianas@outlook.com 并说明请求。我们可能在答复前要求核实您的身份。在法律允许的情况下，您亦可向有管辖权的监管机构投诉。",
       ],
     },
     {
@@ -95,7 +95,7 @@ export const privacyZh: LegalDocument = {
       id: "contact",
       title: "12. 联系方式",
       paragraphs: [
-        "有关本政策或我们数据实践的咨询：flores.siberiana@gmail.com。邮寄地址：Carmen de Viboral, Antioquia, Colombia（收件：隐私）。",
+        "有关本政策或我们数据实践的咨询：flores.siberianas@outlook.com。邮寄地址：Carmen de Viboral, Antioquia, Colombia（收件：隐私）。",
       ],
     },
   ],
