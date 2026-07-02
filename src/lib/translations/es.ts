@@ -457,7 +457,7 @@ export const es = {
   footer: {
     tagline: 'Hortensias colombianas de alta calidad. De las montañas de Antioquia a los mejores mercados del mundo.',
     address: 'Carmen de Viboral, Antioquia, Colombia',
-    phone: '+57 312 781 0890',
+    phone: '+57 312 780 9601',
     email: 'flores.siberiana@gmail.com',
     hours: 'Lun–Vie 8:00–18:00 (COT)',
     whatsappPrefilled: 'Hola, me gustaría recibir más información sobre Flores Siberianas.',

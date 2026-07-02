@@ -456,7 +456,7 @@ export const zh = {
   footer: {
     tagline: '哥伦比亚高品质绣球花。从安蒂奥基亚山脉到世界顶级市场。',
     address: 'Carmen de Viboral, Antioquia, 哥伦比亚',
-    phone: '+57 312 781 0890',
+    phone: '+57 312 780 9601',
     email: 'flores.siberiana@gmail.com',
     hours: '周一至周五 8:00–18:00 (COT)',
     whatsappPrefilled: '您好，我想了解关于 Flores Siberianas 的更多信息。',

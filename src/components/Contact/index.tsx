@@ -2,7 +2,7 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const WHATSAPP_NUMBER = "573127810890";
+const WHATSAPP_NUMBER = "573127809601";
 const TELEGRAM_URL = "https://t.me/floressiberianas";
 
 const inputClass =
